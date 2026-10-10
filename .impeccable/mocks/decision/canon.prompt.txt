@@ -1,0 +1,7 @@
+High-fidelity UI design comp. A desktop app screenshot, landscape 16:10 (1440x900), flat front-on view, no device frame, no browser chrome.
+
+Product: "Dictate Studio", a local review tool where a video creator talks while pointing at their footage, and an AI receives the anchored notes. Screen: Video review, in the middle of recording.
+
+Layout in the style of a modern dark video review app like Frame.io: top bar with a "Dictate" logo, file name "vlog-ep12-roughcut.mp4", a red recording dot with "03:12", and a purple primary button "Finish & review". Left about 70%: a large 16:9 player showing a vlogger talking to camera in a bright kitchen, with a numbered marker "1" on a coffee mug logo and a rectangle annotation "2" around a window; player controls under it with timecode "00:01:23:14" and buttons "Mark in", "Mark out"; a timeline with comment markers and one highlighted range. Right about 30%: a comments panel with rounded cards, each with a timecode chip "01:23", a numbered tag, and the note text: "Blur this logo here.", "Cut from here to where I start talking about the camera.", and one Arabic line "هذا الجزء طويل، قصّه". A comment box at the bottom "Type a note…".
+
+Palette: #141414 background, #232323 panels, #f5f5f5 text, one purple accent #6e56cf. Rounded 8px corners, a clean Inter-like sans. Polished, familiar, professional.

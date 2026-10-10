@@ -1,0 +1,12 @@
+High-fidelity UI design comp. A desktop app screenshot, landscape 16:10 (1440x900), flat front-on view, no device frame, no browser chrome.
+
+Product: "Dictate Studio", a local review tool where a video creator talks while pointing at their footage, and an AI receives the anchored notes. Screen: Video review, in the middle of recording.
+
+Layout, exactly:
+1. Thin top bar across the full width. Left: small-caps wordmark "DICTATE". Center: "vlog-ep12-roughcut.mp4 · 1920×1080 · 29.97 fps". Right: a small red REC tally lamp with session clock "03:12", a slim mic level meter, then two buttons "Pause" and "Finish & review".
+2. Left main region (about 70% of the width): the program monitor, a large 16:9 video frame showing a vlogger talking to camera in a bright kitchen. Drawn on the frame: an amber numbered pin labeled "P1" on the logo of a coffee mug, an amber dashed rectangle labeled "B1" around a window, and a faint red cursor trail ending in a red ring.
+3. Directly under the monitor: a machine-control strip in the style of a 1990s Sony BVE edit controller: square physical keycaps with printed legends "MARK IN", "MARK OUT", "MARKER", "◀◀", "▶", "▶▶", and a large amber seven-segment timecode readout "00:01:23:14".
+4. Under that, a full-width timeline track with small time tick labels, one amber in/out band labeled "R1", and a red playhead.
+5. Right column (about 30%): a panel titled "EDL" that looks like an edit decision list on a dark monitor screen. Numbered event rows, each with event number "001", a monospace timecode "00:01:23.40", a short tag (VO, P1, B1, R1), and the spoken note in a clean proportional font: "Blur this logo here.", "Cut from here to where I start talking about the camera.", and one Arabic line "هذا الجزء طويل، قصّه". At the top of the column a live caption line in gray with words appearing. At the bottom a text field "Type a note… (N)".
+
+Visual world: edit-bay hardware. Warm neutral-gray machine panel (#2e2e2c and #1f1f1e), ivory key legends (#e9e6de), amber (#e8a23a) used only for marks and timecode, red (#d8382f) used only for the REC tally and the cursor. Matte, flat, precise hardware detailing: keycap edges, hairline panel seams. Typography: a crisp grotesk in small caps for labels, monospace for timecode and event numbers. A neutral gray surround so nothing tints the footage. No glow, no neon, no gradients, no glassmorphism. It must read instantly as a professional tool for reviewing a video by pointing and talking.

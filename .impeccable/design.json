@@ -1,0 +1,829 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-10T12:14:43.907Z",
+  "title": "Design System: Dictate Studio",
+  "extensions": {
+    "colorMeta": {
+      "bg": {
+        "role": "neutral",
+        "displayName": "Gallery Black",
+        "canonical": "#0b0c0e",
+        "oklch": "oklch(15.4% 0.005 264.4)",
+        "tonalRamp": [
+          "#0a0b0d",
+          "#232426",
+          "#3e4042",
+          "#5c5e60",
+          "#7c7d80",
+          "#9d9ea1",
+          "#c2c4c7",
+          "#edeef2"
+        ]
+      },
+      "umd": {
+        "role": "neutral",
+        "displayName": "UMD Black",
+        "canonical": "#050506",
+        "oklch": "oklch(11.6% 0.003 285.9)",
+        "tonalRamp": [
+          "#0b0b0c",
+          "#242426",
+          "#3f3f41",
+          "#5d5d5f",
+          "#7d7d7f",
+          "#9e9ea0",
+          "#c4c4c6",
+          "#eeeef0"
+        ]
+      },
+      "panel": {
+        "role": "neutral",
+        "displayName": "Panel",
+        "canonical": "#131518",
+        "oklch": "oklch(19.5% 0.007 258.4)",
+        "tonalRamp": [
+          "#090b0e",
+          "#222427",
+          "#3e4043",
+          "#5b5e61",
+          "#7b7d81",
+          "#9c9fa3",
+          "#c1c4c9",
+          "#eceff3"
+        ]
+      },
+      "panel-2": {
+        "role": "neutral",
+        "displayName": "Panel Raised",
+        "canonical": "#1a1d21",
+        "oklch": "oklch(22.9% 0.009 255.6)",
+        "tonalRamp": [
+          "#090b0f",
+          "#212428",
+          "#3d4045",
+          "#5a5e63",
+          "#7a7e83",
+          "#9b9fa4",
+          "#c0c4ca",
+          "#ebeff5"
+        ]
+      },
+      "panel-3": {
+        "role": "neutral",
+        "displayName": "Panel Lit",
+        "canonical": "#22262b",
+        "oklch": "oklch(26.7% 0.011 254.0)",
+        "tonalRamp": [
+          "#080b10",
+          "#202429",
+          "#3c4046",
+          "#595e64",
+          "#797e84",
+          "#9a9fa5",
+          "#bfc5cb",
+          "#eaeff6"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Line",
+        "canonical": "#262a2f",
+        "oklch": "oklch(28.3% 0.011 254.0)",
+        "tonalRamp": [
+          "#080b10",
+          "#202429",
+          "#3c4045",
+          "#595e64",
+          "#797e84",
+          "#9a9fa5",
+          "#bfc5cb",
+          "#eaeff6"
+        ]
+      },
+      "line-2": {
+        "role": "neutral",
+        "displayName": "Line Strong",
+        "canonical": "#363b42",
+        "oklch": "oklch(35.0% 0.014 256.8)",
+        "tonalRamp": [
+          "#080b11",
+          "#20242b",
+          "#3b4047",
+          "#595e66",
+          "#787e86",
+          "#999fa7",
+          "#bec5cd",
+          "#e9eff8"
+        ]
+      },
+      "line-3": {
+        "role": "neutral",
+        "displayName": "Line Hover",
+        "canonical": "#4a5058",
+        "oklch": "oklch(42.9% 0.015 255.6)",
+        "tonalRamp": [
+          "#070b12",
+          "#1f242c",
+          "#3a4048",
+          "#585e66",
+          "#777e87",
+          "#989fa8",
+          "#bec5ce",
+          "#e8eff9"
+        ]
+      },
+      "tl-track": {
+        "role": "neutral",
+        "displayName": "Timeline Track",
+        "canonical": "#1d2024",
+        "oklch": "oklch(24.2% 0.009 255.6)",
+        "tonalRamp": [
+          "#090b0f",
+          "#212428",
+          "#3d4044",
+          "#5a5e63",
+          "#7a7e83",
+          "#9b9fa4",
+          "#c0c4ca",
+          "#ebeff4"
+        ]
+      },
+      "fg": {
+        "role": "neutral",
+        "displayName": "Legend White",
+        "canonical": "#f2f2ee",
+        "oklch": "oklch(96.0% 0.005 106.5)",
+        "tonalRamp": [
+          "#0b0b09",
+          "#242421",
+          "#40403d",
+          "#5e5e5a",
+          "#7d7d7a",
+          "#9f9f9b",
+          "#c4c4c0",
+          "#efefeb"
+        ]
+      },
+      "fg-2": {
+        "role": "neutral",
+        "displayName": "Legend Grey",
+        "canonical": "#a7abb2",
+        "oklch": "oklch(74.0% 0.011 261.8)",
+        "tonalRamp": [
+          "#090b10",
+          "#212429",
+          "#3d4046",
+          "#5a5e64",
+          "#7a7d84",
+          "#9b9fa5",
+          "#c0c4cb",
+          "#eaeff6"
+        ]
+      },
+      "fg-3": {
+        "role": "neutral",
+        "displayName": "Legend Dim",
+        "canonical": "#878c95",
+        "oklch": "oklch(63.9% 0.015 262.4)",
+        "tonalRamp": [
+          "#080b11",
+          "#20242b",
+          "#3c4048",
+          "#595e66",
+          "#797d86",
+          "#999fa8",
+          "#bfc4ce",
+          "#e9eff9"
+        ]
+      },
+      "white": {
+        "role": "neutral",
+        "displayName": "White",
+        "canonical": "#ffffff",
+        "oklch": "oklch(100.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242424",
+          "#404040",
+          "#5d5d5d",
+          "#7d7d7d",
+          "#9e9e9e",
+          "#c4c4c4",
+          "#eeeeee"
+        ]
+      },
+      "rec": {
+        "role": "primary",
+        "displayName": "Tally Red",
+        "canonical": "#e23b2e",
+        "oklch": "oklch(60.4% 0.206 29.1)",
+        "tonalRamp": [
+          "#200000",
+          "#4c0000",
+          "#7c0403",
+          "#b50000",
+          "#dd3529",
+          "#ff5e4d",
+          "#ffa99c",
+          "#ffe7e1"
+        ]
+      },
+      "rec-text": {
+        "role": "primary",
+        "displayName": "Tally Text",
+        "canonical": "#ff6b5e",
+        "oklch": "oklch(70.9% 0.183 27.7)",
+        "tonalRamp": [
+          "#210000",
+          "#4d0000",
+          "#7e0003",
+          "#ad1717",
+          "#d4433a",
+          "#fc685b",
+          "#ffa89c",
+          "#ffe6e1"
+        ]
+      },
+      "rec-ink": {
+        "role": "primary",
+        "displayName": "Tally Ink",
+        "canonical": "#c42f24",
+        "oklch": "oklch(54.0% 0.187 29.1)",
+        "tonalRamp": [
+          "#210000",
+          "#4e0000",
+          "#7f0000",
+          "#af130d",
+          "#d64134",
+          "#fd6756",
+          "#ffa799",
+          "#ffe6e0"
+        ]
+      },
+      "rec-deep": {
+        "role": "primary",
+        "displayName": "Tally Deep",
+        "canonical": "#4a1712",
+        "oklch": "oklch(28.6% 0.079 28.6)",
+        "tonalRamp": [
+          "#200000",
+          "#43100c",
+          "#632d27",
+          "#844c44",
+          "#a76b62",
+          "#cb8c83",
+          "#f3b1a7",
+          "#ffe6e1"
+        ]
+      },
+      "rec-tint": {
+        "role": "primary",
+        "displayName": "Tally Wash",
+        "canonical": "#2a1311",
+        "oklch": "oklch(22.0% 0.038 25.9)",
+        "tonalRamp": [
+          "#180504",
+          "#341c1a",
+          "#523835",
+          "#725652",
+          "#937571",
+          "#b59692",
+          "#dcbbb7",
+          "#ffe5e1"
+        ]
+      },
+      "rec-edge": {
+        "role": "primary",
+        "displayName": "Tally Edge",
+        "canonical": "#6b1a13",
+        "oklch": "oklch(35.3% 0.115 29.1)",
+        "tonalRamp": [
+          "#210000",
+          "#4e0000",
+          "#701f18",
+          "#944036",
+          "#b86054",
+          "#dd8174",
+          "#ffa799",
+          "#ffe6e0"
+        ]
+      },
+      "rec-low": {
+        "role": "primary",
+        "displayName": "Tally Low",
+        "canonical": "#b42318",
+        "oklch": "oklch(50.0% 0.182 29.5)",
+        "tonalRamp": [
+          "#210000",
+          "#4d0000",
+          "#7e0000",
+          "#ad1a10",
+          "#d44536",
+          "#fb6957",
+          "#ffa89a",
+          "#ffe6e1"
+        ]
+      },
+      "mark": {
+        "role": "secondary",
+        "displayName": "Mark Amber",
+        "canonical": "#f3b33d",
+        "oklch": "oklch(80.7% 0.148 78.6)",
+        "tonalRamp": [
+          "#140800",
+          "#351f00",
+          "#553a00",
+          "#7e5500",
+          "#a57200",
+          "#cf9100",
+          "#f7b742",
+          "#ffeabe"
+        ]
+      },
+      "mark-ink": {
+        "role": "secondary",
+        "displayName": "Mark Ink",
+        "canonical": "#121315",
+        "oklch": "oklch(18.6% 0.004 264.5)",
+        "tonalRamp": [
+          "#0a0b0d",
+          "#232426",
+          "#3e4042",
+          "#5c5e60",
+          "#7c7d80",
+          "#9d9ea1",
+          "#c3c4c7",
+          "#edeef1"
+        ]
+      },
+      "ok": {
+        "role": "tertiary",
+        "displayName": "Signal Green",
+        "canonical": "#39c26d",
+        "oklch": "oklch(72.1% 0.169 151.8)",
+        "tonalRamp": [
+          "#001200",
+          "#002f0b",
+          "#004e21",
+          "#007330",
+          "#009846",
+          "#2fbb66",
+          "#60e38b",
+          "#baffcc"
+        ]
+      },
+      "page": {
+        "role": "tertiary",
+        "displayName": "Page Blue",
+        "canonical": "#8fa6d1",
+        "oklch": "oklch(72.3% 0.068 262.8)",
+        "tonalRamp": [
+          "#000727",
+          "#122245",
+          "#2c3f64",
+          "#495d84",
+          "#687da6",
+          "#889fc9",
+          "#adc5f1",
+          "#e2efff"
+        ]
+      },
+      "page-bg": {
+        "role": "tertiary",
+        "displayName": "Page Blue Ground",
+        "canonical": "#1e2737",
+        "oklch": "oklch(27.2% 0.033 261.7)",
+        "tonalRamp": [
+          "#040b19",
+          "#1b2434",
+          "#364051",
+          "#545e70",
+          "#737e91",
+          "#939fb3",
+          "#b9c5da",
+          "#e3efff"
+        ]
+      },
+      "page-edge": {
+        "role": "tertiary",
+        "displayName": "Page Blue Edge",
+        "canonical": "#2c3a52",
+        "oklch": "oklch(34.7% 0.046 260.9)",
+        "tonalRamp": [
+          "#020a1e",
+          "#17243a",
+          "#324058",
+          "#4f5e78",
+          "#6e7e99",
+          "#8e9fbc",
+          "#b3c5e3",
+          "#e2efff"
+        ]
+      },
+      "sketch-1": {
+        "role": "neutral",
+        "displayName": "Sketch Grey Dark",
+        "canonical": "#9aa3b0",
+        "oklch": "oklch(71.2% 0.022 257.5)",
+        "tonalRamp": [
+          "#060b14",
+          "#1d242f",
+          "#39404b",
+          "#565e6a",
+          "#757e8a",
+          "#969fac",
+          "#bcc5d2",
+          "#e6effd"
+        ]
+      },
+      "sketch-2": {
+        "role": "neutral",
+        "displayName": "Sketch Grey Light",
+        "canonical": "#c9ced6",
+        "oklch": "oklch(85.0% 0.012 259.8)",
+        "tonalRamp": [
+          "#080b10",
+          "#21242a",
+          "#3c4046",
+          "#5a5e65",
+          "#797e85",
+          "#9a9fa6",
+          "#bfc4cc",
+          "#eaeff7"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "The one question or verdict per screen (home, Done)."
+      },
+      "display-compact": {
+        "displayName": "Display Compact",
+        "purpose": "The home question under 640px."
+      },
+      "body-lg": {
+        "displayName": "Body Large",
+        "purpose": "Home lede, Done subline, web TALK-block caption, review note text (at 1.5). The setup callout title uses it at 600 in the display face."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Secondary text: hints, field notes, status lines, toggle labels, recent meta, note page URL. The mode label uses it at 500, 0.28em, uppercase."
+      },
+      "micro": {
+        "displayName": "Micro",
+        "purpose": "Keycap legends, recent-session mode label, extension element-highlight tag."
+      },
+      "micro-nested": {
+        "displayName": "Micro Nested",
+        "purpose": "A keycap nested inside another control: the TALK key, the extension toolbar."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Review screen heading."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Empty-monitor prompt and finishing message."
+      },
+      "wordmark": {
+        "displayName": "Wordmark",
+        "purpose": "DICTATE in every top bar, uppercase."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Base UI text."
+      },
+      "body-note": {
+        "displayName": "Body Note",
+        "purpose": "Rundown note text and live captions."
+      },
+      "label-panel": {
+        "displayName": "Panel Legend",
+        "purpose": "Uppercase legend naming the panel it sits on (RUNDOWN, TIMELINE). Never an eyebrow."
+      },
+      "label-field": {
+        "displayName": "Field Label",
+        "purpose": "Uppercase settings and review field labels, fg-3."
+      },
+      "label-key": {
+        "displayName": "Key Legend",
+        "purpose": "Hardware key text (MARK IN, MARK OUT, MARKER)."
+      },
+      "mono-umd": {
+        "displayName": "UMD",
+        "purpose": "Black label strips under monitors."
+      },
+      "mono-tag": {
+        "displayName": "Mono Tag",
+        "purpose": "Tags and mark tabs (P1, B1, VO, TXT, PAGE)."
+      },
+      "mono-index": {
+        "displayName": "Mono Index",
+        "purpose": "Rundown row numbers (001)."
+      },
+      "mono-clock": {
+        "displayName": "Mono Clock",
+        "purpose": "REC pill clock."
+      },
+      "mono-timecode": {
+        "displayName": "Mono Timecode",
+        "purpose": "Row timecodes, file meta, timeline foot."
+      }
+    },
+    "shadows": [
+      {
+        "name": "float-menu",
+        "value": "0 8px 20px rgba(0, 0, 0, .45)",
+        "purpose": "Rundown row Remove menu floating over the log."
+      },
+      {
+        "name": "float-toast",
+        "value": "0 8px 24px rgba(0, 0, 0, .45)",
+        "purpose": "Toasts at the bottom of the window."
+      },
+      {
+        "name": "float-toolbar",
+        "value": "0 12px 32px rgba(0,0,0,.4), 0 1px 0 rgba(255,255,255,.05) inset",
+        "purpose": "Extension in-page toolbar over the user's site."
+      },
+      {
+        "name": "toolbar-talking",
+        "value": "0 0 0 2px rgba(226,59,46,.55), 0 12px 32px rgba(0,0,0,.4)",
+        "purpose": "Extension toolbar while a note is open: red ring."
+      },
+      {
+        "name": "key-throw",
+        "value": "0 1px 3px rgba(0, 0, 0, .4)",
+        "purpose": "Hardware keys at rest; becomes 0 0 1px rgba(0,0,0,.4) on press."
+      },
+      {
+        "name": "talk-bezel",
+        "value": "0 0 0 6px #0c0d0f, 0 0 0 7px #2c3036, 0 4px 12px rgba(0, 0, 0, .5), inset 0 1px 0 rgba(255, 255, 255, .06)",
+        "purpose": "Recessed collar around the idle TALK key."
+      },
+      {
+        "name": "talk-lit",
+        "value": "0 0 0 6px #0c0d0f, 0 0 0 7px #5a1c17, 0 8px 22px rgba(226, 59, 46, .38), inset 0 1px 0 rgba(255, 255, 255, .25)",
+        "purpose": "TALK key when ON: warmed collar, red throw."
+      },
+      {
+        "name": "tally-rail",
+        "value": "inset 3px 0 0 var(--rec), inset 0 0 0 1px var(--rec-deep)",
+        "purpose": "Open rundown row (the web log keeps only the 3px rail)."
+      },
+      {
+        "name": "monitor-hover-rim",
+        "value": "inset 0 0 0 2px var(--line-2)",
+        "purpose": "Home monitor tile screen on hover."
+      },
+      {
+        "name": "field-focus",
+        "value": "0 0 0 3px rgba(242, 242, 238, .08)",
+        "purpose": "Text inputs on focus, with the border stepping to fg-2."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease",
+        "value": "cubic-bezier(.16, 1, .3, 1)",
+        "purpose": "The single easing curve for entrances, toggles and lifts."
+      },
+      {
+        "name": "lamp",
+        "value": "120ms",
+        "purpose": "Monitor rim, PGM lamp and TALK color changes."
+      },
+      {
+        "name": "hover",
+        "value": "150ms",
+        "purpose": "Button, input and key hover transitions."
+      },
+      {
+        "name": "lift",
+        "value": "200ms",
+        "purpose": "Home monitor tile lift and rim."
+      },
+      {
+        "name": "enter",
+        "value": "250ms",
+        "purpose": "Rundown row fade-in, toast rise."
+      },
+      {
+        "name": "on-air",
+        "value": "550ms, brightness(1.6) to 1",
+        "purpose": "One flash on monitor, TALK key and open row when a note opens."
+      },
+      {
+        "name": "scan",
+        "value": "1.3s infinite",
+        "purpose": "Finishing screen scan bar (fg-2 over a panel-3 track)."
+      },
+      {
+        "name": "tally-in",
+        "value": "500ms, scale(.6) to 1",
+        "purpose": "Done disc entrance."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "durations .01ms",
+        "purpose": "prefers-reduced-motion: reduce collapses all animation and transition."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "desk-wrap",
+        "value": "1100px"
+      },
+      {
+        "name": "stack",
+        "value": "900px"
+      },
+      {
+        "name": "compact",
+        "value": "640px"
+      },
+      {
+        "name": "narrow",
+        "value": "440px"
+      },
+      {
+        "name": "rundown-container-md",
+        "value": "470px"
+      },
+      {
+        "name": "rundown-container-sm",
+        "value": "380px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Button",
+      "kind": "button",
+      "refersTo": "button",
+      "description": "Default control: a quiet raised panel key. Record, Pause, Test, Load, Copy report.",
+      "html": "<button class=\"ds-btn\" type=\"button\">Record</button>",
+      "css": ".ds-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 36px; padding: 0 14px; border-radius: var(--r-2, 6px); background: var(--panel-2, #1a1d21); border: 1px solid var(--line-2, #363b42); color: var(--fg, #f2f2ee); font: 500 14px/1.45 var(--font-ui, \"Segoe UI Variable Text\", \"Segoe UI\", system-ui, sans-serif); white-space: nowrap; cursor: pointer; transition: background .15s, border-color .15s, color .15s; } .ds-btn:hover { background: var(--panel-3, #22262b); border-color: var(--line-3, #4a5058); } .ds-btn:active { transform: translateY(1px); } .ds-btn:focus-visible { outline: 2px solid var(--mark, #f3b33d); outline-offset: 2px; } .ds-btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }"
+    },
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Off-white hand-off button, one per screen: Open (web review), Send N to Claude (review).",
+      "html": "<button class=\"ds-btn-primary\" type=\"button\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4.5 12L20 4.5 16.5 19.5l-4.5-5.5zM12 14l8-9.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linejoin=\"round\"/></svg>Send 5 notes to Claude</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 18px; border-radius: var(--r-2, 6px); background: var(--fg, #f2f2ee); border: 1px solid var(--fg, #f2f2ee); color: #101113; font: 600 14px/1.45 var(--font-ui, \"Segoe UI Variable Text\", \"Segoe UI\", system-ui, sans-serif); white-space: nowrap; cursor: pointer; transition: background .15s, border-color .15s; } .ds-btn-primary:hover { background: var(--white, #ffffff); border-color: var(--white, #ffffff); } .ds-btn-primary:active { transform: translateY(1px); } .ds-btn-primary:focus-visible { outline: 2px solid var(--mark, #f3b33d); outline-offset: 2px; }"
+    },
+    {
+      "name": "Hardware Key",
+      "kind": "button",
+      "refersTo": "hardware-key",
+      "description": "Square desk keys under the monitor: MARK IN, MARK OUT, MARKER and transport.",
+      "html": "<div style=\"display:flex;gap:8px\"><button class=\"ds-hw\" type=\"button\">MARK IN</button><button class=\"ds-hw\" type=\"button\">MARK OUT</button><button class=\"ds-hw\" type=\"button\">MARKER</button><button class=\"ds-hw ds-hw-icon\" type=\"button\" aria-label=\"Play\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M7 4.5v15l12.5-7.5z\" fill=\"currentColor\"/></svg></button></div>",
+      "css": ".ds-hw { height: 44px; min-width: 44px; padding: 0 12px; border-radius: var(--r-1, 4px); cursor: pointer; background: var(--panel-2, #1a1d21); border: 1px solid var(--line-2, #363b42); color: var(--fg, #f2f2ee); font: 600 12px/1 var(--font-ui, \"Segoe UI Variable Text\", \"Segoe UI\", system-ui, sans-serif); letter-spacing: .06em; box-shadow: 0 1px 3px rgba(0, 0, 0, .4); transition: background .15s, border-color .15s; } .ds-hw:hover { background: var(--panel-3, #22262b); border-color: var(--line-3, #4a5058); } .ds-hw:active { transform: translateY(1px); box-shadow: 0 0 1px rgba(0, 0, 0, .4); } .ds-hw:focus-visible { outline: 2px solid var(--mark, #f3b33d); outline-offset: 2px; } .ds-hw-icon { display: inline-grid; place-items: center; width: 52px; padding: 0; }"
+    },
+    {
+      "name": "TALK Key",
+      "kind": "custom",
+      "refersTo": "talk-key",
+      "description": "The one round, illuminated control. Idle reads TALK; pressed reads ON and lights tally red.",
+      "html": "<div style=\"display:flex;gap:24px;padding:12px\"><button class=\"ds-talk\" type=\"button\" aria-pressed=\"false\"><span class=\"ds-talk-word\">TALK</span><kbd class=\"ds-key\">T</kbd></button><button class=\"ds-talk\" type=\"button\" aria-pressed=\"true\"><span class=\"ds-talk-word\">ON</span><kbd class=\"ds-key\">T</kbd></button></div>",
+      "css": ".ds-talk { display: grid; place-items: center; align-content: center; gap: 4px; width: 84px; height: 84px; border-radius: 50%; margin: 6px; border: 2px solid #3a3e44; background: radial-gradient(circle at 50% 35%, #2b2f35, #17191c 70%); color: var(--fg-2, #a7abb2); cursor: pointer; box-shadow: 0 0 0 6px #0c0d0f, 0 0 0 7px #2c3036, 0 4px 12px rgba(0, 0, 0, .5), inset 0 1px 0 rgba(255, 255, 255, .06); transition: background .12s, border-color .12s, color .12s, transform .1s; } .ds-talk:hover { border-color: #565c64; color: var(--fg, #f2f2ee); } .ds-talk:active { transform: scale(.97); } .ds-talk:focus-visible { outline: 2px solid var(--mark, #f3b33d); outline-offset: 2px; } .ds-talk-word { font: 700 14px/1 var(--font-display, \"Segoe UI Variable Display\", \"Segoe UI\", system-ui, sans-serif); letter-spacing: .08em; } .ds-talk[aria-pressed=\"true\"] { border-color: var(--rec-edge, #6b1a13); color: var(--white, #fff); background: radial-gradient(circle at 50% 35%, #ff5a4a, var(--rec, #e23b2e) 55%, var(--rec-low, #b42318)); box-shadow: 0 0 0 6px #0c0d0f, 0 0 0 7px #5a1c17, 0 8px 22px rgba(226, 59, 46, .38), inset 0 1px 0 rgba(255, 255, 255, .25); } .ds-key { display: inline-grid; place-items: center; min-width: 18px; height: 18px; padding: 0 6px; border-radius: var(--r-1, 4px); border: 1px solid var(--line-2, #363b42); border-bottom-width: 2px; background: rgba(0, 0, 0, .25); color: inherit; font: 600 10px/1 var(--font-mono, \"Cascadia Mono\", \"Cascadia Code\", Consolas, ui-monospace, monospace); } .ds-talk[aria-pressed=\"true\"] .ds-key { border-color: rgba(255, 255, 255, .55); color: var(--white, #fff); }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Type-a-note field, site URL, video path, review title.",
+      "html": "<input class=\"ds-input\" type=\"text\" placeholder=\"Type a note… (N)\">",
+      "css": ".ds-input { caret-color: var(--fg, #f2f2ee); height: 36px; width: 280px; padding: 0 12px; border-radius: var(--r-2, 6px); background: var(--panel, #131518); border: 1px solid var(--line-2, #363b42); color: var(--fg, #f2f2ee); font: 400 14px/1.45 var(--font-ui, \"Segoe UI Variable Text\", \"Segoe UI\", system-ui, sans-serif); } .ds-input::placeholder { color: var(--fg-3, #878c95); } .ds-input:hover { border-color: var(--line-3, #4a5058); } .ds-input:focus { outline: none; border-color: var(--fg-2, #a7abb2); box-shadow: 0 0 0 3px rgba(242, 242, 238, .08); }"
+    },
+    {
+      "name": "Rundown Tags",
+      "kind": "chip",
+      "refersTo": "tag",
+      "description": "Mono tags in the rundown: amber for placed marks, page blue for pages, neutral outline for voice notes and markers, dashed for typed notes.",
+      "html": "<div style=\"display:flex;gap:8px;align-items:center\"><span class=\"ds-tag ds-tag-mark\">P1</span><span class=\"ds-tag ds-tag-mark\">B1</span><span class=\"ds-tag\">VO</span><span class=\"ds-tag ds-tag-txt\">TXT</span><span class=\"ds-tag ds-tag-page\">PAGE</span></div>",
+      "css": ".ds-tag { display: inline-grid; place-items: center; min-width: 34px; height: 22px; padding: 0 7px; border-radius: 3px; font: 700 12px/1 var(--font-mono, \"Cascadia Mono\", \"Cascadia Code\", Consolas, ui-monospace, monospace); letter-spacing: .02em; border: 1px solid var(--line-2, #363b42); color: var(--fg-2, #a7abb2); } .ds-tag-mark { background: var(--mark, #f3b33d); border-color: var(--mark, #f3b33d); color: var(--mark-ink, #121315); } .ds-tag-page { background: var(--page-bg, #1e2737); border-color: var(--page-edge, #2c3a52); color: var(--page, #8fa6d1); } .ds-tag-txt { border-style: dashed; }"
+    },
+    {
+      "name": "Review Chips",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Anchors under each note on the review screen; amber when the chip is a placed mark, ranges included.",
+      "html": "<div style=\"display:flex;gap:6px;flex-wrap:wrap\"><span class=\"ds-chip ds-chip-mark\">R1 00:08.00 → 00:12.40</span><span class=\"ds-chip\">“this” → button.add</span><span class=\"ds-chip ds-chip-quiet\">typed</span></div>",
+      "css": ".ds-chip { display: inline-flex; align-items: center; height: 26px; padding: 0 9px; border-radius: 3px; background: var(--panel-2, #1a1d21); border: 1px solid var(--line-2, #363b42); color: var(--fg-2, #a7abb2); font: 400 12px/1 var(--font-ui, \"Segoe UI Variable Text\", \"Segoe UI\", system-ui, sans-serif); white-space: nowrap; } .ds-chip-mark { background: var(--mark, #f3b33d); border-color: var(--mark, #f3b33d); color: var(--mark-ink, #121315); font-weight: 600; font-family: var(--font-mono, \"Cascadia Mono\", \"Cascadia Code\", Consolas, ui-monospace, monospace); } .ds-chip-quiet { background: transparent; }"
+    },
+    {
+      "name": "UMD Strip",
+      "kind": "custom",
+      "refersTo": "umd-strip",
+      "description": "Black monospace label strip under every monitor; the PGM lamp lights tally red while a note is open (second strip).",
+      "html": "<div style=\"display:grid;gap:10px;width:460px\"><div class=\"ds-umd\"><span class=\"ds-umd-lamp\">PGM</span><span class=\"ds-umd-sep\">·</span><span>test-clip.mp4</span><span class=\"ds-umd-sep\">·</span><span>00:00:24:15</span></div><div class=\"ds-umd ds-umd-live\"><span class=\"ds-umd-lamp\">PGM</span><span class=\"ds-umd-sep\">·</span><span>test-clip.mp4</span><span class=\"ds-umd-sep\">·</span><span>00:00:24:15</span></div></div>",
+      "css": ".ds-umd { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 34px; padding: 6px 12px; background: var(--umd, #050506); color: var(--fg, #f2f2ee); font: 500 14px/1.2 var(--font-mono, \"Cascadia Mono\", \"Cascadia Code\", Consolas, ui-monospace, monospace); letter-spacing: .04em; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; } .ds-umd-sep { color: var(--fg-3, #878c95); } .ds-umd-lamp { padding: 2px 7px; border-radius: 2px; transition: background .12s, color .12s; } .ds-umd-live .ds-umd-lamp { background: var(--rec, #e23b2e); color: var(--white, #fff); }"
+    },
+    {
+      "name": "Rundown Row",
+      "kind": "card",
+      "refersTo": "rundown-row",
+      "description": "A numbered rundown entry: number, timecode over tag, frame, words. The open row is lit with the tally wash and rail.",
+      "html": "<ol class=\"ds-log\"><li class=\"ds-row\"><span class=\"ds-row-n\">004</span><span class=\"ds-row-meta\"><button class=\"ds-row-tc\" type=\"button\">00:00:20:00</button><span class=\"ds-rtag\">VO</span></span><span class=\"ds-row-thumb\"></span><span class=\"ds-row-text\">Make the title bigger.</span></li><li class=\"ds-row ds-row-open\"><span class=\"ds-row-n\">005</span><span class=\"ds-row-meta\"><button class=\"ds-row-tc\" type=\"button\">00:00:24:15</button><span class=\"ds-rtag ds-rtag-mark\">P2</span></span><span class=\"ds-row-thumb\"></span><span class=\"ds-row-text\">Add a slight zoom in here</span></li></ol>",
+      "css": ".ds-log { list-style: none; margin: 0; padding: 0; width: 460px; background: var(--panel, #131518); border: 1px solid var(--line, #262a2f); border-radius: var(--r-2, 6px); } .ds-row { display: grid; align-items: center; gap: 12px; grid-template-columns: 36px 112px 120px minmax(0, 1fr); padding: 12px 10px 12px 14px; border-bottom: 1px solid var(--line, #262a2f); } .ds-row:last-child { border-bottom: 0; } .ds-row-n { font: 500 15px/1 var(--font-mono, \"Cascadia Mono\", \"Cascadia Code\", Consolas, ui-monospace, monospace); color: var(--fg-2, #a7abb2); font-variant-numeric: tabular-nums; } .ds-row-meta { display: grid; gap: 8px; justify-items: start; } .ds-row-tc { padding: 0; border: 0; background: none; font: 400 12px/1.2 var(--font-mono, \"Cascadia Mono\", \"Cascadia Code\", Consolas, ui-monospace, monospace); color: var(--fg-2, #a7abb2); cursor: pointer; font-variant-numeric: tabular-nums; } .ds-row-tc:hover { color: var(--fg, #f2f2ee); text-decoration: underline; text-underline-offset: 3px; } .ds-row-tc:focus-visible { outline: 2px solid var(--mark, #f3b33d); outline-offset: 2px; } .ds-row-thumb { width: 120px; aspect-ratio: 16 / 9; border-radius: 3px; background: var(--panel-2, #1a1d21); border: 1px dashed var(--line-2, #363b42); } .ds-row-text { font: 400 15px/1.4 var(--font-ui, \"Segoe UI Variable Text\", \"Segoe UI\", system-ui, sans-serif); color: var(--fg, #f2f2ee); } .ds-row-open { background: var(--rec-tint, #2a1311); box-shadow: inset 3px 0 0 var(--rec, #e23b2e), inset 0 0 0 1px var(--rec-deep, #4a1712); } .ds-row-open .ds-row-n { color: var(--rec-text, #ff6b5e); } .ds-rtag { display: inline-grid; place-items: center; min-width: 34px; height: 22px; padding: 0 7px; border-radius: 3px; font: 700 12px/1 var(--font-mono, \"Cascadia Mono\", \"Cascadia Code\", Consolas, ui-monospace, monospace); border: 1px solid var(--line-2, #363b42); color: var(--fg-2, #a7abb2); } .ds-rtag-mark { background: var(--mark, #f3b33d); border-color: var(--mark, #f3b33d); color: var(--mark-ink, #121315); }"
+    },
+    {
+      "name": "Top Bar",
+      "kind": "nav",
+      "refersTo": "topbar",
+      "description": "Wordmark, file, REC tally pill and session actions. The REC pill lights tally red only while recording.",
+      "html": "<header class=\"ds-topbar\"><span class=\"ds-wordmark\">DICTATE</span><span class=\"ds-topbar-center\"><span class=\"ds-file\">test-clip.mp4</span><span class=\"ds-meta\">1280×720</span></span><span class=\"ds-topbar-right\"><span class=\"ds-rec ds-rec-live\"><span class=\"ds-tally\"></span>REC 00:06</span><button class=\"ds-tbtn\" type=\"button\">Pause</button><button class=\"ds-tbtn ds-tbtn-strong\" type=\"button\">Finish &amp; review</button></span></header>",
+      "css": ".ds-topbar { display: flex; align-items: center; gap: 14px; height: 56px; padding: 0 16px; background: var(--bg, #0b0c0e); border-bottom: 1px solid var(--line, #262a2f); color: var(--fg, #f2f2ee); } .ds-wordmark { font: 600 17px/1 var(--font-display, \"Segoe UI Variable Display\", \"Segoe UI\", system-ui, sans-serif); letter-spacing: .34em; } .ds-topbar-center { flex: 1; display: flex; justify-content: center; align-items: baseline; gap: 12px; min-width: 0; } .ds-file { font: 400 15px/1.2 var(--font-ui, \"Segoe UI Variable Text\", \"Segoe UI\", system-ui, sans-serif); } .ds-meta { font: 400 12px/1 var(--font-mono, \"Cascadia Mono\", \"Cascadia Code\", Consolas, ui-monospace, monospace); color: var(--fg-3, #878c95); } .ds-topbar-right { display: flex; align-items: center; gap: 10px; } .ds-rec { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px; border-radius: var(--r-2, 6px); background: var(--panel, #131518); border: 1px solid var(--line-2, #363b42); color: var(--fg-3, #878c95); font: 600 15px/1 var(--font-mono, \"Cascadia Mono\", \"Cascadia Code\", Consolas, ui-monospace, monospace); font-variant-numeric: tabular-nums; } .ds-tally { width: 12px; height: 12px; border-radius: 50%; background: var(--fg-3, #878c95); } .ds-rec-live { background: var(--rec-tint, #2a1311); border-color: var(--rec-deep, #4a1712); color: var(--rec-text, #ff6b5e); } .ds-rec-live .ds-tally { background: var(--rec, #e23b2e); } .ds-tbtn { height: 36px; padding: 0 14px; border-radius: var(--r-2, 6px); background: var(--panel-2, #1a1d21); border: 1px solid var(--line-2, #363b42); color: var(--fg, #f2f2ee); font: 500 14px/1 var(--font-ui, \"Segoe UI Variable Text\", \"Segoe UI\", system-ui, sans-serif); cursor: pointer; transition: background .15s, border-color .15s; } .ds-tbtn:hover { background: var(--panel-3, #22262b); border-color: var(--line-3, #4a5058); } .ds-tbtn:focus-visible { outline: 2px solid var(--mark, #f3b33d); outline-offset: 2px; } .ds-tbtn-strong { border-color: var(--fg-2, #a7abb2); font-weight: 600; } .ds-tbtn-strong:hover { border-color: var(--fg, #f2f2ee); }"
+    },
+    {
+      "name": "Status Lines",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "Caption-sized status with an 8px lamp: green when signal is present, a dark lamp (fg-3 dot, fg-2 ring) when something is missing or degraded.",
+      "html": "<div style=\"display:flex;gap:24px;flex-wrap:wrap\"><span class=\"ds-status\" data-state=\"ok\">Whisper transcribes on this machine when you finish.</span><span class=\"ds-status\" data-state=\"missing\">Extension not loaded</span></div>",
+      "css": ".ds-status { display: inline-flex; align-items: center; gap: 8px; color: var(--fg-2, #a7abb2); font: 400 13px/1.45 var(--font-ui, \"Segoe UI Variable Text\", \"Segoe UI\", system-ui, sans-serif); } .ds-status::before { content: \"\"; width: 8px; height: 8px; border-radius: 50%; background: var(--fg-3, #878c95); } .ds-status[data-state=\"ok\"]::before { background: var(--ok, #39c26d); } .ds-status[data-state=\"warn\"]::before, .ds-status[data-state=\"missing\"]::before { background: var(--fg-3, #878c95); box-shadow: inset 0 0 0 2px var(--panel, #131518); outline: 1px solid var(--fg-2, #a7abb2); }"
+    },
+    {
+      "name": "In-page Toolbar",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "The extension toolbar drawn on the user's own site, with literal colors because studio tokens are not available there. Shown talking: the talk segment and the bar ring light tally red.",
+      "html": "<div class=\"ds-bar ds-bar-talking\" role=\"toolbar\"><span class=\"ds-bar-tally\"></span><span class=\"ds-bar-clock\">04:12</span><span class=\"ds-bar-sep\"></span><button class=\"ds-bar-seg\" aria-pressed=\"true\" type=\"button\">Browse</button><button class=\"ds-bar-seg\" aria-pressed=\"false\" type=\"button\">Annotate <kbd class=\"ds-bar-kbd\">Alt A</kbd></button><span class=\"ds-bar-sep\"></span><span class=\"ds-bar-talk\"><kbd class=\"ds-bar-kbd\">T</kbd>to finish</span><span class=\"ds-bar-count\">4 marks</span></div>",
+      "css": ".ds-bar { display: inline-flex; align-items: center; gap: 10px; height: 44px; padding: 0 6px 0 12px; background: #121315; color: #f2f2ee; border: 1px solid #2c2f34; border-radius: 10px; box-shadow: 0 12px 32px rgba(0, 0, 0, .4), 0 1px 0 rgba(255, 255, 255, .05) inset; font: 500 13px/1 var(--font-ui, \"Segoe UI Variable Text\", \"Segoe UI\", system-ui, sans-serif); } .ds-bar-talking { box-shadow: 0 0 0 2px rgba(226, 59, 46, .55), 0 12px 32px rgba(0, 0, 0, .4); } .ds-bar-tally { width: 10px; height: 10px; border-radius: 50%; background: #e23b2e; box-shadow: 0 0 0 3px rgba(226, 59, 46, .25); } .ds-bar-clock { font: 600 13px/1 var(--font-mono, \"Cascadia Mono\", \"Cascadia Code\", Consolas, ui-monospace, monospace); font-variant-numeric: tabular-nums; min-width: 44px; } .ds-bar-sep { width: 1px; height: 22px; background: #2c2f34; } .ds-bar-seg { all: unset; cursor: pointer; height: 32px; padding: 0 12px; border-radius: 6px; color: #9a9ea6; display: inline-flex; align-items: center; gap: 8px; } .ds-bar-seg:hover { color: #f2f2ee; background: #1e2023; } .ds-bar-seg[aria-pressed=\"true\"] { color: #f2f2ee; background: #2a2d32; box-shadow: 0 0 0 1px #3a3e44 inset; } .ds-bar-seg:focus-visible { outline: 2px solid #f3b33d; outline-offset: 2px; } .ds-bar-kbd { font: 600 10px/1 var(--font-mono, \"Cascadia Mono\", \"Cascadia Code\", Consolas, ui-monospace, monospace); padding: 3px 5px; border-radius: 4px; border: 1px solid #3a3e44; color: #9a9ea6; background: #1a1c1f; } .ds-bar-talk { display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 10px; border-radius: 6px; background: #e23b2e; color: #fff; font-weight: 700; letter-spacing: .02em; } .ds-bar-talk .ds-bar-kbd { border-color: rgba(255, 255, 255, .5); color: #fff; background: rgba(0, 0, 0, .18); } .ds-bar-count { color: #9a9ea6; padding-right: 6px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Broadcast Gallery",
+    "overview": "Dictate Studio is built as the production gallery of a TV control room. A review session is a broadcast you direct: the cut plays on a program monitor, you press TALK and speak, and every note lands on the rundown with its timecode, its frame and whatever you pointed at. The screen is a near-black desk of flat panels with off-white legends, black monospace UMD strips under every picture, square hardware keys and one round, illuminated TALK key. Nothing on the desk is decorative. Color appears only as a lamp that means something.\n\nThe palette is signal discipline. Tally red lights when you are live. Amber is a mark you placed. Green is signal present. A muted page blue tells you where you are in web review. Everything else is a neutral ramp from the black UMD strip up to the off-white legends, so a lit lamp is always the loudest thing on screen. Density is production-tool density (14px body, 36px controls, 12px gutters): one operator at a desk working fast, not a page to browse. Product context lives in PRODUCT.md; this file covers only the visual system.\n\nThe confirmed rejection is the comment-sidebar review app with purple buttons and rounded cards. The approved comp (`.impeccable/mocks/comps/rundown.png`, companion `web.png`) is the reference picture. Where the build differs from it (no waveform in the timeline track, no purple VO tag, no colored left rails on web log rows), the build is the system.",
+    "keyCharacteristics": [
+      "Near-black tonal panels separated by 1px lines; nothing at rest casts a shadow.",
+      "Three signal hues with fixed meanings (red live, amber placed, green signal), plus page blue for location.",
+      "Warnings and missing pieces stay dark: no alarm color outside the three signals.",
+      "Cascadia Mono for every machine reading: timecodes, clocks, row numbers, mark labels, paths.",
+      "A black UMD label strip under every monitor and preview.",
+      "Square hardware keys (4px corners) and one round TALK key with a recessed bezel.",
+      "A newsroom rundown: numbered rows of timecode, tag, frame thumbnail and the words you said."
+    ],
+    "rules": [
+      {
+        "name": "The Tally Rule",
+        "body": "Solid tally red means you are live: recording, talking, or the note that is open right now. When nothing is live, no red fill is on screen. Red takes three forms: `rec` for lamps, rims, rails and dots; `rec-text` when red is itself the text on a dark ground; `rec-ink` when small white lettering sits on red. Its only other job is void and remove (the VOID stamp, the strike line through a voided note, the Remove item's hover border, the error toast), and there it is always an outline, a stroke or a dark wash, never a lit fill.",
+        "section": "colors"
+      },
+      {
+        "name": "The Placed-Mark Rule",
+        "body": "A solid amber tab with ink lettering always means a mark the user placed. Outside marks, amber appears only as the focus outline, the listening keycap and the 35% text-selection highlight; never as a filled tab, a lamp or a warning.",
+        "section": "colors"
+      },
+      {
+        "name": "The Dark Lamp Rule",
+        "body": "Warnings and missing pieces light nothing. A degraded or missing state is a dark lamp (an fg-3 dot ringed by an fg-2 outline) beside plain fg or fg-2 text; the extension-setup callout is a neutral panel-2 box with an fg title and an fg link.",
+        "section": "colors"
+      },
+      {
+        "name": "The On-Air Rule",
+        "body": "The program monitor rim has three states: line-2 at rest, rec-deep while recording, full tally while a note is open. The rim, the PGM lamp, the TALK key and the open rundown row light together, with one 0.55s brightness flash when the note opens.",
+        "section": "colors"
+      },
+      {
+        "name": "The Reader Rule",
+        "body": "Anything a machine would print (timecode, clock, row number, mark label, frame size, file path) is Cascadia Mono with tabular numerals. Anything a person said or should read is the UI face.",
+        "section": "typography"
+      },
+      {
+        "name": "The Legend Rule",
+        "body": "An uppercase tracked legend names the panel or field it sits on (the panel's heading is \"Rundown\"). It never sits above a separate heading as an eyebrow.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Desk Rule",
+        "body": "Panels sit flat on the desk behind a 1px line. Only what floats above the desk (menus, toasts, the in-page toolbar) or what is a physical control (keys, TALK) casts a shadow.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** light tally red only for live state, and light the monitor rim, PGM lamp, TALK key and open rundown row together.",
+      "**Do** use `rec` (#e23b2e) for lamps, rims and rails, `rec-text` (#ff6b5e) when red is the text, and `rec-ink` (#c42f24) behind small white lettering.",
+      "**Do** draw every placed mark as a solid amber (#f3b33d) tab with mark-ink lettering in 700 Cascadia Mono with 3px corners: on the picture, on the timeline, in the rundown, on review chips and on the user's site.",
+      "**Do** show a warning or a missing piece as a dark lamp (fg-3 dot, fg-2 ring) with plain fg or fg-2 text.",
+      "**Do** put a black UMD strip (Cascadia Mono, 0.04em, tabular numerals) under every monitor or preview, with items separated by an fg-3 middle dot.",
+      "**Do** set timecodes, clocks, row numbers and mark labels in Cascadia Mono with tabular numerals, and set spoken words in the UI face.",
+      "**Do** build depth with the panel ramp (bg, panel, panel-2, panel-3) and 1px lines, and keep shadows for floating menus, toasts, the in-page toolbar and physical keys.",
+      "**Do** keep hardware keys square (4px corners, 44px tall) and keep TALK round.",
+      "**Do** use the 2px amber focus outline at 2px offset on every focusable control, in the studio and in the extension.",
+      "**Do** give a screen at most one off-white primary button, for the hand-off action."
+    ],
+    "donts": [
+      "**Don't** fill anything solid tally red unless the user is live; void and remove use red only as an outline, stroke or dark wash.",
+      "**Don't** use amber for anything that is not a mark the user placed, apart from the focus outline, the listening keycap and the selection highlight; never as a warning.",
+      "**Don't** tag range marks in red; ranges are placed marks and take amber, and the rundown's red R1 tag is drift, not system.",
+      "**Don't** build the comment-sidebar review app: no purple buttons and no rounded cards.",
+      "**Don't** introduce a new hue without a new signal meaning; a color that means nothing is decoration.",
+      "**Don't** put resting shadows on panels or round them past 6px; only the floating in-page toolbar takes 10px.",
+      "**Don't** set an uppercase tracked legend above a heading as an eyebrow; legends name the panel they sit on."
+    ]
+  }
+}

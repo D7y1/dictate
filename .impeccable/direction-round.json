@@ -1,0 +1,238 @@
+{
+  "title": "Choose the look for Dictate Studio",
+  "question": "Comps generated with ChatGPT Images. The roll assigned Edit Controller. Keep it, take an alternate, or re-roll.",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "Edit Controller",
+      "kicker": "THE ROLL",
+      "lineage": "Sony BVE edit controllers and CMX 3600 edit decision lists",
+      "thesis": "Every review is an edit decision list: numbered events, timecodes, and the words that go with them.",
+      "palette": [
+        "#1f1f1e",
+        "#2e2e2c",
+        "#8a8984",
+        "#e9e6de",
+        "#e8a23a",
+        "#d8382f"
+      ],
+      "materials": [
+        "machine-panel keycaps",
+        "EDL event columns",
+        "segment timecode readouts"
+      ],
+      "viewport": "Program monitor owns the left; the EDL runs down the right as numbered events; a key row (MARK IN · MARK OUT · PIN · BOX · TALK) sits under the picture with a big timecode readout.",
+      "risk": "Tips into retro cosplay if keycaps and segment digits are overdone; Arabic transcripts need a proportional face inside the EDL.",
+      "raised": [
+        {
+          "from": "challenger-ticket",
+          "raise": "Nothing disappears, it cancels: deleted notes strike through as VOID and can be restored until you submit."
+        },
+        {
+          "from": "challenger-factory",
+          "raise": "Nothing is labeled twice: every control says its job once, in one place."
+        },
+        {
+          "from": "challenger-timetable",
+          "raise": "Rank comes from weight, case, and reversal, not a ladder of type sizes."
+        },
+        {
+          "from": "challenger-bitmap",
+          "raise": "Timecode digits sit on the whole-pixel grid, never blurred by scaling."
+        },
+        {
+          "from": "challenger-botanical",
+          "raise": "Every frame grab shows at one fixed scale and ground, so notes compare at a glance."
+        }
+      ],
+      "comp": ".impeccable/mocks/decision/assigned.png"
+    },
+    {
+      "id": "model-pick",
+      "label": "Broadcast Gallery",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "TV production gallery: monitor wall, under-monitor displays, tally lights, talkback",
+      "thesis": "You are the director in the gallery: talk, point at a monitor, and the crew takes the note.",
+      "palette": [
+        "#121315",
+        "#1e2023",
+        "#5b5e63",
+        "#f2f2ee",
+        "#e23b2e",
+        "#39c26d"
+      ],
+      "materials": [
+        "monitor wall",
+        "under-monitor label strips",
+        "tally lamps"
+      ],
+      "viewport": "A monitor wall: your picture large, pages or frames as smaller monitors each with a label strip; a red tally rim lights whichever monitor you are talking about.",
+      "risk": "Closest to the dark-UI-with-red-accent look many recording tools ship; familiarity is its cost.",
+      "comp": ".impeccable/mocks/decision/model-pick.png"
+    },
+    {
+      "id": "challenger-zone",
+      "label": "Exposure Record",
+      "verdict": "competitive",
+      "lineage": "darkroom printer's exposure record over a zone-system ramp",
+      "thesis": "A neutral eleven-step gray ramp as the only tones, so your eye judges footage, not the interface.",
+      "palette": [
+        "#141414",
+        "#3a3a3a",
+        "#6b6b6b",
+        "#a3a3a3",
+        "#e6e6e6",
+        "#c2187a"
+      ],
+      "materials": [
+        "translucent sheets",
+        "zone ramp",
+        "hatch density"
+      ],
+      "viewport": "Translucent note sheets slide over the frame; marked regions take hatch density, one magenta reserved for corrections.",
+      "case": "Fuses well for a colorist's eye; loses on clarity because hatching on a frame competes with your own pins and boxes.",
+      "risk": "Hatch overlays on top of video fight the marks you draw.",
+      "hero": "https://impeccable.style/worlds/cards/operate-b-exposure-record-zone-sheets-hero.webp",
+      "board": "https://impeccable.style/worlds/cards/operate-b-exposure-record-zone-sheets.webp",
+      "comp": ".impeccable/mocks/decision/challenger-zone.png"
+    },
+    {
+      "id": "challenger-ticket",
+      "label": "Jet-Age Ticket Wallet",
+      "verdict": "declined",
+      "lineage": "1960s airline ticket wallets and carbon coupons",
+      "thesis": "Each note a coupon that stamps itself validated, used, or void.",
+      "palette": [
+        "#1d2b4f",
+        "#c8102e",
+        "#f7f5ef",
+        "#5b3a8c"
+      ],
+      "materials": [
+        "carbon coupons",
+        "rubber stamps"
+      ],
+      "viewport": "A coupon book of notes, one leg per sheet.",
+      "case": "Fuses poorly: creators don't think in travel coupons.",
+      "risk": "Charming, but the metaphor hides the video.",
+      "kept": "Nothing disappears, it cancels.",
+      "hero": "https://impeccable.style/worlds/cards/vernacular-ephemera-jet-age-ticket-wallet-hero.webp"
+    },
+    {
+      "id": "challenger-factory",
+      "label": "Factory Catalog Sleeve",
+      "verdict": "declined",
+      "lineage": "Factory Records catalog design",
+      "thesis": "Every session a catalog number on matte black.",
+      "palette": [
+        "#0b0b0b",
+        "#f2f2f2",
+        "#d33a2c",
+        "#2c6fd3"
+      ],
+      "materials": [
+        "matte black sleeve",
+        "hairline plot"
+      ],
+      "viewport": "A stacked waveform plot of the session owns the field.",
+      "case": "Fuses poorly: color-coded labels hurt a task tool's clarity.",
+      "risk": "Coded labels slow you down mid-review.",
+      "kept": "Nothing is labeled twice.",
+      "hero": "https://impeccable.style/worlds/cards/brand-identity-canon-saville-catalog-sleeve-hero.webp"
+    },
+    {
+      "id": "challenger-timetable",
+      "label": "Timetable Slide Rack",
+      "verdict": "declined",
+      "lineage": "pocket airline timetables on a light table",
+      "thesis": "One type size; rank carried by weight and reversal.",
+      "palette": [
+        "#d9a521",
+        "#2f3a44",
+        "#f4efe2",
+        "#c4361f"
+      ],
+      "materials": [
+        "tinted glass slides",
+        "lit goldenrod bed"
+      ],
+      "viewport": "Notes as raked slides along one axis.",
+      "case": "Fuses poorly: raked containers fight a video frame.",
+      "risk": "Angled layout costs precision.",
+      "kept": "Rank by weight, case, and reversal.",
+      "hero": "https://impeccable.style/worlds/cards/rw-timetable-slide-rack-hero.webp"
+    },
+    {
+      "id": "challenger-bitmap",
+      "label": "Bitmap Specimen",
+      "verdict": "declined",
+      "lineage": "Emigre bitmap type specimens",
+      "thesis": "Low resolution worn proudly at poster scale.",
+      "palette": [
+        "#f4f2ec",
+        "#111111",
+        "#ff4f1f"
+      ],
+      "materials": [
+        "pixel type",
+        "halftone"
+      ],
+      "viewport": "Pixel headline over dense columns.",
+      "case": "Fuses poorly: no tie to video or web review.",
+      "risk": "Novelty over task.",
+      "kept": "Whole-pixel honesty for timecode digits.",
+      "hero": "https://impeccable.style/worlds/cards/emigre-bitmap-specimen-hero.webp"
+    },
+    {
+      "id": "challenger-botanical",
+      "label": "Botanical Folio",
+      "verdict": "declined",
+      "lineage": "botanical plates following one plant through a season",
+      "thesis": "Plates at one exact scale so change reads directly.",
+      "palette": [
+        "#efe6cf",
+        "#3f6b3a",
+        "#b4231d",
+        "#6e5a43"
+      ],
+      "materials": [
+        "engraved plates",
+        "sepia rules"
+      ],
+      "viewport": "Frame grabs as aligned plates.",
+      "case": "Fuses poorly: cream editorial world, wrong room.",
+      "risk": "Soft and bookish for a production tool.",
+      "kept": "Fixed scale and ground for every frame grab.",
+      "hero": "https://impeccable.style/worlds/cards/editorial-sequence-montage-botanical-folio-season-hero.webp"
+    }
+  ],
+  "reroll": {
+    "registers": [
+      "safer",
+      "bolder"
+    ]
+  },
+  "buildPath": {
+    "value": "comp",
+    "toggle": true
+  },
+  "canon": true,
+  "canonCard": {
+    "label": "The category standard",
+    "thesis": "A clean, dark Frame.io-style review app, executed carefully.",
+    "palette": [
+      "#141414",
+      "#232323",
+      "#f5f5f5",
+      "#6e56cf"
+    ],
+    "materials": [
+      "flat panels",
+      "rounded cards"
+    ],
+    "viewport": "Video left, comment list right, purple primary buttons.",
+    "risk": "Indistinguishable from every other review tool by design.",
+    "comp": ".impeccable/mocks/decision/canon.png"
+  },
+  "steer": true
+}

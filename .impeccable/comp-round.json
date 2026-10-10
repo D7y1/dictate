@@ -1,0 +1,49 @@
+{
+  "title": "Pick the layout",
+  "question": "Same broadcast-gallery world, three layouts for the video screen. Web review (last card) follows whichever you pick. Approve one, or steer below (e.g. 'Focus, but with the rundown').",
+  "options": [
+    {
+      "id": "gallery",
+      "label": "Gallery",
+      "kicker": "YOUR PICK",
+      "thesis": "Picture with a monitor wall of earlier notes underneath and a talkback panel on the right.",
+      "palette": ["#121315", "#1e2023", "#5b5e63", "#f2f2ee", "#e23b2e", "#39c26d"],
+      "materials": ["monitor wall", "UMD strips", "tally rim"],
+      "viewport": "PGM monitor left, four note monitors below, TALKBACK column with the big ON button and the note log.",
+      "risk": "The monitor wall takes height from the picture.",
+      "comp": ".impeccable/mocks/comps/gallery.png"
+    },
+    {
+      "id": "rundown",
+      "label": "Rundown",
+      "thesis": "Your notes as a newsroom running order down the left; the picture center; one desk row with TALK.",
+      "palette": ["#121315", "#1e2023", "#5b5e63", "#f2f2ee", "#e23b2e", "#e8b03a"],
+      "materials": ["running order", "tally edge", "desk row"],
+      "viewport": "RUNDOWN list with thumbnails left, PGM center, TALK + caption + mark keys + transport below, timeline across the bottom.",
+      "risk": "Narrower picture than Focus.",
+      "comp": ".impeccable/mocks/comps/rundown.png"
+    },
+    {
+      "id": "focus",
+      "label": "Focus",
+      "thesis": "The picture owns the screen; notes live in a slim tally rail; everything you press sits on one production desk.",
+      "palette": ["#121315", "#1e2023", "#5b5e63", "#f2f2ee", "#e23b2e", "#e8b03a"],
+      "materials": ["tally rail", "production desk", "TALK key"],
+      "viewport": "PGM at ~85% width, numbered tally tabs on the right with the open note expanded, a desk strip with TALK (T), meter, caption, marks, transport and timecode.",
+      "risk": "Notes are compact while recording; you read them in full on the review screen.",
+      "comp": ".impeccable/mocks/comps/focus.png"
+    },
+    {
+      "id": "web",
+      "label": "Web review (applies to all)",
+      "kicker": "SAME WORLD",
+      "thesis": "Your site with Dictate's pins and floating toolbar; the panel docks on the right with the last screenshot, TALK, and the log.",
+      "palette": ["#121315", "#1e2023", "#f2f2ee", "#e23b2e", "#e8b03a"],
+      "materials": ["floating toolbar", "docked panel", "preview monitor"],
+      "viewport": "Site ~68% with P2 pin, B1 box and TALKING chip; docked panel ~32%.",
+      "risk": "Choosing this card approves the web panel only; I'll use Focus for video unless you steer.",
+      "comp": ".impeccable/mocks/comps/web.png"
+    }
+  ],
+  "steer": true
+}

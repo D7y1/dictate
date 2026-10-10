@@ -1,0 +1,11 @@
+High-fidelity UI design comp. A desktop app screenshot, landscape 16:10 (1440x900), flat front-on view, no device frame, no browser chrome.
+
+Product: "Dictate Studio", a local review tool where a video creator talks while pointing at their footage, and an AI receives the anchored notes. Screen: Video review, in the middle of recording.
+
+Layout, exactly, styled like a TV production gallery (control room):
+1. Thin top bar: left "DICTATE" wordmark; center "vlog-ep12-roughcut.mp4"; right a red ON AIR style tally "REC 03:12", a mic level meter, buttons "Pause" and "Finish & review".
+2. Left main region (about 70%): the program monitor, a large 16:9 video frame of a vlogger talking to camera in a bright kitchen, framed by a thin red tally rim (lit because the user is talking). Drawn on the frame: a numbered pin "P1" on the logo of a coffee mug, a rectangle "B1" around a window, a red cursor ring. Directly under the monitor, an under-monitor display strip (UMD) in black with white monospace text: "PGM · vlog-ep12-roughcut.mp4 · 00:01:23:14".
+3. Under that, a row of four smaller monitors forming a monitor wall, each showing a frame grab from an earlier note, each with its own UMD label strip: "001 · 00:00:41 · P1", "002 · 00:01:02 · VO", "003 · 00:01:23 · R1", "004 · 00:02:10 · B1". Then a slim full-width timeline with a red playhead.
+4. Right column (about 30%): a "TALKBACK" panel with a big round talk button lit red labeled "ON", a live caption line in gray, then a log of spoken notes with timecodes: "Blur this logo here.", "Cut from here to where I start talking about the camera.", and one Arabic line "هذا الجزء طويل، قصّه". At the bottom a text field "Type a note… (N)".
+
+Palette: control-room near-black (#121315, #1e2023), mid-gray hardware (#5b5e63), off-white labels (#f2f2ee), tally red (#e23b2e) for live and recording, preview green (#39c26d) for ready states. Monospace for UMD strips and timecode, a clean grotesk for everything else. Real broadcast-hardware detailing, no neon glow beyond the tally, no gradients, no glassmorphism. Must read instantly as a professional tool for reviewing a video by pointing and talking.

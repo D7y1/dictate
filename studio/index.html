@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="dictate-studio" content="1">
+  <meta name="color-scheme" content="dark">
+  <title>Dictate Studio</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23121315'/%3E%3Ccircle cx='16' cy='16' r='8.5' fill='none' stroke='%23f3b33d' stroke-width='3'/%3E%3Ccircle cx='16' cy='16' r='4' fill='%23e23b2e'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="studio.css">
+  <script type="module" src="js/main.js"></script>
+</head>
+<body data-screen="home" data-rec="idle">
+<!--
+THESIS: A review session is a live broadcast you direct: you point at the program monitor, press talk, and the note goes on the rundown. Refuses the comment-sidebar review app with purple buttons and rounded cards.
+OWN-WORLD: TV production gallery. Near-black control-room panels, off-white legends, one tally red that lights only when you are live (recording, talking), amber reserved for marks you place (P1, B1, R1), green only for signal (mic). Black UMD label strips in monospace under every monitor. Square hardware keys, round TALK button.
+STORY: The user loads a cut or opens their site, presses T and talks while pointing; every note lands on the rundown with its timecode or page; Finish runs Whisper, Review lets them fix words and void notes; Submit hands Claude the session.
+FIRST VIEWPORT: Video review. Rundown column left (~340px) with numbered rows, thumbnails, tags and text. Program monitor center with tally rim and the UMD strip "PGM · file · timecode". Under it one desk row: round TALK (T), live caption + mic meter, MARK IN / MARK OUT / MARKER keys, transport. Full-width timeline at the bottom. Top bar: wordmark, file, REC tally pill, Pause, Finish & review (primary).
+FORM: Broadcast Gallery world, Rundown layout (comp .impeccable/mocks/comps/rundown.png, approved), web panel per comps/web.png. Seed key b2e6e590.
+FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
+-->
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l12.5-7.5z" fill="currentColor"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M6.5 4.5h4v15h-4zM13.5 4.5h4v15h-4z" fill="currentColor"/></symbol>
+    <symbol id="i-step-back" viewBox="0 0 24 24"><path d="M6 5v14M19 5.5v13L8.5 12z" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-step-fwd" viewBox="0 0 24 24"><path d="M18 5v14M5 5.5v13L15.5 12z" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></g></symbol>
+    <symbol id="i-volume" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></g></symbol>
+    <symbol id="i-muted" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/></g></symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 21V4M6 4.5h10.5l-2 4 2 4H6"/></g></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="M14.5 5.5L8 12l6.5 6.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3.5 6.5a1.5 1.5 0 0 1 1.5-1.5h4.2l2 2.5H19a1.5 1.5 0 0 1 1.5 1.5v8.5A1.5 1.5 0 0 1 19 19H5a1.5 1.5 0 0 1-1.5-1.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="8.5" y="8.5" width="11" height="11" rx="1.5"/><path d="M15.5 8.5V5.8A1.3 1.3 0 0 0 14.2 4.5H5.8a1.3 1.3 0 0 0-1.3 1.3v8.4a1.3 1.3 0 0 0 1.3 1.3h2.7"/></g></symbol>
+    <symbol id="i-external" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 4.5h6v6M19.5 4.5l-8 8"/><path d="M18 14v4.5a1 1 0 0 1-1 1H5.5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1H10"/></g></symbol>
+    <symbol id="i-film" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="14" rx="1.5"/><path d="M7.5 5v14M16.5 5v14M3.5 9.5h4M3.5 14.5h4M16.5 9.5h4M16.5 14.5h4"/></g></symbol>
+    <symbol id="i-browser" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="15" rx="1.5"/><path d="M3 8.5h18"/><path d="M8 13l3 3-3 3" stroke-linecap="round"/></g></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="M4.5 12L20 4.5 16.5 19.5l-4.5-5.5zM12 14l8-9.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-mouse" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="6.5" y="3" width="11" height="18" rx="5.5"/><path d="M12 7v3.5"/></g></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.5 4.5v4h-4"/></g></symbol>
+  </defs>
+</svg>
+
+<!-- ============================================================ HOME -->
+<section class="screen screen-home" id="screen-home" aria-labelledby="home-title">
+  <header class="topbar">
+    <span class="wordmark">DICTATE</span>
+    <span class="topbar-sub project-name"></span>
+  </header>
+
+  <main class="home">
+    <h1 id="home-title" class="home-title">What are you reviewing?</h1>
+    <p class="home-lede">Point at it, press <kbd class="key talk-key-label">T</kbd><span class="talk-mouse-hint"></span> and talk. Press it again to close the note. Claude gets every note with exactly where you were pointing.</p>
+
+    <div class="wall">
+      <button class="monitor-tile" data-enter="video" type="button">
+        <span class="tile-screen tile-video">
+          <svg class="icon icon-xl" aria-hidden="true"><use href="#i-film"/></svg>
+          <span class="tile-pin">P1</span>
+          <span class="tile-box">B1</span>
+        </span>
+        <span class="umd">VIDEO REVIEW</span>
+        <span class="tile-copy">Play your cut, pin and box things on the frame, mark ranges to cut. Notes land on the timecode.</span>
+      </button>
+      <button class="monitor-tile" data-enter="web" type="button">
+        <span class="tile-screen tile-web">
+          <span class="tile-page"><span></span><span></span><span></span><span></span></span>
+          <span class="tile-pin">P2</span>
+        </span>
+        <span class="umd">WEB REVIEW</span>
+        <span class="tile-copy">Walk through your platform page by page. Every note carries the page and the element you pointed at.</span>
+      </button>
+    </div>
+
+    <section class="desk home-desk" aria-label="Settings">
+      <div class="field">
+        <label for="set-mic">Microphone</label>
+        <div class="field-row">
+          <select id="set-mic"><option value="">System default</option></select>
+          <span class="meter" aria-hidden="true"><svg class="icon"><use href="#i-mic"/></svg><span class="meter-bars"></span></span>
+          <button class="btn" id="set-mic-test" type="button">Test</button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="set-lang">You speak</label>
+        <div class="field-row">
+          <select id="set-lang"></select>
+          <span class="seg caption-lang" role="group" aria-label="Live captions in">
+            <button type="button" class="seg-btn" data-caption-lang="en-US">EN</button>
+            <button type="button" class="seg-btn" data-caption-lang="ar-SA">ع</button>
+          </span>
+        </div>
+      </div>
+      <div class="field">
+        <span>While you talk</span>
+        <div class="field-col">
+          <label class="toggle"><input type="checkbox" id="pause-on-speech"><span>Pause the video</span></label>
+          <label class="toggle"><input type="checkbox" class="open-mic"><span>Open mic: keep everything I say, not just T notes</span></label>
+        </div>
+      </div>
+      <div class="field field-status">
+        <span class="status-line" id="whisper-status"></span>
+        <span class="status-line ext-status" data-state="missing"></span>
+      </div>
+    </section>
+
+    <section class="controls" aria-labelledby="controls-title">
+      <div class="controls-head">
+        <div>
+          <h2 id="controls-title" class="panel-title">Controls</h2>
+          <p class="controls-note">Bind any key, a middle click, or your mouse&rsquo;s two side buttons, so you can review without touching the keyboard. Left click always points and pins.</p>
+        </div>
+        <button class="btn" id="controls-reset" type="button">Reset to defaults</button>
+      </div>
+      <ul class="controls-list" id="controls-list"></ul>
+    </section>
+
+    <section class="recent" id="recent-wrap" hidden aria-labelledby="recent-title">
+      <h2 id="recent-title" class="panel-title">Recent sessions</h2>
+      <ol class="recent-list" id="recent"></ol>
+    </section>
+  </main>
+</section>
+
+<!-- ============================================================ VIDEO -->
+<section class="screen screen-video" id="screen-video" hidden aria-label="Video review">
+  <header class="topbar">
+    <button class="icon-btn" data-home type="button" aria-label="Back to start"><svg class="icon"><use href="#i-back"/></svg></button>
+    <span class="wordmark">DICTATE</span>
+    <span class="topbar-center"><span id="video-name-top" class="file-name">No video loaded</span><span class="file-meta"><span id="video-dims"></span><span id="fps"></span></span></span>
+    <span class="topbar-right">
+      <span class="rec-pill" aria-live="polite"><span class="tally-dot"></span><span class="rec-word"></span><span class="rec-clock">00:00</span></span>
+      <span class="meter" aria-hidden="true"><svg class="icon"><use href="#i-mic"/></svg><span class="meter-bars"></span></span>
+      <button class="btn" data-action="record" type="button" title="R"><span class="btn-label">Record</span></button>
+      <button class="btn btn-strong" data-action="finish" type="button"><span>Finish<span class="wide-only"> &amp; review</span></span></button>
+    </span>
+  </header>
+
+  <div class="vr">
+    <aside class="rundown" aria-labelledby="rundown-title">
+      <div class="panel-head">
+        <h2 id="rundown-title" class="panel-title">Rundown</h2>
+        <span class="panel-hint"><kbd class="key talk-key-label">T</kbd> talk</span>
+      </div>
+      <ol class="log" id="video-log"></ol>
+      <form class="note-form" autocomplete="off">
+        <input type="text" placeholder="Type a note… (N)" aria-label="Type a note">
+        <button class="icon-btn" type="submit" aria-label="Add note"><svg class="icon"><use href="#i-send"/></svg></button>
+      </form>
+    </aside>
+
+    <div class="program">
+      <div class="monitor" id="monitor">
+        <div class="stage" id="stage">
+          <video id="video" playsinline preload="auto"></video>
+          <canvas id="overlay" aria-hidden="true"></canvas>
+          <div class="drop" id="drop">
+            <svg class="icon icon-xl" aria-hidden="true"><use href="#i-film"/></svg>
+            <p class="drop-title">Drop a video here</p>
+            <p class="drop-sub">MP4, MOV or WebM. Your file stays on this computer.</p>
+            <button class="btn" id="video-pick" type="button">Choose a file</button>
+            <input type="file" id="video-file" accept="video/*,.mov,.mkv" hidden>
+            <form class="path-form" id="video-path-form" autocomplete="off">
+              <input type="text" id="video-path" placeholder="or paste a file path, so Claude knows where the source is" aria-label="Video file path">
+              <button class="btn" type="submit">Load</button>
+            </form>
+          </div>
+          <div class="drop-veil" aria-hidden="true"><span>Drop to load</span></div>
+        </div>
+        <div class="umd umd-pgm"><span class="umd-lamp">PGM</span><span class="umd-sep">·</span><span id="video-name">no source</span><span class="umd-sep">·</span><span id="tc">00:00:00:00</span></div>
+      </div>
+
+      <div class="desk desk-row">
+        <button class="talk" data-action="talk" type="button" aria-pressed="false" aria-label="Talk: open or close a voice note">
+          <span class="talk-word" aria-hidden="true"></span>
+          <kbd class="key talk-key-label">T</kbd>
+        </button>
+        <div class="desk-voice">
+          <p class="live-caption" aria-live="polite"></p>
+          <p class="desk-hint">Click the picture (or hover), press <kbd class="key talk-key-label">T</kbd><span class="talk-mouse-hint"></span>, talk, press it again.</p>
+          <span class="meter" aria-hidden="true"><svg class="icon"><use href="#i-mic"/></svg><span class="meter-bars"></span></span>
+        </div>
+        <div class="desk-keys">
+          <button class="hw" id="btn-in" type="button" title="I">MARK IN</button>
+          <button class="hw" id="btn-out" type="button" title="O">MARK OUT</button>
+          <button class="hw" id="btn-marker" type="button" title="M">MARKER</button>
+        </div>
+        <div class="desk-transport">
+          <button class="hw hw-icon" id="btn-back" type="button" aria-label="Back one frame (←)"><svg class="icon"><use href="#i-step-back"/></svg></button>
+          <button class="hw hw-icon hw-play" id="btn-play" type="button" aria-label="Play or pause (Space)"><svg class="icon i-play"><use href="#i-play"/></svg><svg class="icon i-pause"><use href="#i-pause"/></svg></button>
+          <button class="hw hw-icon" id="btn-fwd" type="button" aria-label="Forward one frame (→)"><svg class="icon"><use href="#i-step-fwd"/></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="timeline-panel">
+      <div class="timeline-head">
+        <span class="panel-title">Timeline</span>
+        <span class="timeline-tools">
+          <select id="rate" aria-label="Playback speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="1.5">1.5×</option><option value="2">2×</option></select>
+          <button class="icon-btn icon-btn-sm" id="btn-mute" type="button" aria-label="Mute video"><svg class="icon i-vol"><use href="#i-volume"/></svg><svg class="icon i-muted"><use href="#i-muted"/></svg></button>
+        <span class="zoom" role="group" aria-label="Timeline zoom">
+          <button class="icon-btn icon-btn-sm" id="tl-zoom-out" type="button" aria-label="Zoom out"><svg class="icon"><use href="#i-minus"/></svg></button>
+          <input type="range" id="tl-zoom" min="0" max="5" step="0.25" value="0" aria-label="Zoom">
+          <button class="icon-btn icon-btn-sm" id="tl-zoom-in" type="button" aria-label="Zoom in"><svg class="icon"><use href="#i-plus"/></svg></button>
+        </span>
+        </span>
+      </div>
+      <canvas class="timeline" id="timeline" aria-label="Timeline: click or drag to move the playhead, Ctrl+wheel to zoom"></canvas>
+      <div class="timeline-foot"><span class="mono" id="tl-start">00:00:00:00</span><span class="mono" id="duration">00:00:00:00</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ WEB -->
+<section class="screen screen-web" id="screen-web" hidden aria-label="Web review">
+  <header class="topbar topbar-web">
+    <button class="icon-btn" data-home type="button" aria-label="Back to start"><svg class="icon"><use href="#i-back"/></svg></button>
+    <span class="wordmark">DICTATE</span>
+    <span class="topbar-sub">WEB REVIEW</span>
+    <span class="topbar-right">
+      <span class="rec-pill" aria-live="polite"><span class="tally-dot"></span><span class="rec-word"></span><span class="rec-clock">00:00</span></span>
+    </span>
+  </header>
+  <div class="web-actions">
+    <span class="meter" aria-hidden="true"><svg class="icon"><use href="#i-mic"/></svg><span class="meter-bars"></span></span>
+    <button class="btn" data-action="record" type="button" title="R"><span class="btn-label">Record</span></button>
+    <button class="btn btn-strong" data-action="finish" type="button"><span>Finish<span class="wide-only"> &amp; review</span></span></button>
+  </div>
+
+  <main class="web">
+    <section class="ext-setup" aria-labelledby="ext-setup-title">
+      <h2 id="ext-setup-title" class="setup-title">Load the Dictate extension once</h2>
+      <p>It tracks pages, your cursor and the elements you pin. Without it, Dictate records your voice only.</p>
+      <ol class="setup-steps">
+        <li>Open <span class="mono">chrome://extensions</span> and switch on <b>Developer mode</b> (top right).</li>
+        <li>Click <b>Load unpacked</b> and choose this folder:
+          <span class="path-chip"><span class="mono" id="ext-path"></span>
+            <button class="icon-btn" id="ext-copy" type="button" aria-label="Copy folder path"><svg class="icon"><use href="#i-copy"/></svg></button>
+            <button class="icon-btn" id="ext-folder" type="button" aria-label="Show folder"><svg class="icon"><use href="#i-folder"/></svg></button>
+          </span>
+        </li>
+        <li>Reload this window, or <button class="link-btn" id="ext-recheck" type="button">check again</button>.</li>
+      </ol>
+    </section>
+
+    <form class="open-site" onsubmit="return false" autocomplete="off">
+      <label for="web-url" class="panel-title">Your site</label>
+      <div class="field-row">
+        <input type="text" id="web-url" placeholder="localhost:3000 or app.yoursite.com" spellcheck="false">
+        <button class="btn btn-primary" id="web-open" type="button"><svg class="icon"><use href="#i-external"/></svg>Open</button>
+      </div>
+      <p class="field-note">Opens beside this panel and starts the session. <span class="ext-status" data-state="missing"></span></p>
+    </form>
+
+    <div class="umd umd-page"><span>PAGE</span><span class="umd-sep">·</span><span id="web-now-url">nothing open yet</span></div>
+    <div class="preview">
+      <img id="web-shot" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="Latest screenshot of the page you are reviewing" hidden>
+      <p class="preview-empty"><span id="web-now-title">The latest screenshot shows up here.</span></p>
+      <div class="umd umd-shot"><span>POINTING</span><span class="umd-sep">·</span><span id="web-pointer">—</span></div>
+    </div>
+
+    <div class="talk-block">
+      <button class="talk talk-lg" data-action="talk" type="button" aria-pressed="false" aria-label="Talk: open or close a voice note">
+        <span class="talk-word" aria-hidden="true"></span>
+        <kbd class="key talk-key-label">T</kbd>
+      </button>
+      <p class="live-caption" aria-live="polite"></p>
+      <p class="desk-hint">On your site: point or click, press <kbd class="key talk-key-label">T</kbd><span class="talk-mouse-hint"></span>, talk, press it again. <kbd class="key">Alt</kbd><kbd class="key">A</kbd> to pin without talking.</p>
+    </div>
+
+    <ol class="log log-web" id="web-log"></ol>
+
+    <footer class="web-foot">
+      <span class="counts"><b id="web-count-pages">0</b> pages · <b id="web-count-marks">0</b> marks</span>
+    </footer>
+    <form class="note-form" autocomplete="off">
+      <input type="text" placeholder="Type a note… (N)" aria-label="Type a note">
+      <button class="icon-btn" type="submit" aria-label="Add note"><svg class="icon"><use href="#i-send"/></svg></button>
+    </form>
+  </main>
+</section>
+
+<!-- ============================================================ FINISHING -->
+<section class="screen screen-finishing" id="screen-finishing" hidden aria-live="polite">
+  <div class="finishing">
+    <span class="wordmark">DICTATE</span>
+    <div class="scan" aria-hidden="true"><span></span></div>
+    <p class="finishing-message" id="finishing-message">Saving your recording</p>
+    <p class="finishing-sub">Whisper is lining your words up with where you pointed. This takes a few seconds per minute of talking.</p>
+  </div>
+</section>
+
+<!-- ============================================================ REVIEW -->
+<section class="screen screen-review" id="screen-review" hidden aria-labelledby="review-heading">
+  <header class="topbar">
+    <span class="wordmark">DICTATE</span>
+    <span class="topbar-sub">REVIEW</span>
+    <span class="topbar-right">
+      <button class="btn btn-primary btn-send" id="review-submit" type="button"><svg class="icon"><use href="#i-send"/></svg><span>Send <span id="review-submit-count"></span> to Claude</span></button>
+    </span>
+  </header>
+  <main class="review">
+    <div class="review-head">
+      <h1 id="review-heading" class="review-heading">Check your notes before Claude gets them</h1>
+      <p class="review-stats"><span id="review-stats"></span> · <span id="review-source" class="review-source"></span></p>
+      <div class="review-fields">
+        <label class="field">
+          <span>Title (optional)</span>
+          <input type="text" id="review-title" placeholder="e.g. Episode 12 rough cut, pass 2">
+        </label>
+        <label class="field">
+          <span>Overall direction (optional, applies to every note)</span>
+          <textarea id="review-general" rows="2" placeholder="e.g. Keep it under 8 minutes. Match the brand colors."></textarea>
+        </label>
+      </div>
+    </div>
+    <ol class="review-list" id="review-list"></ol>
+  </main>
+</section>
+
+<!-- ============================================================ DONE -->
+<section class="screen screen-done" id="screen-done" hidden aria-labelledby="done-headline">
+  <div class="done">
+    <span class="done-tally" aria-hidden="true"><svg class="icon"><use href="#i-check"/></svg></span>
+    <h1 class="done-headline" id="done-headline">Sent to Claude</h1>
+    <p class="done-sub" id="done-sub"></p>
+    <p class="umd umd-path"><span>SESSION</span><span class="umd-sep">·</span><span id="done-path"></span></p>
+    <div class="done-actions">
+      <button class="btn" id="done-copy" type="button"><svg class="icon"><use href="#i-copy"/></svg>Copy report</button>
+      <button class="btn needs-server" id="done-open" type="button"><svg class="icon"><use href="#i-folder"/></svg>Open folder</button>
+      <button class="btn needs-server" id="done-new" type="button"><svg class="icon"><use href="#i-refresh"/></svg>New session</button>
+      <button class="btn" id="done-close" type="button">Close window</button>
+    </div>
+  </div>
+</section>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+</body>
+</html>
