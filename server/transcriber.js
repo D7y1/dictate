@@ -35,7 +35,7 @@ export class Transcriber {
       }
     }
     this.status = 'unavailable';
-    this.detail = 'Python with faster-whisper was not found (pip install faster-whisper)';
+    this.detail = 'Python with faster-whisper was not found. Run "npm run setup" in the Dictate folder.';
     return false;
   }
 

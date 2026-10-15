@@ -12,6 +12,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { startServer } from '../server/server.js';
+import { findBrowser } from '../server/browser.js';
 
 function parseArgs(argv) {
   const args = { once: false };
@@ -36,28 +37,6 @@ const HELP = `Dictate: point, talk, submit.
 
 Options: --out <dir> (default ./.dictate/sessions)  --port <n>  --lang en-US|ar-SA|auto
          --browser chrome|edge|default|none  --title <text>  --project <name>`;
-
-function findBrowser(pref) {
-  if (pref === 'none' || pref === 'default') return null;
-  const local = process.env.LOCALAPPDATA || '';
-  const candidates = {
-    chrome: [
-      'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-      'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
-      path.join(local, 'Google\\Chrome\\Application\\chrome.exe'),
-      '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-      '/usr/bin/google-chrome',
-    ],
-    edge: [
-      'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
-      'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe',
-      '/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge',
-    ],
-  };
-  const order = pref === 'edge' ? ['edge'] : pref === 'chrome' ? ['chrome'] : ['chrome', 'edge'];
-  for (const name of order) for (const file of candidates[name]) if (fs.existsSync(file)) return file;
-  return null;
-}
 
 function openStudio(url, pref) {
   const browser = findBrowser(pref);
