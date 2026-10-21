@@ -14,7 +14,7 @@ Point, talk, submit. Dictate records you giving notes on a video or a website (y
 
 You need **Node 20+** and **Chrome** (or Edge). Python 3.9+ is optional but recommended: it runs Whisper, which transcribes far better than the browser's live captions.
 
-**1. Get the code** (the repo is private, so sign in to GitHub when asked):
+**1. Get the code:**
 
 ```
 git clone https://github.com/D7y1/dictate.git
@@ -141,3 +141,7 @@ scripts/capture.js    scripted UI walkthrough + screenshots (headless Chrome, fa
 ```
 
 `npm test` runs the compile tests. `npm run capture -- http://localhost:4799/ out/` drives a full session against a running studio (start it with `--video` on any clip) and saves screenshots of every screen.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
