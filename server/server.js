@@ -3,15 +3,13 @@ import fs from 'node:fs';
 import fsp from 'node:fs/promises';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
-import { fileURLToPath } from 'node:url';
 import { SessionStore } from './store.js';
 import { Transcriber } from './transcriber.js';
 import { compileSession, applyEdits, renderReport } from './compile.js';
+import { ROOT, PACKAGE, STORE_URL, SETUP_COMMAND, prepareExtensionDir } from './install.js';
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const STUDIO_DIR = path.join(ROOT, 'studio');
-export const EXTENSION_DIR = path.join(ROOT, 'extension');
-const VERSION = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8')).version;
+const VERSION = PACKAGE.version;
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -83,6 +81,7 @@ export async function startServer(opts) {
   } = opts;
 
   const store = new SessionStore(outDir);
+  const extensionDir = prepareExtensionDir();
   const transcriber = new Transcriber({ script: path.join(ROOT, 'server', 'whisper_worker.py'), log });
   setImmediate(() => transcriber.probe());
 
@@ -240,7 +239,9 @@ export async function startServer(opts) {
         once,
         project,
         outDir,
-        extensionDir: EXTENSION_DIR,
+        extensionDir,
+        extensionStoreUrl: STORE_URL,
+        setupCommand: SETUP_COMMAND,
         mode: state.mode,
         url: state.url,
         lang: state.lang,
@@ -375,7 +376,7 @@ export async function startServer(opts) {
 
     if (p === '/api/open-path' && req.method === 'POST') {
       const body = await readJson(req);
-      const target = body.target === 'extension' ? EXTENSION_DIR : body.target === 'out' ? outDir : null;
+      const target = body.target === 'extension' ? extensionDir : body.target === 'out' ? outDir : null;
       if (!target) return send(res, 400, { error: 'Unknown target' });
       await fsp.mkdir(target, { recursive: true });
       openInExplorer(target);

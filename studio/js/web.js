@@ -44,6 +44,9 @@ export class WebReview {
   renderExt() {
     this.root.classList.toggle('ext-missing', !this.ext.connected);
     $('#ext-path', this.root).textContent = this.config.extensionDir;
+    const store = this.config.extensionStoreUrl;
+    for (const el of this.root.querySelectorAll('.ext-store')) el.hidden = !store;
+    if (store) $('#ext-store', this.root).href = store;
   }
 
   normalizedUrl() {

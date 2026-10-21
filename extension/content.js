@@ -10,7 +10,10 @@
 
   const send = (msg) => chrome.runtime.sendMessage(msg).catch(() => null);
 
-  if (document.querySelector('meta[name="dictate-studio"]')) {
+  // Only a studio served from this computer can drive the extension; any other page that
+  // copies the marker is tracked like a normal page.
+  const local = location.protocol === 'http:' && ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
+  if (local && document.querySelector('meta[name="dictate-studio"]')) {
     bridge();
     return;
   }

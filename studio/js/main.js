@@ -62,7 +62,7 @@ async function boot() {
   renderControls();
   renderKeyLabels();
   $('#controls-reset').addEventListener('click', resetControls);
-  renderWhisper(app.config.whisper);
+  renderWhisper(app.config.whisper, app.config.setupCommand);
   renderExtStatus();
   ext.addEventListener('change', renderExtStatus);
   ext.addEventListener('push', (e) => onExtensionPush(e.detail));
@@ -335,10 +335,10 @@ async function fillMics() {
   select.value = inputs.some((d) => d.deviceId === current) ? current : '';
 }
 
-function renderWhisper(w) {
+function renderWhisper(w, setupCommand) {
   const el = $('#whisper-status');
   if (w.status === 'unavailable') {
-    el.textContent = 'Live captions only. Install faster-whisper for accurate transcripts.';
+    el.textContent = `Live captions only. For accurate transcripts, run ${setupCommand || 'Dictate setup'} in a terminal.`;
     el.dataset.state = 'warn';
   } else {
     el.textContent = 'Whisper transcribes on this machine when you finish.';

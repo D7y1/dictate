@@ -1,0 +1,73 @@
+name: Release
+
+# Push a tag that matches package.json (for example v1.2.0) and this publishes:
+#   npm               @d7y/dictate. /dictate runs `npx @d7y/dictate@latest`, so everyone gets it on their next review.
+#   GitHub            a release with the extension zip attached.
+#   Chrome Web Store  the new extension version, submitted for review. Only when extension/ changed;
+#                     Chrome then updates everyone's copy by itself once Google approves it.
+#
+#   npm version minor    (bumps package.json and tags it)   then   git push --follow-tags
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write # create the GitHub release
+  id-token: write # npm trusted publishing: no npm token is stored in this repo
+
+concurrency: release
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      - name: Use npm 11.5.1 or newer (needed for trusted publishing)
+        run: npm install -g npm@latest
+
+      - run: npm test
+
+      - name: Check versions
+        id: check
+        run: node scripts/release-check.js "$GITHUB_REF_NAME"
+
+      - name: Publish to npm
+        run: |
+          spec="$(node -p "const p = require('./package.json'); p.name + '@' + p.version")"
+          if npm view "$spec" version > /dev/null 2>&1; then
+            echo "$spec is already on npm; skipping."
+          else
+            npm publish
+          fi
+
+      - name: Pack the extension
+        id: pack
+        run: echo "zip=$(node scripts/pack-extension.js)" >> "$GITHUB_OUTPUT"
+
+      - name: GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ZIP: ${{ steps.pack.outputs.zip }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" > /dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" "$ZIP" --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" "$ZIP" --title "$GITHUB_REF_NAME" --generate-notes --verify-tag
+          fi
+
+      - name: Submit to the Chrome Web Store
+        if: steps.check.outputs.extension_changed == 'true'
+        env:
+          CWS_SERVICE_ACCOUNT: ${{ secrets.CWS_SERVICE_ACCOUNT }}
+          CWS_PUBLISHER_ID: ${{ vars.CWS_PUBLISHER_ID }}
+          ZIP: ${{ steps.pack.outputs.zip }}
+        run: node scripts/cws-publish.js "$ZIP"

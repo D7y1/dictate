@@ -4,6 +4,7 @@
   "short_name": "Dictate",
   "version": "1.0.0",
   "description": "Records where you point and what you click while you talk through your site in Dictate Studio.",
+  "homepage_url": "https://d7y1.github.io/dictate/",
   "minimum_chrome_version": "116",
   "permissions": ["storage", "tabs", "scripting"],
   "host_permissions": ["<all_urls>"],

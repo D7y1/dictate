@@ -5,14 +5,14 @@ description: Open Dictate Studio so the user can show you what they want instead
 
 # Dictate
 
-Dictate is installed at `{{DICTATE_HOME}}`. It opens a studio window where the user talks while pointing. On Submit it writes a session folder (report.md, session.json, frames/, audio.webm) and the launcher exits, which wakes you up.
+Dictate opens a studio window where the user talks while pointing. On Submit it writes a session folder (report.md, session.json, frames/, audio.webm) and the launcher exits, which wakes you up.
 
 ## 1. Launch it
 
 From the current project root, run this **in the background** (`run_in_background: true`):
 
 ```
-node "{{DICTATE_HOME}}/bin/dictate.js" --once --out "<project root>/.dictate/sessions" [--video "<file>"] [--url "<url>"] [--title "<what this review is about>"]
+npx -y @d7y/dictate@latest --once --out "<project root>/.dictate/sessions" [--video "<file>"] [--url "<url>"] [--title "<what this review is about>"]
 ```
 
 - Add `--video "<absolute path>"` when the user is reviewing a specific video. The report then carries the exact source path.
@@ -21,9 +21,11 @@ node "{{DICTATE_HOME}}/bin/dictate.js" --once --out "<project root>/.dictate/ses
 
 Tell the user in two or three short lines that the studio is open:
 - **Video:** click (or hover) the spot on the frame, press **T** (or the mouse's back side button), talk, press it again. Drag to box an area, `I`/`O` for a range. Then Finish → Send.
-- **Web:** paste the site URL and press Open. On the site: point or click, press **T** (or the mouse's back side button), talk, press it again. Then Finish → Send. This needs the Dictate extension loaded once from `{{DICTATE_HOME}}/extension` (chrome://extensions → Developer mode → Load unpacked). The studio walks them through it.
+- **Web:** paste the site URL and press Open. On the site: point or click, press **T** (or the mouse's back side button), talk, press it again. Then Finish → Send. This needs the Dictate Chrome extension, added once. The studio walks them through it.
 
 Then stop and wait for the background task notification. Do not poll.
+
+`npx` fetches the newest version, so the first launch after a release takes a few seconds longer. If it fails because there is no network, run the same command without `@latest` to use the cached copy.
 
 ## 2. When the launcher exits
 
@@ -49,5 +51,6 @@ Turning notes into work:
 
 ## Other commands
 
-- Latest submitted session for this project: `node "{{DICTATE_HOME}}/bin/dictate.js" --latest --out "<project root>/.dictate/sessions"`
+- Latest submitted session for this project: `npx -y @d7y/dictate@latest --latest --out "<project root>/.dictate/sessions"`
 - The user may run the studio on their own and later say "read my latest dictate session". Use `--latest` to find it.
+- First time, or the studio says "Live captions only": ask the user to run `npx -y @d7y/dictate@latest setup` in a terminal. It installs local speech to text (faster-whisper), downloads the model, and checks the extension. It takes a few minutes the first time and is safe to run again.

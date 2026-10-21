@@ -235,8 +235,10 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 
   <main class="web">
     <section class="ext-setup" aria-labelledby="ext-setup-title">
-      <h2 id="ext-setup-title" class="setup-title">Load the Dictate extension once</h2>
+      <h2 id="ext-setup-title" class="setup-title">Add the Dictate extension once</h2>
       <p>It tracks pages, your cursor and the elements you pin. Without it, Dictate records your voice only.</p>
+      <p class="ext-store" hidden><a class="btn btn-primary" id="ext-store" href="https://chromewebstore.google.com/" target="_blank" rel="noopener">Add it from the Chrome Web Store</a></p>
+      <p class="ext-store" hidden>Or load it unpacked:</p>
       <ol class="setup-steps">
         <li>Open <span class="mono">chrome://extensions</span> and switch on <b>Developer mode</b> (top right).</li>
         <li>Click <b>Load unpacked</b> and choose this folder:
@@ -245,8 +247,8 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
             <button class="icon-btn" id="ext-folder" type="button" aria-label="Show folder"><svg class="icon"><use href="#i-folder"/></svg></button>
           </span>
         </li>
-        <li>Reload this window, or <button class="link-btn" id="ext-recheck" type="button">check again</button>.</li>
       </ol>
+      <p class="ext-recheck">Then reload this window, or <button class="link-btn" id="ext-recheck" type="button">check again</button>.</p>
     </section>
 
     <form class="open-site" onsubmit="return false" autocomplete="off">

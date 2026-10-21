@@ -128,7 +128,19 @@ function publicState() {
   return { active: state.active, paused: state.paused, startedAt: state.startedAt, markN: state.markN, talk: state.talk, bindings: state.bindings };
 }
 
-async function start({ sessionId, server, startedAt, bindings }, studioTabId) {
+// Events and screenshots only ever go to the Dictate server on this computer.
+function localServer(url) {
+  try {
+    const u = new URL(url);
+    return u.protocol === 'http:' && ['localhost', '127.0.0.1', '[::1]'].includes(u.hostname) ? u.origin : null;
+  } catch {
+    return null;
+  }
+}
+
+async function start({ sessionId, server: requested, startedAt, bindings }, studioTabId) {
+  const server = localServer(requested);
+  if (!server) throw new Error('Dictate only sends to a studio running on this computer');
   Object.assign(state, { active: true, paused: false, sessionId, server, startedAt: startedAt || Date.now(), markN: 0, studioTabId, talk: { open: false, noteId: null }, bindings: bindings || state.bindings });
   lastMark = null;
   queue = [];

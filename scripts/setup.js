@@ -1,22 +1,21 @@
 #!/usr/bin/env node
 // One-command setup: checks what Dictate needs, installs what it can, and walks you
-// through the one step a browser only lets a person do (loading the extension).
+// through the one step a browser only lets a person do (adding the extension).
 // Safe to run again at any time; finished steps are skipped.
 //
-//   npm run setup                       everything
-//   npm run setup -- --no-model         skip the speech model download
+//   npx @d7y/dictate setup              everything (from a clone: npm run setup)
+//   npx @d7y/dictate setup --no-model   skip the speech model download
 //   flags: --no-whisper --no-model --no-link --no-open
 import path from 'node:path';
 import readline from 'node:readline';
 import { spawn, spawnSync } from 'node:child_process';
-import { fileURLToPath } from 'node:url';
 import { Transcriber } from '../server/transcriber.js';
 import { BROWSERS, browserName, findBrowser, loadedExtensionProfiles } from '../server/browser.js';
+import { ROOT as home, FROM_SOURCE, PACKAGE, SETUP_COMMAND, STORE_ID, STORE_URL, prepareExtensionDir } from '../server/install.js';
 import { installSkill } from './install-skill.js';
 
-const home = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const workerScript = path.join(home, 'server', 'whisper_worker.py');
-const extensionDir = path.join(home, 'extension');
+const extensionDir = prepareExtensionDir();
 const args = new Set(process.argv.slice(2));
 const want = (name) => !args.has(`--no-${name}`);
 const win = process.platform === 'win32';
@@ -33,12 +32,12 @@ const warn = (msg, later) => {
 if (args.has('--help') || args.has('-h')) {
   console.log(`Sets up Dictate on this machine. Safe to run again; finished steps are skipped.
 
-  npm run setup [-- flags]
+  ${SETUP_COMMAND}${FROM_SOURCE ? ' --' : ''} [flags]
 
   --no-whisper   don't install speech to text (Dictate uses the browser's live captions)
   --no-model     don't download the speech model now (it downloads on your first review)
-  --no-link      don't add the \`dictate\` command
-  --no-open      don't open the extensions page or copy the extension path`);
+  --no-link      don't add the \`dictate\` command (from a clone)
+  --no-open      don't open the extension's page or copy its folder path`);
   process.exit(0);
 }
 
@@ -94,7 +93,7 @@ function loadModel(python) {
 // --- Steps ------------------------------------------------------------------
 
 async function main() {
-  console.log(`Setting up Dictate from ${home}`);
+  console.log(`Setting up Dictate ${PACKAGE.version}${FROM_SOURCE ? ` from ${home}` : ''}`);
 
   step(1, 'Node.js and a browser');
   const major = Number(process.versions.node.split('.')[0]);
@@ -170,7 +169,10 @@ async function main() {
   }
 
   step(5, 'The dictate command');
-  if (!want('link')) say('Skipped (--no-link). Use  node bin/dictate.js  from this folder.');
+  if (!FROM_SOURCE) {
+    ok(`Run it any time with  npx ${PACKAGE.name}  (/dictate starts it the same way, so it's always the newest version).`);
+    say(`Prefer a plain \`dictate\` command? npm install -g ${PACKAGE.name}`);
+  } else if (!want('link')) say('Skipped (--no-link). Use  node bin/dictate.js  from this folder.');
   else {
     const r = spawnSync('npm link', { cwd: home, encoding: 'utf8', shell: true, windowsHide: true });
     if (r.status === 0) ok('Added `dictate`. Open a new terminal and run  dictate --help');
@@ -178,10 +180,18 @@ async function main() {
   }
 
   step(6, 'Browser extension (web review only)');
-  const loaded = loadedExtensionProfiles(extensionDir);
+  const loaded = loadedExtensionProfiles({ dir: extensionDir, id: STORE_ID });
   if (loaded.length) {
     ok(`Loaded in ${loaded.join(', ')}`);
-    say('After updating Dictate, press the reload arrow on its card in the extensions page.');
+    say(STORE_ID ? 'If you loaded it unpacked, press the reload arrow on its card in the extensions page after an update.' : 'After updating Dictate, press the reload arrow on its card in the extensions page.');
+  } else if (STORE_URL) {
+    warn('Not added yet. Add it from the Chrome Web Store, once; it updates itself after that.', `Add the extension: ${STORE_URL}`);
+    say(STORE_URL);
+    say('Run setup again to confirm. Video review works without it.');
+    if (want('open') && browser) {
+      spawn(browser, [STORE_URL], { detached: true, stdio: 'ignore' }).unref();
+      say('Opened it for you.');
+    }
   } else {
     const name = browser ? browserName(browser) : 'chrome';
     const page = BROWSERS[name].extensionsPage;
@@ -200,7 +210,7 @@ async function main() {
   console.log(todo.length ? '\nAlmost there. Still to do:' : '\nDictate is ready.');
   todo.forEach((t, i) => console.log(`   ${i + 1}) ${t}`));
   console.log('\nUse it: in Claude Code, from any project, type  /dictate');
-  console.log('        or open the studio yourself with  dictate  (or  npm start  in this folder).');
+  console.log(FROM_SOURCE ? '        or open the studio yourself with  dictate  (or  npm start  in this folder).' : `        or open the studio yourself with  npx ${PACKAGE.name}`);
 }
 
 function copyToClipboard(text) {

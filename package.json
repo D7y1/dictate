@@ -1,22 +1,57 @@
 {
-  "name": "dictate",
+  "name": "@d7y/dictate",
   "version": "1.0.0",
   "description": "Point, talk, submit. Voice + cursor review sessions for videos and web platforms, packaged for Claude.",
   "type": "module",
   "bin": {
     "dictate": "bin/dictate.js"
   },
+  "files": [
+    "bin/",
+    "server/*.js",
+    "server/*.py",
+    "studio/",
+    "extension/",
+    "skills/",
+    "scripts/setup.js",
+    "scripts/install-skill.js"
+  ],
   "scripts": {
     "setup": "node scripts/setup.js",
     "start": "node bin/dictate.js",
     "test": "node --test \"test/*.test.js\"",
     "icons": "node scripts/make-icons.js",
     "install-skill": "node scripts/install-skill.js",
-    "capture": "node scripts/capture.js"
+    "capture": "node scripts/capture.js",
+    "pack-extension": "node scripts/pack-extension.js"
   },
   "engines": {
     "node": ">=20"
   },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "agent-skill",
+    "review",
+    "feedback",
+    "voice",
+    "whisper",
+    "chrome-extension",
+    "video-review"
+  ],
+  "homepage": "https://d7y1.github.io/dictate/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/D7y1/dictate.git"
+  },
+  "bugs": {
+    "url": "https://github.com/D7y1/dictate/issues"
+  },
   "license": "MIT",
-  "private": true
+  "publishConfig": {
+    "access": "public"
+  },
+  "dictate": {
+    "chromeWebStoreId": ""
+  }
 }

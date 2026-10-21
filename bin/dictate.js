@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 // Dictate: point, talk, submit.
 //
-//   node bin/dictate.js [--video <file>] [--url <url>] [--mode video|web] [--out <dir>]
+//   dictate [--video <file>] [--url <url>] [--mode video|web] [--out <dir>]
 //                       [--once] [--port 4747] [--lang en-US|ar-SA|auto] [--browser chrome|edge|default|none]
 //                       [--title <text>] [--project <name>] [--latest]
+//   dictate setup         install speech to text and the /dictate skill, check the extension
 //
 // --once: exit as soon as a session is submitted (this is how Claude waits for you).
 // On submit it prints:   DICTATE_SUBMITTED <session folder>
@@ -13,10 +14,11 @@ import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { startServer } from '../server/server.js';
 import { findBrowser } from '../server/browser.js';
+import { PACKAGE } from '../server/install.js';
 
 function parseArgs(argv) {
   const args = { once: false };
-  const flags = new Set(['once', 'latest', 'help', 'no-open']);
+  const flags = new Set(['once', 'latest', 'help', 'version', 'no-open']);
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (!a.startsWith('--')) continue;
@@ -34,6 +36,7 @@ const HELP = `Dictate: point, talk, submit.
   dictate --url http://...     open straight into web review
   dictate --once               exit after the first submit (used by Claude)
   dictate --latest             print the newest session folder and exit
+  dictate setup                install speech to text and the /dictate skill, check the extension
 
 Options: --out <dir> (default ./.dictate/sessions)  --port <n>  --lang en-US|ar-SA|auto
          --browser chrome|edge|default|none  --title <text>  --project <name>`;
@@ -64,6 +67,10 @@ async function main() {
   const args = parseArgs(process.argv.slice(2));
   if (args.help) {
     console.log(HELP);
+    return;
+  }
+  if (args.version) {
+    console.log(PACKAGE.version);
     return;
   }
   const outDir = path.resolve(args.out || path.join(process.cwd(), '.dictate', 'sessions'));
@@ -126,7 +133,9 @@ async function main() {
   process.on('SIGTERM', shutdown);
 }
 
-main().catch((err) => {
-  console.error(`[dictate] ${err.stack || err.message}`);
-  process.exit(1);
-});
+if (process.argv[2] === 'setup') await import('../scripts/setup.js');
+else
+  main().catch((err) => {
+    console.error(`[dictate] ${err.stack || err.message}`);
+    process.exit(1);
+  });
