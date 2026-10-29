@@ -48,6 +48,7 @@
     "url": "https://github.com/D7y1/dictate/issues"
   },
   "license": "MIT",
+  "author": "Abdulrahman (https://github.com/D7y1)",
   "publishConfig": {
     "access": "public"
   },

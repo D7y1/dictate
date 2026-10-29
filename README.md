@@ -1,5 +1,7 @@
 # Dictate
 
+[![CI](https://github.com/D7y1/dictate/actions/workflows/ci.yml/badge.svg)](https://github.com/D7y1/dictate/actions/workflows/ci.yml) [![npm](https://img.shields.io/npm/v/@d7y/dictate)](https://www.npmjs.com/package/@d7y/dictate) [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+
 Point, talk, submit. Dictate records you giving notes on a video or a website (your voice, your cursor, what you click, what you pin) and hands Claude a session it can act on without asking "which one?".
 
 **Adding a note is one key:** click (or just hover) the thing, press **T**, talk, press **T** again. The mic is already open, so it starts the instant you press. Hold **T** instead if you prefer push-to-talk. `Esc` throws an open note away.
@@ -157,6 +159,10 @@ scripts/pack-extension.js, cws-publish.js, release-check.js   release tooling (s
 ## Releasing
 
 Bump the version and push the tag: `npm version patch` (or `minor`), then `git push --follow-tags`. GitHub Actions tests it, publishes `@d7y/dictate` to npm, attaches the extension zip to a GitHub release, and, when `extension/` changed, submits the new extension version to the Chrome Web Store. Bump `version` in `extension/manifest.json` whenever you change the extension; the release refuses to run otherwise. One-time account setup is in [PUBLISHING.md](PUBLISHING.md).
+
+## Contributing
+
+Issues and pull requests are welcome. [CONTRIBUTING.md](CONTRIBUTING.md) covers setup, tests and how the code is written. Please follow the [Code of Conduct](CODE_OF_CONDUCT.md), and report security problems privately as [SECURITY.md](SECURITY.md) describes. Changes are listed in [CHANGELOG.md](CHANGELOG.md).
 
 ## License
 

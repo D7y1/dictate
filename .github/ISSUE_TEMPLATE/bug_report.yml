@@ -1,0 +1,49 @@
+name: Bug report
+description: Something in Dictate doesn't work the way it should.
+labels: [bug]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Where
+      options:
+        - Video review
+        - Web review (the Chrome extension)
+        - References or screenshots
+        - Review screen or transcription
+        - The report Claude gets
+        - Setup or install
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, step by step, and what you saw.
+      placeholder: |
+        1. Opened a web review on localhost:3000
+        2. Pressed T on the sidebar and talked
+        3. The note had no pin
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: Dictate (`npx @d7y/dictate --version` or package.json), the extension (on its card in chrome://extensions), Chrome, and your OS.
+      placeholder: Dictate 1.0.0, extension 1.1.0, Chrome 156, Windows 11
+    validations:
+      required: true
+  - type: textarea
+    id: session
+    attributes:
+      label: Session files or logs
+      description: Optional. The session's report.md, or lines from events.jsonl or the terminal. Check them for anything private before pasting.
+      render: text
