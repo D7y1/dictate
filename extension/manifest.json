@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Dictate",
   "short_name": "Dictate",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Records where you point and what you click while you talk through your site in Dictate Studio.",
   "homepage_url": "https://d7y1.github.io/dictate/",
   "minimum_chrome_version": "116",

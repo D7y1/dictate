@@ -288,6 +288,7 @@ body[data-rec="paused"] .rec-pill { color: var(--fg-2); }
 .log-tc:hover { color: var(--fg); text-decoration: underline; text-underline-offset: 3px; }
 .log-thumb { width: 120px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 3px; background: #000; display: block; }
 .log-thumb-none { background: var(--panel-2); border: 1px dashed var(--line-2); }
+.log-thumb-site { object-fit: contain; background: var(--umd); }
 .log-text { font-size: 15px; line-height: 1.4; color: var(--fg); overflow-wrap: anywhere; }
 .log-text:empty::before { content: "Listening…"; color: var(--fg-3); }
 .log-row.pending .log-text { color: var(--fg-3); font-style: italic; }
@@ -326,6 +327,8 @@ body[data-rec="paused"] .rec-pill { color: var(--fg-2); }
 .tag-mark { background: var(--mark); border-color: var(--mark); color: var(--mark-ink); }
 .tag-range { background: var(--rec-ink); border-color: var(--rec-ink); color: var(--white); }
 .tag-page { background: var(--page-bg); border-color: var(--page-edge); color: var(--page); }
+/* A reference: page blue lit, because you are somewhere else (7.4:1 ink on blue). */
+.tag-ref { background: var(--page); border-color: var(--page); color: var(--mark-ink); }
 .tag-txt { border-style: dashed; }
 
 /* The open note: tally lit */
@@ -457,6 +460,8 @@ body[data-talk="open"] .desk-hint { display: none; }
 
 .umd-page { justify-content: flex-start; border: 1px solid var(--line); border-radius: var(--r-1); }
 .umd-page > span:first-child { color: var(--page); }
+.umd-page.is-ref > span:first-child { padding: 2px 7px; border-radius: 2px; background: var(--page); color: var(--mark-ink); }
+.umd-page #web-now-for { flex: none; max-width: 45%; color: var(--fg-2); }
 .preview { border: 1px solid var(--line); border-radius: var(--r-1); overflow: hidden; background: #000; }
 .preview img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; }
 .preview-empty { margin: 0; aspect-ratio: 16 / 10; display: grid; place-items: center; padding: 20px; text-align: center; color: var(--fg-3); background: radial-gradient(90% 80% at 50% 40%, #16191d, #000 75%); }

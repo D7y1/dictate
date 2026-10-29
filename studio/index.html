@@ -42,6 +42,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
     <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
     <symbol id="i-mouse" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="6.5" y="3" width="11" height="18" rx="5.5"/><path d="M12 7v3.5"/></g></symbol>
     <symbol id="i-close" viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-crop" viewBox="0 0 24 24"><path d="M4 9V6a2 2 0 0 1 2-2h3M15 4h3a2 2 0 0 1 2 2v3M20 15v3a2 2 0 0 1-2 2h-3M9 20H6a2 2 0 0 1-2-2v-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
     <symbol id="i-refresh" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.5 4.5v4h-4"/></g></symbol>
   </defs>
 </svg>
@@ -230,6 +231,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
   <div class="web-actions">
     <span class="meter" aria-hidden="true"><svg class="icon"><use href="#i-mic"/></svg><span class="meter-bars"></span></span>
     <button class="btn" data-action="record" type="button" title="R"><span class="btn-label">Record</span></button>
+    <button class="btn" data-action="shot" type="button"><svg class="icon"><use href="#i-crop"/></svg><span>Screenshot</span></button>
     <button class="btn btn-strong" data-action="finish" type="button"><span>Finish<span class="wide-only"> &amp; review</span></span></button>
   </div>
 
@@ -260,7 +262,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
       <p class="field-note">Opens beside this panel and starts the session. <span class="ext-status" data-state="missing"></span></p>
     </form>
 
-    <div class="umd umd-page"><span>PAGE</span><span class="umd-sep">·</span><span id="web-now-url">nothing open yet</span></div>
+    <div class="umd umd-page"><span id="web-now-kind">PAGE</span><span class="umd-sep">·</span><span id="web-now-url">nothing open yet</span><span class="umd-sep now-for" hidden>·</span><span class="now-for" id="web-now-for" hidden></span></div>
     <div class="preview">
       <img id="web-shot" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="Latest screenshot of the page you are reviewing" hidden>
       <p class="preview-empty"><span id="web-now-title">The latest screenshot shows up here.</span></p>
@@ -273,13 +275,13 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
         <kbd class="key talk-key-label">T</kbd>
       </button>
       <p class="live-caption" aria-live="polite"></p>
-      <p class="desk-hint">On your site: point or click, press <kbd class="key talk-key-label">T</kbd><span class="talk-mouse-hint"></span>, talk, press it again. <kbd class="key">Alt</kbd><kbd class="key">A</kbd> to pin without talking.</p>
+      <p class="desk-hint">On your site: point or click, press <kbd class="key talk-key-label">T</kbd><span class="talk-mouse-hint"></span>, talk, press it again. <kbd class="key">Alt</kbd><kbd class="key">A</kbd> to pin without talking.<span class="shot-hint"> <kbd class="key shot-key-label">Alt S</kbd> to screenshot part of any site, yours or one you like.</span></p>
     </div>
 
     <ol class="log log-web" id="web-log"></ol>
 
     <footer class="web-foot">
-      <span class="counts"><b id="web-count-pages">0</b> pages · <b id="web-count-marks">0</b> marks</span>
+      <span class="counts"><b id="web-count-pages">0</b> pages<span hidden> · <b id="web-count-refs">0</b> references</span> · <b id="web-count-marks">0</b> marks</span>
     </footer>
     <form class="note-form" autocomplete="off">
       <input type="text" placeholder="Type a note… (N)" aria-label="Type a note">

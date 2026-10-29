@@ -1,15 +1,19 @@
 // Video review: play, point, draw, and talk over a video.
-import { $, h, timecode, cssVar, isTyping, uid, dirOf, toast, prefs, savePref, revealInList } from './util.js';
+import { $, h, timecode, cssVar, isTyping, uid, dirOf, toast, prefs, savePref, revealInList, hostOf, pathOf } from './util.js';
 
 const COMMON_FPS = [23.976, 24, 25, 29.97, 30, 48, 50, 59.94, 60];
 const MARK_VISIBLE_S = 0.75; // pins and boxes belong to a moment, not the whole video
 const MAX_ZOOM = 32;
 
 export class VideoReview {
-  constructor({ root, recorder, config }) {
+  constructor({ root, recorder, ext, config }) {
     this.root = root;
     this.rec = recorder; // shared Recorder (voice + session)
+    this.ext = ext; // optional: lets you show reference websites during the review
     this.config = config;
+    this.refsLive = false;
+    this.stream = null;
+    this.siteNotes = new Map(); // id of a pin made on a website → the talk note it belongs to
     this.video = $('#video', root);
     this.stage = $('#stage', root);
     this.overlay = $('#overlay', root);
@@ -338,13 +342,86 @@ export class VideoReview {
     }
   }
 
-  onRecordingStart() {
+  async onRecordingStart(session) {
     this.sendState('start');
     this.counters = { pin: 0, box: 0, range: 0, marker: 0 };
     this.marks = [];
     this.noteThumbs.clear();
+    this.siteNotes.clear();
     this.log.replaceChildren();
     this.renderLogEmpty();
+    // With the extension, any website you open during the review can be shown as a reference.
+    // It records a site only when you talk, pin or take a screenshot on it.
+    this.refsLive = false;
+    if (!this.ext?.connected) return;
+    try {
+      await this.ext.call('start', { sessionId: session.id, server: location.origin, startedAt: session.startedAt, bindings: this.extBindings, scope: 'refs' });
+      this.refsLive = true;
+      this.stream = session.stream((msg) => this.onServer(msg));
+    } catch {
+      // references are optional in video review
+    }
+  }
+
+  onRecordingPause() {
+    if (this.refsLive) this.ext.call('pause').catch(() => {});
+  }
+
+  onRecordingResume() {
+    if (this.refsLive) this.ext.call('resume').catch(() => {});
+  }
+
+  async onRecordingStop() {
+    if (this.refsLive) await this.ext.call('stop').catch(() => {});
+    this.refsLive = false;
+    this.stream?.close();
+    this.stream = null;
+  }
+
+  // ---------- references (websites shown during the review) ----------
+
+  // T pressed on a website: the note is about that site, tied to where the video is now.
+  async onSiteNoteOpen(noteId, anchor) {
+    if (this.pauseOnSpeech && !this.video.paused) this.video.pause();
+    this.lastSpeechGrab = Date.now();
+    if (this.refsLive) await this.ext.call('note-open', { noteId, anchor: { ...anchor, type: undefined, phase: undefined } }).catch(() => {});
+  }
+
+  onNoteClose() {
+    if (this.refsLive) this.ext.call('note-close').catch(() => {});
+  }
+
+  onServer(msg) {
+    if (msg.kind === 'events') {
+      for (const e of msg.events) {
+        if (e.type === 'page.mark' && e.note) {
+          this.siteNotes.set(e.id, e.note);
+          const text = this.log.querySelector(`[data-id="${e.note}"] .log-text`);
+          if (text && e.el) text.dataset.where = `${siteName(e.url)} · ${e.el.tag}${e.el.text ? ` “${e.el.text.slice(0, 40)}”` : ''}`;
+        } else if (e.type === 'page.mark') {
+          this.logRow({ id: e.id, kind: 'mark', tag: `${e.kind === 'box' ? 'B' : 'P'}${e.n}`, tagClass: 'tag-mark', text: `${e.kind === 'box' ? 'Boxed' : 'Pinned'} on ${siteName(e.url)}`, vt: this.currentTime(), onRemove: () => this.removeSiteMark(e.id) });
+        } else if (e.type === 'page.shot') {
+          const noteRow = e.note && this.log.querySelector(`[data-id="${e.note}"]`);
+          if (noteRow) {
+            this.siteNotes.set(e.id, e.note);
+            continue;
+          }
+          const text = `${e.crop ? `Screenshot, ${e.w} × ${e.h}` : 'Screenshot, whole screen'} · ${siteName(e.url)}`;
+          this.logRow({ id: e.id, kind: 'mark', tag: `S${e.n}`, tagClass: 'tag-mark', text, vt: this.currentTime(), onRemove: () => this.removeSiteMark(e.id) });
+        }
+      }
+    } else if (msg.kind === 'frame' && msg.frame.ref) {
+      // The website's screenshot becomes the row's picture.
+      const row = this.log.querySelector(`[data-id="${this.siteNotes.get(msg.frame.ref) || msg.frame.ref}"]`);
+      const slot = row?.querySelector('.log-thumb');
+      if (slot) slot.replaceWith(h('img', { class: 'log-thumb log-thumb-site', src: this.rec.session.frameUrl(msg.frame.file), alt: '' }));
+    }
+  }
+
+  removeSiteMark(id) {
+    this.rec.event('mark.remove', { id });
+    this.log.querySelector(`[data-id="${id}"]`)?.remove();
+    this.renumber();
   }
 
   // ---------- marks ----------
@@ -673,6 +750,9 @@ export class VideoReview {
         h('p', {}, 'Click the picture (or just hover), press ', key(), mouse(), ', say what to change, then press it again.'),
         h('p', {}, 'Every note lands here with its timecode and what you pointed at.'),
         h('p', {}, h('kbd', { class: 'key' }, 'Drag'), ' box an area  ', h('kbd', { class: 'key' }, 'I'), h('kbd', { class: 'key' }, 'O'), ' range  ', h('kbd', { class: 'key' }, 'M'), ' marker'),
+        this.ext?.connected
+          ? h('p', {}, 'Want to show a style you like? Open any website and press ', key(), ' or Screenshot on it. It lands here as ', h('span', { class: 'tag tag-ref' }, 'REF'), '.')
+          : null,
       ),
     );
   }
@@ -717,10 +797,23 @@ export class VideoReview {
     return this.logRow({ id, kind: 'speech', tag: 'VO', text, vt: vt ?? this.currentTime() });
   }
 
-  // A talk-key note: one row that fills in as you speak.
-  logNote(noteId) {
+  // A talk-key note: one row that fills in as you speak. With a site anchor it is a reference
+  // note, opened on a website; its picture arrives with that site's screenshot.
+  logNote(noteId, site = null) {
     const vt = this.currentTime();
     this.rec.notesAt.push({ vt });
+    if (site) {
+      const row = this.logRow({
+        id: noteId, kind: 'note', tag: 'REF', tagClass: 'tag-ref', text: '', vt,
+        onRemove: () => {
+          this.onRemoveNote?.(noteId);
+          this.log.querySelector(`[data-id="${noteId}"]`)?.remove();
+          this.renumber();
+        },
+      });
+      row.querySelector('.log-text').dataset.where = siteName(site.url);
+      return row;
+    }
     const mark = this.marks.find((m) => m.note === noteId);
     return this.logRow({
       id: noteId, kind: 'note', tag: mark ? label(mark) : 'VO', tagClass: mark ? tagClass(mark) : '', text: '', vt, thumb: this.noteThumbs.get(noteId),
@@ -751,6 +844,10 @@ export class VideoReview {
 
 function label(m) {
   return { pin: 'P', box: 'B', range: 'R', marker: 'M' }[m.kind] + m.n;
+}
+
+function siteName(url) {
+  return `${hostOf(url).replace(/^www\./, '')}${pathOf(url) === '/' ? '' : pathOf(url)}`;
 }
 
 function tagClass(m) {

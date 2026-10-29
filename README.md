@@ -8,6 +8,7 @@ Point, talk, submit. Dictate records you giving notes on a video or a website (y
 
 - **Video review:** every note lands on the timecode with a pin where you clicked. Drag to box an area, `I`/`O` to mark a range to cut. The video pauses while you talk.
 - **Web review:** browse your platform page to page. **T** works inside your site's pages. The Dictate extension pins the element under your cursor, records the page, what you click and select, and takes screenshots. While a note is open, clicks pin elements instead of following links.
+- **Show what you like:** in the middle of either review, open any other site (Dribbble, a competitor, a YouTube edit) and talk there, or click **Screenshot** and drag around the part you mean. Dictate tags that site **Reference**, so Claude treats it as inspiration rather than your code, applies it to the page you were on (or the timecode you paused on), and gets the exact font, colors, spacing and radius of what you cropped.
 - **Submit:** Whisper turns your voice into word-timed text on your GPU (Arabic and English, even mixed). You fix anything it misheard, void notes you don't want, then Send. Claude gets a report with every note anchored to a timecode or a DOM element, plus the images.
 
 ## Install
@@ -111,7 +112,14 @@ Paste your site's URL and press **Open**. The studio docks to the right edge of 
 
 - On your site: point or click, press **T**, talk, press **T**. The element under your cursor gets a numbered pin and a screenshot.
 - `Alt+A` switches the page into annotate mode without talking: hover highlights elements, click pins one, drag boxes an area. `Esc` goes back to browsing.
+- **Screenshot** (on the page's toolbar, in the studio, or `Alt+S`): drag around the part you mean and that crop is saved as a numbered mark (S1, S2…). A plain click saves the whole visible screen; `Esc` cancels.
 - **T** is ignored while you're typing in a field, and typed values are never recorded.
+
+### Showing a reference
+
+The site you open from the studio is *your site*. Any other site you visit is tagged **Reference** (the toolbar's chip turns blue and shows which page of yours it is **for**). Talk on it, pin on it, or crop a screenshot of it: Claude reads it as "make ours like this", never as code to edit. If Dictate guessed wrong, click the chip to flip that whole site.
+
+During a **video review**, the extension stays quiet until you act: open any website, then press **T**, pin, or take a screenshot there, and it lands in the rundown as **REF** at the timecode the video is paused on. Browsing without doing any of that is not recorded.
 
 ## What Claude receives
 
@@ -119,7 +127,7 @@ Each session is a folder in `<project>/.dictate/sessions/` (that folder ignores 
 
 | File | Contents |
 |---|---|
-| `report.md` | The notes, each anchored: timecode and frame position, or page URL and element (selector, text, HTML) |
+| `report.md` | The notes, each anchored: timecode and frame position, or page URL and element (selector, text, HTML). References say what they are for and carry the measured look of what you marked |
 | `frames/` | Frame grabs and screenshots with your pins, boxes, and cursor drawn on them |
 | `session.json` | The same notes as structured data |
 | `transcript.json` | Word-level transcript |

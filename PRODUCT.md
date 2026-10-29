@@ -36,6 +36,7 @@ Review tools (Frame.io, Marker.io, Loom) produce comments for humans. Dictate pr
 - Voice: live browser captions for feedback, then Whisper (large-v3-turbo on the local GPU) for word-timed final transcripts; Arabic and English mixed.
 - Video: pins, boxes, in/out ranges, markers, cursor trail, frame grabs with marks drawn on them.
 - Web: page visits, cursor, hovered and clicked elements, text selection, annotate mode for pinning elements or boxing areas, screenshots.
+- References: in either mode the user can open another site to show what they like. Dictate tags it Reference (the studio-opened site is "your site"), links it to the page of theirs they came from or the paused timecode, and captures drag-to-crop screenshots plus the measured look (font, colors, spacing, radius) of what they mark. In video review the extension records a site only when the user talks, pins or captures on it.
 - Typed values in form fields are never recorded.
 - Review screen before submit: fix transcripts, delete notes, add overall direction.
 - Chrome or Edge required (Web Speech API, MV3 extension).

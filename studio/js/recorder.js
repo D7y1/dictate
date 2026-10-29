@@ -129,10 +129,11 @@ export class Recorder extends EventTarget {
 
   // ---------- notes (talk key) ----------
 
-  openNote() {
+  // extra: { page } when the note was opened on a website rather than in the studio.
+  openNote(extra = {}) {
     if (!this.recording || this.note) return this.note;
     this.note = { id: uid('k'), openedAt: Date.now() };
-    this.session.event('note.start', { id: this.note.id });
+    this.session.event('note.start', { id: this.note.id, ...extra });
     this.audioOn();
     this.emit('note', { open: true, id: this.note.id });
     return this.note;

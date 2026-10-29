@@ -225,6 +225,9 @@ components:
   tag-page:
     backgroundColor: "{colors.page-bg}"
     textColor: "{colors.page}"
+  tag-ref:
+    backgroundColor: "{colors.page}"
+    textColor: "{colors.mark-ink}"
   chip:
     backgroundColor: "{colors.panel-2}"
     textColor: "{colors.fg-2}"
@@ -294,7 +297,7 @@ The confirmed rejection is the comment-sidebar review app with purple buttons an
 
 **Key Characteristics:**
 - Near-black tonal panels separated by 1px lines; nothing at rest casts a shadow.
-- Three signal hues with fixed meanings (red live, amber placed, green signal), plus page blue for location.
+- Three signal hues with fixed meanings (red live, amber placed, green signal), plus page blue for location: quiet on your own site, lit on a reference.
 - Warnings and missing pieces stay dark: no alarm color outside the three signals.
 - Cascadia Mono for every machine reading: timecodes, clocks, row numbers, mark labels, paths.
 - A black UMD label strip under every monitor and preview.
@@ -320,7 +323,7 @@ A control-room neutral ramp carrying three lamps, each with exactly one job.
 
 ### Tertiary
 - **Signal Green** (#39c26d, `ok`): signal present. Mic meter segments once the mic is live (the meter sits in fg-3 before that), "ok" status dots, the transcript-source line on review when Whisper ran, and the Done tally disc.
-- **Page Blue** (#8fa6d1 on #1e2737, `page` on `page-bg`, edged with `page-edge` #2c3a52): location in web review. The PAGE tag in the web log, the PAGE label on the page UMD strip and the POINTING label on the preview strip. Never appears in video review.
+- **Page Blue** (#8fa6d1 on #1e2737, `page` on `page-bg`, edged with `page-edge` #2c3a52): location. Quiet (blue lettering on `page-bg`) is your own site: the PAGE tag in the web log, the PAGE label on the page UMD strip, the POINTING label on the preview strip and the YOUR SITE chip on the in-page toolbar. Lit (a `page` fill with `mark-ink` lettering, 7.4:1) is a reference, another site the user is showing as inspiration: the REF tag in both rundowns and on review notes, the REF lamp on the page UMD strip and the REFERENCE chip on the in-page toolbar. In video review page blue appears only lit, for references.
 
 ### Neutral
 - **Gallery Black** (#0b0c0e, `bg`): the room. App background and top bar.
@@ -344,6 +347,8 @@ A control-room neutral ramp carrying three lamps, each with exactly one job.
 **The Placed-Mark Rule.** A solid amber tab with ink lettering always means a mark the user placed. Outside marks, amber appears only as the focus outline, the listening keycap and the 35% text-selection highlight; never as a filled tab, a lamp or a warning.
 
 **The Dark Lamp Rule.** Warnings and missing pieces light nothing. A degraded or missing state is a dark lamp (an fg-3 dot ringed by an fg-2 outline) beside plain fg or fg-2 text; the extension-setup callout is a neutral panel-2 box with an fg title and an fg link.
+
+**The Location Rule.** Page blue says where you are, never what you did. Quiet blue is your site and lit blue is a reference. A screenshot is something you placed, so it is an amber S tab even when it was taken on a reference; the REF tag beside it is what says "somewhere else".
 
 **The On-Air Rule.** The program monitor rim has three states: line-2 at rest, rec-deep while recording, full tally while a note is open. The rim, the PGM lamp, the TALK key and the open rundown row light together, with one 0.55s brightness flash when the note opens.
 
@@ -457,8 +462,9 @@ Inline key legends in hints and on the TALK key: 22px tall, 6px padding, 4px cor
 
 ### Tags (rundown)
 Mono Tag type, 22px tall, at least 34px wide, 7px side padding, 3px corners.
-- **Mark:** amber fill, amber border, mark-ink text, for pins and boxes (P1, B1).
+- **Mark:** amber fill, amber border, mark-ink text, for pins, boxes and screenshots (P1, B1, S1).
 - **Page:** page-bg fill, page-edge border, page blue text (PAGE, web log only).
+- **Reference:** page fill and border, mark-ink text (REF), in both rundowns and on review notes. In the video rundown a reference row's thumbnail is the site's screenshot, letterboxed on UMD black.
 - **Neutral:** transparent with a line-2 border and fg-2 text, for voice notes (VO) and markers (M1).
 - **Typed:** the neutral tag with a dashed border (TXT).
 - **Range (as built):** rec-ink fill with white lettering (R1). See the known inconsistencies under Colors.
@@ -535,7 +541,9 @@ Bottom center, 20px up, at most 560px wide. #24272c fill, line-2 border, 6px cor
 ### In-page Toolbar (extension)
 The same world drawn inside the user's own site, in a shadow root with literal colors because studio tokens are not available there.
 - **Bar:** fixed bottom center 18px up, 44px tall, 10px corners, #121315 fill, #2c2f34 border, the toolbar float shadow, 500 13px UI face.
-- **Contents:** grip dots, a 10px red tally dot with a 3px 25% red halo (grey when paused), a 600 13px mono clock, 1px separators, a Browse / Annotate segment (32px, 6px corners, pressed #2a2d32 with a #3a3e44 inset ring), Micro Nested keycaps, the talk segment and the mark count.
+- **Contents:** grip dots, a 10px red tally dot with a 3px 25% red halo (grey when paused), a 600 13px mono clock, the location chip and its "for" line, 1px separators, a Browse / Annotate segment (32px, 6px corners, pressed #2a2d32 with a #3a3e44 inset ring), the Screenshot segment (a drawn crop-corners glyph), Micro Nested keycaps, the talk segment and the mark count.
+- **Location chip:** 24px, 3px corners, 700 11px mono at 0.06em. YOUR SITE is quiet page blue (page-bg fill, page-edge inset ring, ring brightens to page blue on hover); REFERENCE is lit (page fill, mark-ink text) and is followed by "for /path" in 500 12px mono #9a9ea6, naming the page of the user's site it applies to. Clicking flips the whole site; in video review it stays REFERENCE and does not flip. Under 1180px the "for" line and the segment keycaps drop out.
+- **Screenshot (crop):** the page dims to 42% UMD black under a crosshair, with a UMD-black hint strip 16px from the top (SCREENSHOT legend in fg-2 mono, the instructions, a Cancel button with an Esc keycap). Dragging cuts a clear window out of the dim with a 2px amber outline and an amber size tab ("420 × 860"). On release the bar hides for the capture, then the saved area flashes white from 50% to 0 over 0.45s and the segment reads "S4 saved" with an amber tab for 1.8s. A click without dragging saves the whole screen.
 - **Talking:** the talk segment fills tally red with white 700 text and the whole bar gains a 2px 55% red ring.
 - **Marks on the page:** element highlight is a 2px amber outline with a 10% amber wash, 2px corners and an amber Micro tab label above; pins are a 12px amber dot with a 2px ink ring and a tab; boxes are a 2px dashed amber border with an 8% wash. The pointer ring is 30px with a 4px red border and a 2px white halo.
 - The extension's greys (#9a9ea6, #2c2f34, #5b5e63) sit close to fg-2, line and fg-3 but are not the same values.
