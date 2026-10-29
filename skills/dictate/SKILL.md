@@ -5,14 +5,14 @@ description: Open Dictate Studio so the user can show you what they want instead
 
 # Dictate
 
-Dictate is installed at `{{DICTATE_HOME}}`. It opens a studio window where the user talks while pointing. On Submit it writes a session folder (report.md, session.json, frames/, audio.webm) and the launcher exits, which wakes you up.
+Dictate opens a studio window where the user talks while pointing. On Submit it writes a session folder (report.md, session.json, frames/, audio.webm) and the launcher exits, which wakes you up.
 
 ## 1. Launch it
 
 From the current project root, run this **in the background** (`run_in_background: true`):
 
 ```
-node "{{DICTATE_HOME}}/bin/dictate.js" --once --out "<project root>/.dictate/sessions" [--video "<file>"] [--url "<url>"] [--title "<what this review is about>"]
+npx -y @d7y/dictate@latest --once --out "<project root>/.dictate/sessions" [--video "<file>"] [--url "<url>"] [--title "<what this review is about>"]
 ```
 
 - Add `--video "<absolute path>"` when the user is reviewing a specific video. The report then carries the exact source path.
@@ -21,9 +21,12 @@ node "{{DICTATE_HOME}}/bin/dictate.js" --once --out "<project root>/.dictate/ses
 
 Tell the user in two or three short lines that the studio is open:
 - **Video:** click (or hover) the spot on the frame, press **T** (or the mouse's back side button), talk, press it again. Drag to box an area, `I`/`O` for a range. Then Finish → Send.
-- **Web:** paste the site URL and press Open. On the site: point or click, press **T** (or the mouse's back side button), talk, press it again. Then Finish → Send. This needs the Dictate extension loaded once from `{{DICTATE_HOME}}/extension` (chrome://extensions → Developer mode → Load unpacked). The studio walks them through it.
+- **Web:** paste the site URL and press Open. On the site: point or click, press **T** (or the mouse's back side button), talk, press it again. Then Finish → Send. This needs the Dictate Chrome extension, added once. The studio walks them through it.
+- **To show something they like** (either mode): open any other website, talk there or click **Screenshot** (Alt+S) and drag around the part they mean. It is tagged Reference automatically.
 
 Then stop and wait for the background task notification. Do not poll.
+
+`npx` fetches the newest version, so the first launch after a release takes a few seconds longer. If it fails because there is no network, run the same command without `@latest` to use the cached copy.
 
 ## 2. When the launcher exits
 
@@ -32,7 +35,7 @@ Its output contains one of:
 - `DICTATE_DRAFT <dir>`: the studio closed before Submit and a draft was saved. Use it, and mention that it was a draft.
 - `DICTATE_CANCELLED` or `DICTATE_CLOSED`: nothing to act on. Say so in one line.
 
-Read `<dir>/report.md` in full. Then open every image it references (`<dir>/frames/...`) with the Read tool. Numbered pins and boxes, plus a red ring for the cursor, are drawn on them, and they are how you know what "this" and "here" mean. `session.json` has the same notes as structured data when you need exact numbers.
+Read `<dir>/report.md` in full. Then open every image it references (`<dir>/frames/...`) with the Read tool. Numbered pins and boxes, plus a red ring for the cursor, are drawn on them, and they are how you know what "this" and "here" mean. Screenshots (S1, S2…) are crops the user dragged around, often of a reference site. `session.json` has the same notes as structured data when you need exact numbers.
 
 ## 3. Act on it (the user's standing preference)
 
@@ -43,11 +46,13 @@ Read `<dir>/report.md` in full. Then open every image it references (`<dir>/fram
 Turning notes into work:
 - **Web:** each element comes with a CSS selector, visible text, classes, and an HTML snippet. Grep the codebase for distinctive text, class names, or `data-testid` to find the component. The page URL gives you the route. "Pointing" lines tell you which element was under the cursor when the user said "this" or "here".
 - **Video:** timecodes are positions in the source video. Positions are fractions of the frame (x 0→1 left→right, y 0→1 top→bottom), with source pixels in brackets. Ranges R1, R2… are in/out pairs. Use them directly with HyperFrames or ffmpeg.
+- **References:** notes marked Reference were made on another website the user opened as inspiration. Never search the codebase for a reference's selectors or text; they aren't there. Study its screenshot and the `look` / `inside` lines (font, colors, padding, radius, layout of the element and the panel around it), then build that look into the user's own code. Apply it where the note says; otherwise to what its **For** line names (a page of their site, with the note about it, or a video timecode). In your plan, name both sides: "Reference S3 (Dribbble sidebar) → `components/Sidebar.tsx`".
 - Transcripts can mix Arabic and English in the same sentence. Read both.
 - When two notes conflict, the later one wins unless it says otherwise.
 - The overall direction section, when present, applies to everything.
 
 ## Other commands
 
-- Latest submitted session for this project: `node "{{DICTATE_HOME}}/bin/dictate.js" --latest --out "<project root>/.dictate/sessions"`
+- Latest submitted session for this project: `npx -y @d7y/dictate@latest --latest --out "<project root>/.dictate/sessions"`
 - The user may run the studio on their own and later say "read my latest dictate session". Use `--latest` to find it.
+- First time, or the studio says "Live captions only": ask the user to run `npx -y @d7y/dictate@latest setup` in a terminal. It installs local speech to text (faster-whisper), downloads the model, and checks the extension. It takes a few minutes the first time and is safe to run again.

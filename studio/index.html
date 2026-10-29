@@ -6,7 +6,7 @@
   <meta name="dictate-studio" content="1">
   <meta name="color-scheme" content="dark">
   <title>Dictate Studio</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23121315'/%3E%3Ccircle cx='16' cy='16' r='8.5' fill='none' stroke='%23f3b33d' stroke-width='3'/%3E%3Ccircle cx='16' cy='16' r='4' fill='%23e23b2e'/%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Crect width='128' height='128' rx='25.6' fill='%23131518'/%3E%3Ccircle cx='49.28' cy='49.28' r='32' fill='%23e23b2e'/%3E%3Cpolygon points='70.4,70.4 70.4,108.99 80.48,99.99 86.91,114.14 92.91,111.35 86.48,97.41 98.7,97.41' fill='%23131518' stroke='%23131518' stroke-width='8.96' stroke-linejoin='round'/%3E%3Cpolygon points='70.4,70.4 70.4,108.99 80.48,99.99 86.91,114.14 92.91,111.35 86.48,97.41 98.7,97.41' fill='%23f2f2ee'/%3E%3Cg stroke='%23f2f2ee' stroke-width='5.38' stroke-linecap='round'%3E%3Cline x1='81.92' y1='63.36' x2='86.4' y2='55.68'/%3E%3Cline x1='83.2' y1='74.24' x2='92.16' y2='71.04'/%3E%3C/g%3E%3C/svg%3E">
   <link rel="stylesheet" href="studio.css">
   <script type="module" src="js/main.js"></script>
 </head>
@@ -42,6 +42,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
     <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
     <symbol id="i-mouse" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="6.5" y="3" width="11" height="18" rx="5.5"/><path d="M12 7v3.5"/></g></symbol>
     <symbol id="i-close" viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-crop" viewBox="0 0 24 24"><path d="M4 9V6a2 2 0 0 1 2-2h3M15 4h3a2 2 0 0 1 2 2v3M20 15v3a2 2 0 0 1-2 2h-3M9 20H6a2 2 0 0 1-2-2v-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
     <symbol id="i-refresh" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.5 4.5v4h-4"/></g></symbol>
   </defs>
 </svg>
@@ -230,13 +231,16 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
   <div class="web-actions">
     <span class="meter" aria-hidden="true"><svg class="icon"><use href="#i-mic"/></svg><span class="meter-bars"></span></span>
     <button class="btn" data-action="record" type="button" title="R"><span class="btn-label">Record</span></button>
+    <button class="btn" data-action="shot" type="button"><svg class="icon"><use href="#i-crop"/></svg><span>Screenshot</span></button>
     <button class="btn btn-strong" data-action="finish" type="button"><span>Finish<span class="wide-only"> &amp; review</span></span></button>
   </div>
 
   <main class="web">
     <section class="ext-setup" aria-labelledby="ext-setup-title">
-      <h2 id="ext-setup-title" class="setup-title">Load the Dictate extension once</h2>
+      <h2 id="ext-setup-title" class="setup-title">Add the Dictate extension once</h2>
       <p>It tracks pages, your cursor and the elements you pin. Without it, Dictate records your voice only.</p>
+      <p class="ext-store" hidden><a class="btn btn-primary" id="ext-store" href="https://chromewebstore.google.com/" target="_blank" rel="noopener">Add it from the Chrome Web Store</a></p>
+      <p class="ext-store" hidden>Or load it unpacked:</p>
       <ol class="setup-steps">
         <li>Open <span class="mono">chrome://extensions</span> and switch on <b>Developer mode</b> (top right).</li>
         <li>Click <b>Load unpacked</b> and choose this folder:
@@ -245,8 +249,8 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
             <button class="icon-btn" id="ext-folder" type="button" aria-label="Show folder"><svg class="icon"><use href="#i-folder"/></svg></button>
           </span>
         </li>
-        <li>Reload this window, or <button class="link-btn" id="ext-recheck" type="button">check again</button>.</li>
       </ol>
+      <p class="ext-recheck">Then reload this window, or <button class="link-btn" id="ext-recheck" type="button">check again</button>.</p>
     </section>
 
     <form class="open-site" onsubmit="return false" autocomplete="off">
@@ -258,7 +262,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
       <p class="field-note">Opens beside this panel and starts the session. <span class="ext-status" data-state="missing"></span></p>
     </form>
 
-    <div class="umd umd-page"><span>PAGE</span><span class="umd-sep">·</span><span id="web-now-url">nothing open yet</span></div>
+    <div class="umd umd-page"><span id="web-now-kind">PAGE</span><span class="umd-sep">·</span><span id="web-now-url">nothing open yet</span><span class="umd-sep now-for" hidden>·</span><span class="now-for" id="web-now-for" hidden></span></div>
     <div class="preview">
       <img id="web-shot" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="Latest screenshot of the page you are reviewing" hidden>
       <p class="preview-empty"><span id="web-now-title">The latest screenshot shows up here.</span></p>
@@ -271,13 +275,13 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
         <kbd class="key talk-key-label">T</kbd>
       </button>
       <p class="live-caption" aria-live="polite"></p>
-      <p class="desk-hint">On your site: point or click, press <kbd class="key talk-key-label">T</kbd><span class="talk-mouse-hint"></span>, talk, press it again. <kbd class="key">Alt</kbd><kbd class="key">A</kbd> to pin without talking.</p>
+      <p class="desk-hint">On your site: point or click, press <kbd class="key talk-key-label">T</kbd><span class="talk-mouse-hint"></span>, talk, press it again. <kbd class="key">Alt</kbd><kbd class="key">A</kbd> to pin without talking.<span class="shot-hint"> <kbd class="key shot-key-label">Alt S</kbd> to screenshot part of any site, yours or one you like.</span></p>
     </div>
 
     <ol class="log log-web" id="web-log"></ol>
 
     <footer class="web-foot">
-      <span class="counts"><b id="web-count-pages">0</b> pages · <b id="web-count-marks">0</b> marks</span>
+      <span class="counts"><b id="web-count-pages">0</b> pages<span hidden> · <b id="web-count-refs">0</b> references</span> · <b id="web-count-marks">0</b> marks</span>
     </footer>
     <form class="note-form" autocomplete="off">
       <input type="text" placeholder="Type a note… (N)" aria-label="Type a note">

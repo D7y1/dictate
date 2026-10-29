@@ -57,7 +57,16 @@ export class Review {
       const b = note.video.to;
       return b != null && Math.abs(b - a) >= 0.5 ? `${timecodeShort(a)} – ${timecodeShort(b)}` : timecodeShort(a);
     }
-    return note.page ? pathOf(note.page.url) : 'page';
+    if (!note.page) return 'page';
+    return note.page.reference ? siteName(note.page.url) : pathOf(note.page.url);
+  }
+
+  // What a reference is for: the page of your site you were on, or the moment in the video.
+  appliesTo(note) {
+    const a = note.appliesTo;
+    if (!a) return null;
+    if (a.video != null) return `for the video at ${timecodeShort(a.video)}`;
+    return a.url ? `for ${pathOf(a.url)}` : null;
   }
 
   card(note) {
@@ -82,9 +91,11 @@ export class Review {
     requestAnimationFrame(grow);
 
     const chips = [];
-    for (const m of note.marks) chips.push(h('span', { class: 'chip chip-mark' }, markLabel(m, this.mode)));
+    for (const m of note.marks) chips.push(h('span', { class: 'chip chip-mark' }, markLabel(m)));
     for (const p of note.pointing || []) chips.push(h('span', { class: 'chip', title: 'Where the cursor was when you said this' }, `“${p.word}” → ${p.el ? elName(p.el) : `${(p.x ?? 0).toFixed?.(2)}, ${(p.y ?? 0).toFixed?.(2)}`}`));
-    if (this.mode === 'web') for (const hv of (note.hovered || []).slice(0, 2)) chips.push(h('span', { class: 'chip chip-quiet' }, `hovered ${elName(hv.el)}`));
+    const forText = this.appliesTo(note);
+    if (forText) chips.push(h('span', { class: 'chip chip-quiet', title: 'Where Claude applies this reference, unless you said otherwise' }, forText));
+    if (note.page) for (const hv of (note.hovered || []).slice(0, 2)) chips.push(h('span', { class: 'chip chip-quiet' }, `hovered ${elName(hv.el)}`));
     if (note.source === 'typed') chips.push(h('span', { class: 'chip chip-quiet' }, 'typed'));
 
     const voidBtn = h('button', { class: 'btn btn-ghost note-void', type: 'button' }, 'Void');
@@ -94,7 +105,8 @@ export class Review {
       h('div', { class: 'note-head' },
         h('span', { class: 'note-n' }, String(note.n).padStart(3, '0')),
         h('span', { class: 'note-anchor' }, this.anchor(note)),
-        this.mode === 'web' && note.page?.title ? h('span', { class: 'note-page', title: note.page.url }, note.page.title) : null,
+        note.page?.reference ? h('span', { class: 'tag tag-ref', title: 'A site you showed as inspiration, not your code' }, 'REF') : null,
+        note.page?.title && (this.mode === 'web' || note.page.reference) ? h('span', { class: 'note-page', title: note.page.url }, note.page.title) : null,
         h('span', { class: 'note-void-stamp', 'aria-hidden': 'true' }, 'VOID'),
         voidBtn,
       ),
@@ -152,10 +164,20 @@ function elName(el) {
   return `${el.tag}${name ? ` “${name.slice(0, 32)}”` : ''}`;
 }
 
-function markLabel(m, mode) {
-  const tag = { pin: 'P', box: 'B', range: 'R', marker: 'M' }[m.kind] + m.n;
+function siteName(url) {
+  try {
+    const u = new URL(url);
+    return `${u.hostname.replace(/^www\./, '')}${u.pathname === '/' ? '' : u.pathname}`;
+  } catch {
+    return url;
+  }
+}
+
+function markLabel(m) {
+  const tag = { pin: 'P', box: 'B', range: 'R', marker: 'M', shot: 'S' }[m.kind] + m.n;
   if (m.kind === 'range') return `${tag} ${timecodeShort(m.in)} → ${timecodeShort(m.out)}`;
-  if (mode === 'web') return `${tag} ${m.el ? elName(m.el) : 'area'}`;
+  if (m.kind === 'shot') return `${tag} ${m.crop ? `${m.w} × ${m.h}` : 'whole screen'}`;
+  if (m.url) return `${tag} ${m.el ? elName(m.el) : 'area'}`;
   if (m.kind === 'marker') return `${tag} ${timecodeShort(m.vt)}`;
   return `${tag} ${m.x.toFixed(2)}, ${m.y.toFixed(2)}`;
 }

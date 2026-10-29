@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy · Dictate</title>
+<meta name="description" content="What Dictate and its Chrome extension record, where it goes, and what never leaves your computer.">
+<meta name="theme-color" content="#0b0c0e">
+<link rel="canonical" href="https://d7y1.github.io/dictate/privacy/">
+<link rel="alternate" hreflang="en" href="https://d7y1.github.io/dictate/privacy/">
+<link rel="alternate" hreflang="ar" href="https://d7y1.github.io/dictate/ar/privacy/">
+<link rel="icon" type="image/svg+xml" href="../assets/icon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/icon-32.png">
+<link rel="apple-touch-icon" href="../assets/icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@85..100,400..800&family=Noto+Sans+Arabic:wght@400..600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cascadia+Mono:wght@400..700&amp;display=swap&amp;text=%20%21%22%23%24%25%26%27%28%29%2A%2B%2C-.%2F0123456789%3A%3B%3C%3D%3E%3F%40ABCDEFGHIJKLMNOPQRSTUVWXYZ%5B%5C%5D%5E_%60abcdefghijklmnopqrstuvwxyz%7B%7C%7D~%C2%AB%C2%BB%C2%B7%C3%97%E2%80%94%E2%80%93%E2%80%98%E2%80%99%E2%80%9C%E2%80%9D%E2%80%A6%E2%86%90%E2%86%92%E2%97%8F">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <a class="wordmark" href="../" aria-label="Dictate, home">DICTATE</a>
+  <nav class="topnav" aria-label="Pages">
+    <a href="../">Home</a>
+    <a href="../#start">Start</a>
+    <a class="lang" href="../ar/privacy/" lang="ar" hreflang="ar">عربي</a>
+  </nav>
+  <div class="topbar-right">
+    <a class="btn btn-primary" href="https://github.com/D7y1/dictate"><span>View<span class="long"> on GitHub</span></span></a>
+  </div>
+</header>
+
+<main id="main" class="legal">
+  <div class="page-strip" aria-hidden="true"><span class="umd-page">PAGE</span><span class="umd-sep">·</span><span>/privacy</span></div>
+
+  <h1>Privacy</h1>
+  <p class="updated">Updated 21 October 2026</p>
+
+  <div class="short">
+    <p>Dictate runs on your computer. The extension and the studio send what they record only to the Dictate server on your own machine, which saves it in your project folder. There is no Dictate account, no analytics, and no server of ours that your data could reach.</p>
+  </div>
+
+  <h2>What the Chrome extension records</h2>
+  <p>Only while a review session you started in Dictate Studio is recording. Before you start, while you pause, and after you finish, it records nothing. During a session it records:</p>
+  <ul>
+    <li>the address and title of each page you visit;</li>
+    <li>where your cursor is, what you click, how you scroll, and text you select;</li>
+    <li>a description of each element you point at or pin: its CSS selector, visible text, classes, and a short HTML snippet;</li>
+    <li>a screenshot of the visible tab when you pin something, open a note, or open a page.</li>
+  </ul>
+  <p><strong>It never reads what you type into fields</strong>, including passwords and form values.</p>
+
+  <h2>Where it goes</h2>
+  <p>To the Dictate server running on your computer, at <code>localhost</code>. The extension refuses to send to any other address. The server writes the session into your project, in <code>.dictate/sessions/</code>: <code>report.md</code>, <code>session.json</code>, the screenshots and frames, the transcript, the raw events, and your audio. The files stay there until you delete them. Dictate doesn't upload them anywhere.</p>
+
+  <h2>Your voice</h2>
+  <p>The studio records your microphone while a session runs and saves the audio in the session folder. The transcript is made on your computer by faster-whisper.</p>
+  <p>While a note is open, the studio also shows live captions using your browser's built-in speech recognition. In Chrome and Edge, that feature may send the audio to Google or Microsoft to turn it into text, under their privacy policies. The final transcript doesn't depend on it.</p>
+
+  <h2>Claude</h2>
+  <p>Dictate itself sends nothing to Anthropic. When you ask Claude Code to act on a session, it reads the report and the images like any other file in your project, under your own agreement with Anthropic.</p>
+
+  <h2>What stays in your browser</h2>
+  <p>The extension keeps the current session's state (on or off, your key bindings, and the local server's address) in Chrome's session storage, which clears when you close Chrome. The studio remembers your preferences, such as the last address you reviewed, your microphone, and your controls, in its own browser storage on your computer.</p>
+
+  <h2>Why the extension asks for its permissions</h2>
+  <ul>
+    <li><strong>Read and change data on all websites:</strong> to follow you from page to page during a review, describe the elements you point at, and take screenshots. Chrome only allows screenshots with this permission or a click on the toolbar button for every tab. The extension does nothing on a page until you start a session.</li>
+    <li><strong>Tabs and scripting:</strong> to know which tab you are reviewing, and to start tracking in tabs that were already open when you added the extension.</li>
+    <li><strong>Storage:</strong> to remember the session state described above.</li>
+  </ul>
+
+  <h2>Downloads</h2>
+  <p>Setup installs faster-whisper from PyPI and downloads the speech model from Hugging Face. Dictate itself comes from npm. Those services see an ordinary download request, as with any other package.</p>
+
+  <h2>Sharing and selling</h2>
+  <p>Dictate doesn't sell, rent, or share your data, and doesn't use it for anything except your review session. Its use of information from Chrome follows the Chrome Web Store User Data Policy, including the Limited Use requirements.</p>
+
+  <h2>Changes and contact</h2>
+  <p>Dictate is open source, so every change to it, and to this page, is public in <a href="https://github.com/D7y1/dictate">the repository</a>. Questions or concerns: <a href="https://github.com/D7y1/dictate/issues">open an issue</a>.</p>
+</main>
+
+<footer class="footer">
+  <span class="wordmark" aria-hidden="true">DICTATE</span>
+  <a href="https://github.com/D7y1/dictate">Source on GitHub</a>
+  <a href="https://github.com/D7y1/dictate/blob/main/LICENSE">MIT License</a>
+  <a href="../ar/privacy/" lang="ar" hreflang="ar">العربية</a>
+  <span class="fine">An independent open-source project. Claude and Claude Code are made by Anthropic.</span>
+</footer>
+</body>
+</html>

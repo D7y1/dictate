@@ -1,5 +1,6 @@
 import { spawn, spawnSync } from 'node:child_process';
 import readline from 'node:readline';
+import { SETUP_COMMAND } from './install.js';
 
 const IDLE_SHUTDOWN_MS = 10 * 60 * 1000; // release GPU memory when nobody is recording
 
@@ -35,7 +36,7 @@ export class Transcriber {
       }
     }
     this.status = 'unavailable';
-    this.detail = 'Python with faster-whisper was not found. Run "npm run setup" in the Dictate folder.';
+    this.detail = `Python with faster-whisper was not found. Run "${SETUP_COMMAND}" to install it.`;
     return false;
   }
 

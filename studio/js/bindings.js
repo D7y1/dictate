@@ -14,6 +14,7 @@ export const ACTIONS = [
   { id: 'record', label: 'Start or pause the session', scope: 'all', defaults: ['KeyR'] },
   { id: 'typeNote', label: 'Type a note', scope: 'all', defaults: ['KeyN'] },
   { id: 'annotate', label: 'Pin on your site without talking', scope: 'web', defaults: ['Alt+KeyA'] },
+  { id: 'shot', label: 'Screenshot', hint: 'Drag around the part you mean. Works on any site, including one you are showing as a reference.', scope: 'web', defaults: ['Alt+KeyS'] },
 ];
 
 // Video navigation keys that stay fixed (they behave like every editor's).
@@ -99,5 +100,5 @@ export function hasMouse(bindings, id) {
 
 // The subset the extension needs on your site's pages.
 export function forExtension(bindings) {
-  return { talk: bindings.talk, discard: bindings.discard, annotate: bindings.annotate };
+  return { talk: bindings.talk, discard: bindings.discard, annotate: bindings.annotate, shot: bindings.shot };
 }

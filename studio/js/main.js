@@ -41,7 +41,7 @@ async function boot() {
   const project = app.config.project && app.config.project.toLowerCase() !== 'dictate' ? app.config.project : '';
   for (const el of $$('.project-name')) el.textContent = project;
 
-  app.video = new VideoReview({ root: $('#screen-video'), recorder, config: app.config });
+  app.video = new VideoReview({ root: $('#screen-video'), recorder, ext, config: app.config });
   app.web = new WebReview({ root: $('#screen-web'), recorder, ext, config: app.config });
   app.review = new Review({ root: $('#screen-review'), onSubmitted: showDone });
   app.video.onNeedSession = ensureSession;
@@ -52,6 +52,7 @@ async function boot() {
   };
   app.web.onNeedSession = ensureSession;
   app.web.extBindings = forExtension(app.bindings);
+  app.video.extBindings = app.web.extBindings;
 
   // ?debug exposes internals for scripted UI checks.
   if (new URLSearchParams(location.search).has('debug')) window.__dictate = { app, recorder, ext };
@@ -62,7 +63,7 @@ async function boot() {
   renderControls();
   renderKeyLabels();
   $('#controls-reset').addEventListener('click', resetControls);
-  renderWhisper(app.config.whisper);
+  renderWhisper(app.config.whisper, app.config.setupCommand);
   renderExtStatus();
   ext.addEventListener('change', renderExtStatus);
   ext.addEventListener('push', (e) => onExtensionPush(e.detail));
@@ -177,6 +178,12 @@ function renderKeyLabels() {
   }
   const mouseHint = mouse ? `${key ? ' or ' : ''}the ${mouse === 'MouseMiddle' ? 'middle mouse button' : 'mouse side button'}` : '';
   for (const el of $$('.talk-mouse-hint')) el.textContent = mouseHint;
+  const shotKey = keyHint(app.bindings, 'shot');
+  for (const el of $$('.shot-key-label')) {
+    el.textContent = shotKey || '';
+    el.hidden = !shotKey;
+  }
+  for (const el of $$('.shot-hint')) el.hidden = !shotKey;
   if (app.video) {
     app.video.talkKeyLabel = key;
     app.video.talkMouseHint = mouseHint;
@@ -223,6 +230,7 @@ function setBindings(id, list) {
   app.bindings = { ...app.bindings, [id]: list };
   saveBindings(app.bindings);
   app.web.extBindings = forExtension(app.bindings);
+  app.video.extBindings = app.web.extBindings;
   if (ext.connected) ext.call('settings', { bindings: app.web.extBindings }).catch(() => {});
   renderControls();
   renderKeyLabels();
@@ -335,10 +343,10 @@ async function fillMics() {
   select.value = inputs.some((d) => d.deviceId === current) ? current : '';
 }
 
-function renderWhisper(w) {
+function renderWhisper(w, setupCommand) {
   const el = $('#whisper-status');
   if (w.status === 'unavailable') {
-    el.textContent = 'Live captions only. Install faster-whisper for accurate transcripts.';
+    el.textContent = `Live captions only. For accurate transcripts, run ${setupCommand || 'Dictate setup'} in a terminal.`;
     el.dataset.state = 'warn';
   } else {
     el.textContent = 'Whisper transcribes on this machine when you finish.';
@@ -422,7 +430,7 @@ async function startRecording() {
     });
     recorder.decorateFinal = (d) => (app.mode === 'video' ? { vt: app.video.vtAt(d.tStart) } : {});
     app.noteRows.clear();
-    if (mode === 'video') app.video.onRecordingStart();
+    if (mode === 'video') await app.video.onRecordingStart(session);
     else await app.web.onRecordingStart(session);
     return true;
   } catch (err) {
@@ -437,7 +445,10 @@ async function finishRecording() {
   show('finishing');
   setFinishing('Saving your recording');
   if (mode === 'web') await app.web.onRecordingStop();
-  if (mode === 'video') app.video.video.pause();
+  if (mode === 'video') {
+    app.video.video.pause();
+    await app.video.onRecordingStop();
+  }
   const session = await recorder.stop();
   const stream = session.stream((msg) => {
     if (msg.kind === 'status') setFinishing(msg.message);
@@ -472,12 +483,15 @@ async function talkDown({ hold = true, anchor = null } = {}) {
   app.opening = true;
   try {
     if (!(await ensureSession())) return;
-    const note = recorder.openNote();
+    // T pressed on a website: the note records that page. In video review it is a reference.
+    const onSite = app.mode === 'video' && !!anchor?.url;
+    const note = recorder.openNote(anchor?.url ? { page: { url: anchor.url, title: anchor.title } } : undefined);
     if (!note) return;
     app.talkPress = hold ? { at: Date.now(), id: note.id } : null;
-    if (app.mode === 'video') await app.video.onNoteOpen(note.id);
-    else await app.web.onNoteOpen(note.id, anchor);
-    const row = app.mode === 'video' ? app.video.logNote(note.id) : app.web.logNote(note.id, anchor);
+    if (app.mode === 'web') await app.web.onNoteOpen(note.id, anchor);
+    else if (onSite) await app.video.onSiteNoteOpen(note.id, anchor);
+    else await app.video.onNoteOpen(note.id);
+    const row = app.mode === 'video' ? app.video.logNote(note.id, onSite ? anchor : null) : app.web.logNote(note.id, anchor);
     row.classList.add('open');
     app.noteRows.set(note.id, { row, text: '' });
   } finally {
@@ -494,7 +508,7 @@ function talkUp() {
 function closeNote({ cancel = false } = {}) {
   const note = recorder.closeNote({ cancel });
   if (!note) return;
-  if (app.mode === 'web') app.web.onNoteClose();
+  controller().onNoteClose?.();
   const entry = app.noteRows.get(note.id);
   if (!entry) return;
   entry.row.classList.remove('open');
@@ -533,6 +547,7 @@ function bindRecording() {
   for (const btn of $$('[data-action="record"]')) btn.addEventListener('click', () => toggleRecord());
   for (const btn of $$('[data-action="finish"]')) btn.addEventListener('click', () => finishRecording());
   for (const btn of $$('[data-action="talk"]')) btn.addEventListener('click', () => talkDown({ hold: false }));
+  for (const btn of $$('[data-action="shot"]')) btn.addEventListener('click', () => app.web.shoot());
 
   recorder.addEventListener('state', () => {
     const state = !recorder.active ? 'idle' : recorder.recording ? 'recording' : 'paused';
@@ -654,6 +669,9 @@ function runAction(action, phase) {
       break;
     case 'marker':
       app.video.addMark('marker', app.video.mouse ? { x: app.video.mouse.x, y: app.video.mouse.y } : {});
+      break;
+    case 'shot':
+      app.web.shoot();
       break;
     default:
       break;

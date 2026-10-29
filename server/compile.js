@@ -7,7 +7,7 @@ const POINTING_WORDS = new Set([
   'هذا', 'هذه', 'هذي', 'هاذا', 'هاذي', 'ذا', 'ذي', 'هنا', 'هناك', 'هنيه', 'هنيا', 'كذا', 'ذول', 'هذول', 'هذولا',
 ]);
 
-const MARK_TYPES = new Set(['video.pin', 'video.box', 'video.range', 'video.marker', 'page.mark']);
+const MARK_TYPES = new Set(['video.pin', 'video.box', 'video.range', 'video.marker', 'page.mark', 'page.shot']);
 const MARK_LEAD_MS = 5000; // a mark this long before speech still belongs to it ("pin, then talk")
 const MARK_TRAIL_MS = 2000;
 
@@ -32,6 +32,15 @@ export function fmtTimecode(sec) {
 }
 
 const round = (n, d = 3) => (n == null ? n : Math.round(n * 10 ** d) / 10 ** d);
+
+// The extension names a site by its host without port or "www.".
+function siteOf(url) {
+  try {
+    return new URL(url).hostname.replace(/^www\./, '');
+  } catch {
+    return null;
+  }
+}
 
 // Maps a position in the recorded audio (seconds) to wall-clock ms, honoring pauses.
 export function buildAudioClock(events) {
@@ -167,7 +176,7 @@ export function talkSegments(events, sessionEnd, { includeCancelled = false } = 
   const cancelled = new Map(events.filter((e) => e.type === 'note.cancel').map((e) => [e.id, e.t]));
   const segs = [];
   for (const e of events) {
-    if (e.type === 'note.start') segs.push({ id: e.id, start: e.t, end: null, cancelled: cancelled.has(e.id) });
+    if (e.type === 'note.start') segs.push({ id: e.id, start: e.t, end: null, cancelled: cancelled.has(e.id), page: e.page || null });
     else if (e.type === 'note.end') {
       const seg = segs.find((s) => s.id === e.id);
       if (seg) seg.end = e.t;
@@ -190,7 +199,7 @@ function joinWords(words) {
 function splitBySegments(utterances, allSegs) {
   if (!allSegs.length) return utterances;
   const segs = allSegs.filter((s) => !s.cancelled);
-  const byId = new Map(segs.map((s) => [s.id, { id: `n${s.id}`, text: '', tStart: s.start, tEnd: s.end, words: [], source: 'talk', talk: true, segId: s.id }]));
+  const byId = new Map(segs.map((s) => [s.id, { id: `n${s.id}`, text: '', tStart: s.start, tEnd: s.end, words: [], source: 'talk', talk: true, segId: s.id, page: s.page }]));
   const inside = (t, s) => t >= s.start - WORD_LEAD_MS && t <= s.end + WORD_TRAIL_MS;
   const free = [];
   for (const u of utterances) {
@@ -279,8 +288,10 @@ function attachMarks(utterances, marks) {
 
 function describeMark(m, video) {
   const base = { id: m.id, n: m.n, kind: m.kind, t: m.t };
-  if (m.type === 'page.mark') {
-    return { ...base, url: m.url, title: m.title, x: m.x, y: m.y, w: m.w, h: m.h, viewport: m.viewport, el: m.el || null, label: m.label || null };
+  if (m.type === 'page.mark' || m.type === 'page.shot') {
+    const out = { ...base, url: m.url, title: m.title, reference: !!m.reference, x: m.x, y: m.y, w: m.w, h: m.h, viewport: m.viewport, el: m.el || null, label: m.label || null };
+    if (m.type === 'page.shot') out.crop = !!m.crop;
+    return out;
   }
   const px = (fx, dim) => (dim ? Math.round(fx * dim) : null);
   const out = { ...base, vt: m.vt ?? null };
@@ -323,9 +334,23 @@ export function compileSession({ meta, events, transcript = null }) {
 
   // A pin placed just before pressing T is linked to that note afterwards.
   const links = new Map(evs.filter((e) => e.type === 'mark.link').map((e) => [e.id, e.note]));
+
+  // Your site vs. references. Everything shown during a video review is a reference; in web
+  // review the extension tags each page, and the toolbar switch can move a whole site afterwards.
+  const roles = new Map(evs.filter((e) => e.type === 'site.role').map((e) => [e.host, !!e.reference]));
+  const tagged = new Map();
+  for (const e of evs) if (e.url && typeof e.reference === 'boolean') tagged.set(e.url, e.reference);
+  const isRef = (url) => {
+    if (!url) return false;
+    if (mode === 'video') return true;
+    const site = siteOf(url);
+    return roles.has(site) ? roles.get(site) : tagged.get(url) ?? false;
+  };
+
   const marks = evs
     .filter((e) => MARK_TYPES.has(e.type) && !removed.has(e.id))
-    .map((m) => (links.has(m.id) && !m.note ? { ...m, note: links.get(m.id) } : m));
+    .map((m) => (links.has(m.id) && !m.note ? { ...m, note: links.get(m.id) } : m))
+    .map((m) => (m.url ? { ...m, reference: isRef(m.url) } : m));
   const frames = evs.filter((e) => e.type === 'frame');
   // Marks made for a talk-key note belong to it outright; the rest attach by timing.
   const owner = attachMarks(utterances, marks.filter((m) => !m.note || !segs.some((s) => s.id === m.note)));
@@ -337,7 +362,15 @@ export function compileSession({ meta, events, transcript = null }) {
   // The extension and the page can both report the same arrival; keep the first.
   const pageVisits = evs
     .filter((e) => e.type === 'page.visit')
-    .filter((v, i, all) => !(i > 0 && all[i - 1].url === v.url && v.t - all[i - 1].t < 3000));
+    .filter((v, i, all) => !(i > 0 && all[i - 1].url === v.url && v.t - all[i - 1].t < 3000))
+    .map((v) => ({ ...v, reference: isRef(v.url) }));
+  const ownVisits = pageVisits.filter((v) => !v.reference);
+  // The page of your own site a reference applies to: the one you were on before, else the next.
+  const yourPageAt = (t) => {
+    const before = lastBefore(ownVisits, t);
+    const v = before || ownVisits.find((o) => o.t > t);
+    return v ? { url: v.url, title: v.title, when: before ? 'before' : 'after' } : null;
+  };
   const pageMouse = evs.filter((e) => e.type === 'page.mouse');
   const hovers = evs.filter((e) => e.type === 'page.hover');
   const clicks = evs.filter((e) => e.type === 'page.click');
@@ -367,9 +400,15 @@ export function compileSession({ meta, events, transcript = null }) {
     };
     const markIds = new Set(item.marks.map((m) => m.id));
     const pointingWords = (item.words || []).filter((w) => POINTING_WORDS.has(cleanWord(w.word))).slice(0, 6);
+    // Where the note was made: the page it was opened on, else the page of its marks.
+    const markPage = item.marks.find((m) => m.url);
+    const madeOn = item.page || (markPage ? { url: markPage.url, title: markPage.title } : null);
+    const onSite = mode === 'web' || !!madeOn; // a video note made on a website is about that site
 
     if (mode === 'video') {
       note.video = { from: round(vt(item.tStart), 2), to: round(vt(item.tEnd), 2) };
+    }
+    if (mode === 'video' && !onSite) {
       const spots = restingSpots(videoMouse, item.tStart - 300, item.tEnd, { radius: 0.03, minMs: 400 }).slice(0, 3);
       note.video.cursorRested = spots.map((s) => ({ x: round(s.x), y: round(s.y), ms: Math.round(s.ms), vt: round(s.ref?.vt, 2) }));
       const at = lastBefore(videoMouse, item.tStart, 3000);
@@ -381,8 +420,9 @@ export function compileSession({ meta, events, transcript = null }) {
         })
         .filter(Boolean);
     } else {
-      const visit = lastBefore(pageVisits, item.tStart) || pageVisits[0] || null;
-      note.page = visit ? { url: visit.url, title: visit.title } : null;
+      const visit = madeOn || lastBefore(pageVisits, item.tStart) || pageVisits[0] || null;
+      note.page = visit ? { url: visit.url, title: visit.title, reference: isRef(visit.url) } : null;
+      if (note.page?.reference) note.appliesTo = mode === 'video' ? { video: note.video.from } : yourPageAt(item.tStart);
       const pagesDuring = pageVisits.filter((v) => v.t > item.tStart && v.t <= item.tEnd).map((v) => ({ url: v.url, title: v.title }));
       if (pagesDuring.length) note.navigatedTo = pagesDuring;
 
@@ -391,7 +431,8 @@ export function compileSession({ meta, events, transcript = null }) {
       const dwell = new Map();
       for (let h = 0; h < hovers.length; h++) {
         const cur = hovers[h];
-        const end = Math.min(hovers[h + 1]?.t ?? tEndSession, item.tEnd);
+        const left = pageVisits.find((v) => v.t > cur.t)?.t ?? Infinity;
+        const end = Math.min(hovers[h + 1]?.t ?? tEndSession, left, item.tEnd);
         const start = Math.max(cur.t, windowFrom);
         if (end <= start || !cur.el) continue;
         const key = cur.el.selector || cur.el.html;
@@ -431,12 +472,22 @@ export function compileSession({ meta, events, transcript = null }) {
     return note;
   });
 
+  // Name the note on your own page that a reference sits next to, so it can be read with it.
+  for (const n of notes) {
+    const target = n.appliesTo?.url;
+    if (!target) continue;
+    const same = notes.filter((o) => !o.page?.reference && o.page?.url === target);
+    const match = n.appliesTo.when === 'before' ? same.filter((o) => o.n < n.n).at(-1) : same.find((o) => o.n > n.n);
+    if (match) n.appliesTo.noteId = match.id;
+  }
+
   // Page history for web sessions.
   const pages = pageVisits.map((v, i) => {
     const end = pageVisits[i + 1]?.t ?? tEndSession;
     return {
       url: v.url,
       title: v.title,
+      reference: v.reference,
       at: v.t - t0,
       ms: Math.max(0, end - v.t),
       notes: notes.filter((n) => n.page?.url === v.url && n.tStart >= v.t && n.tStart < end).map((n) => n.n),
@@ -452,7 +503,9 @@ export function compileSession({ meta, events, transcript = null }) {
     boxes: allMarks.filter((m) => m.kind === 'box').length,
     ranges: allMarks.filter((m) => m.kind === 'range').length,
     markers: allMarks.filter((m) => m.kind === 'marker').length,
-    pages: new Set(pageVisits.map((v) => v.url)).size,
+    shots: allMarks.filter((m) => m.kind === 'shot').length,
+    pages: new Set(ownVisits.map((v) => v.url)).size,
+    references: new Set([...pageVisits.filter((v) => v.reference).map((v) => v.url), ...notes.filter((n) => n.page?.reference).map((n) => n.page.url)]).size,
     frames: frames.length,
   };
 
@@ -493,6 +546,37 @@ function pathOf(url) {
     return url;
   }
 }
+
+function siteName(url) {
+  const path = pathOf(url);
+  return `${siteOf(url) || ''}${path === '/' ? '' : path}`;
+}
+
+function describeLook(look) {
+  if (!look) return '';
+  return [
+    look.font,
+    look.color && `text ${look.color}`,
+    look.background && `on ${look.background}`,
+    look.padding && `padding ${look.padding}`,
+    look.radius && `radius ${look.radius}`,
+    look.border && `border ${look.border}`,
+    look.shadow && `shadow ${look.shadow}`,
+    look.layout,
+  ].filter(Boolean).join(' · ');
+}
+
+// Lines under a mark made on a reference site: what it is made of, so it can be rebuilt.
+function lookLines(el) {
+  const lines = [];
+  if (el?.look) lines.push(`  - look: ${describeLook(el.look)}`);
+  const w = el?.within;
+  if (w) lines.push(`  - inside: ${describeEl(w)} ${w.rect ? `${w.rect.w}×${w.rect.h} px` : ''}${w.look ? ` · ${describeLook(w.look)}` : ''}`.trimEnd());
+  return lines;
+}
+
+const REFERENCE_HELP =
+  '> **References:** notes marked **Reference** were made on another website the user opened to show you something they like. That site is not part of this project, so don\'t search the codebase for its selectors or text. Treat its screenshot and the measured look (font, colors, spacing, radius) as the target, and apply it where the note says. When the note doesn\'t say where, apply it to what **For** names.';
 
 function xy(x, y) {
   return `x ${Number(x).toFixed(2)}, y ${Number(y).toFixed(2)}`;
@@ -535,7 +619,9 @@ export function renderReport({ meta, compiled }) {
     stats.boxes && count(stats.boxes, 'box', 'boxes'),
     stats.ranges && count(stats.ranges, 'range'),
     stats.markers && count(stats.markers, 'marker'),
+    stats.shots && count(stats.shots, 'screenshot'),
     !isVideo && count(stats.pages, 'page'),
+    stats.references && count(stats.references, 'reference'),
     count(stats.frames, 'image'),
   ].filter(Boolean);
   L.push(`- **Contents:** ${counts.join(' · ')}`);
@@ -550,6 +636,7 @@ export function renderReport({ meta, compiled }) {
       : '> **How to read this:** each note is what the user said plus what they were pointing at on the page while they said it. Elements include a CSS selector, visible text, and an HTML snippet so you can find them in the codebase. Screenshots in `frames/` show numbered pins and boxes the user placed, plus the cursor (ring). "Pointing" lists the element under the cursor at the moment the user said a word like "this" or "here".',
   );
   L.push('');
+  if (notes.some((n) => n.page?.reference)) L.push(REFERENCE_HELP, '');
 
   if (compiled.general) {
     L.push('## Overall direction');
@@ -562,17 +649,31 @@ export function renderReport({ meta, compiled }) {
   L.push('');
   if (!notes.length) L.push('_No notes were captured in this session._');
 
+  const byId = new Map(notes.map((n) => [n.id, n]));
   for (const n of notes) {
+    const ref = !!n.page?.reference;
     if (isVideo) {
       const range = n.video?.from != null ? (Math.abs((n.video.to ?? n.video.from) - n.video.from) >= 0.5 ? `${fmtTimecode(n.video.from)} – ${fmtTimecode(n.video.to)}` : fmtTimecode(n.video.from)) : 'no video loaded';
-      L.push(`### ${n.n}. ${range}`);
+      L.push(`### ${n.n}. ${range}${ref ? ` · Reference · ${siteName(n.page.url)}` : ''}`);
+    } else if (ref) {
+      L.push(`### ${n.n}. Reference · ${siteName(n.page.url)} · ${fmtClock(n.at)} into the session`);
     } else {
       L.push(`### ${n.n}. ${n.page ? pathOf(n.page.url) : 'page'} · ${fmtClock(n.at)} into the session`);
     }
     L.push('');
-    if (!isVideo && n.page) L.push(`Page: [${truncate(n.page.title || n.page.url, 90)}](${n.page.url})`, '');
+    if (ref) {
+      L.push(`Reference: [${truncate(n.page.title || siteName(n.page.url), 90)}](${n.page.url}), a site the user is showing as inspiration. It is not part of this project.`);
+      const a = n.appliesTo;
+      if (a?.video != null) L.push(`For: the video at ${fmtTimecode(a.video)}, where it was paused.`);
+      else if (a?.url) {
+        const near = a.noteId && byId.get(a.noteId);
+        L.push(`For: [${truncate(a.title || pathOf(a.url), 90)}](${a.url}) \`${pathOf(a.url)}\`, the page of the user's site they were on ${a.when === 'before' ? 'just before' : 'next'}${near ? ` (note ${near.n} is about it)` : ''}.`);
+      }
+      L.push('');
+    } else if (!isVideo && n.page) L.push(`Page: [${truncate(n.page.title || n.page.url, 90)}](${n.page.url})`, '');
     if (n.text) L.push(quote(n.text), '');
     else if (n.talk) L.push('_The user opened a voice note here but no words were picked up. Check `audio.webm` at this time._', '');
+    else if (n.marks.length && n.marks.every((m) => m.kind === 'shot')) L.push('_A screenshot with no words. Read it together with the notes around it._', '');
     else L.push('_No words. The user marked this spot without speaking._', '');
 
     const bullets = [];
@@ -580,36 +681,58 @@ export function renderReport({ meta, compiled }) {
     for (const m of n.marks) {
       if (m.kind === 'range') bullets.push(`**Range R${m.n}:** ${fmtTimecode(m.in)} → ${fmtTimecode(m.out)} (${(m.out - m.in).toFixed(2)}s)`);
       else if (m.kind === 'marker') bullets.push(`**Marker M${m.n}** at ${fmtTimecode(m.vt)}`);
-      else if (isVideo && m.kind === 'pin') bullets.push(`**Pin P${m.n}** at ${xy(m.x, m.y)}${m.px?.x != null ? ` [${m.px.x}, ${m.px.y} px]` : ''} · ${fmtTimecode(m.vt)}`);
-      else if (isVideo && m.kind === 'box') bullets.push(`**Box B${m.n}** from ${xy(m.x, m.y)}, size ${Number(m.w).toFixed(2)} × ${Number(m.h).toFixed(2)}${m.px?.x != null ? ` [${m.px.x}, ${m.px.y} px · ${m.pxSize.w}×${m.pxSize.h} px]` : ''} · ${fmtTimecode(m.vt)}`);
-      else if (!isVideo) {
-        const label = m.kind === 'box' ? `**Box B${m.n}**` : `**Pin P${m.n}**`;
+      else if (m.kind === 'shot') {
+        const vp = m.viewport ? ` of a ${m.viewport.w}×${m.viewport.h} viewport` : '';
+        const lines = [m.crop ? `**Screenshot S${m.n}**: the area the user dragged around, ${m.w}×${m.h} px at ${m.x},${m.y}${vp}` : `**Screenshot S${m.n}**: the whole visible screen${vp}`];
+        if (m.el) lines.push(`  - at its center: ${describeEl(m.el)}`);
+        if (m.reference) lines.push(...lookLines(m.el));
+        bullets.push(lines.join('\n'));
+      } else if (!m.url && m.kind === 'pin') bullets.push(`**Pin P${m.n}** at ${xy(m.x, m.y)}${m.px?.x != null ? ` [${m.px.x}, ${m.px.y} px]` : ''} · ${fmtTimecode(m.vt)}`);
+      else if (!m.url && m.kind === 'box') bullets.push(`**Box B${m.n}** from ${xy(m.x, m.y)}, size ${Number(m.w).toFixed(2)} × ${Number(m.h).toFixed(2)}${m.px?.x != null ? ` [${m.px.x}, ${m.px.y} px · ${m.pxSize.w}×${m.pxSize.h} px]` : ''} · ${fmtTimecode(m.vt)}`);
+      else if (m.url) {
+        const label = `${m.kind === 'box' ? `**Box B${m.n}**` : `**Pin P${m.n}**`}${isVideo ? ' on the site' : ''}`;
         const lines = [`${label} → ${m.el ? describeEl(m.el) : 'area'}`];
-        if (m.el?.selector) lines.push(`  - selector: \`${m.el.selector}\``);
+        if (m.el?.selector && !m.reference) lines.push(`  - selector: \`${m.el.selector}\``);
         if (m.el?.html) lines.push(`  - html: \`${truncate(m.el.html, 220)}\``);
         if (m.kind === 'box' || m.el?.rect) {
           const r = m.kind === 'box' ? m : m.el.rect;
           lines.push(`  - ${m.kind === 'box' ? 'area' : 'element box'}: ${Math.round(r.x)},${Math.round(r.y)} · ${Math.round(r.w)}×${Math.round(r.h)} px${m.viewport ? ` in a ${m.viewport.w}×${m.viewport.h} viewport` : ''}`);
         }
+        if (m.reference) lines.push(...lookLines(m.el));
         bullets.push(lines.join('\n'));
       }
     }
     for (const p of n.pointing || []) {
-      if (isVideo) bullets.push(`**Pointing** "${p.word}" → ${xy(p.x, p.y)}${p.vt != null ? ` · ${fmtTimecode(p.vt)}` : ''}`);
+      if (!n.page) bullets.push(`**Pointing** "${p.word}" → ${xy(p.x, p.y)}${p.vt != null ? ` · ${fmtTimecode(p.vt)}` : ''}`);
       else bullets.push(`**Pointing** "${p.word}" → ${p.el ? describeEl(p.el) : `cursor at ${p.x}, ${p.y} px`}`);
     }
     if (isVideo && n.video?.cursorRested?.length) {
       bullets.push(`**Cursor rested** ${n.video.cursorRested.map((s) => `${xy(s.x, s.y)} (${fmtSecs(s.ms)})`).join('; ')}`);
     }
-    if (!isVideo) {
+    if (n.page) {
       if (n.hovered?.length) bullets.push(`**Hovered** ${n.hovered.map((h) => `${describeEl(h.el)} (${fmtSecs(h.ms)})`).join(', ')}`);
       if (n.clicks?.length) bullets.push(`**Clicked** ${n.clicks.map((c) => describeEl(c.el)).join(', ')}`);
       if (n.selection) bullets.push(`**Selected text** "${truncate(n.selection, 200)}"`);
       if (n.navigatedTo?.length) bullets.push(`**Navigated to** ${n.navigatedTo.map((p) => pathOf(p.url)).join(' → ')}`);
     }
     if (n.edited) bullets.push('_Text corrected by the user before submitting._');
-    for (const f of n.frames) bullets.push(`**${isVideo ? 'Frame' : 'Screenshot'}** \`${f.file}\``);
+    for (const f of n.frames) bullets.push(`**${n.page ? 'Screenshot' : 'Frame'}** \`${f.file}\``);
     if (bullets.length) L.push(bullets.map((b) => `- ${b}`).join('\n'), '');
+  }
+
+  // Every reference with its notes and images, so they can all be opened before planning.
+  const refs = [];
+  for (const n of notes) {
+    if (!n.page?.reference) continue;
+    let r = refs.find((x) => x.url === n.page.url);
+    if (!r) refs.push((r = { url: n.page.url, title: n.page.title, notes: [], files: [] }));
+    r.notes.push(n.n);
+    for (const f of n.frames) if (!r.files.includes(f.file)) r.files.push(f.file);
+  }
+  if (refs.length) {
+    L.push('## References', '', 'Sites the user showed as inspiration. Open their images before planning.', '');
+    for (const r of refs) L.push(`- [${truncate(r.title || siteName(r.url), 70)}](${r.url}): ${r.notes.length === 1 ? 'note' : 'notes'} ${r.notes.join(', ')}${r.files.length ? ` · ${r.files.map((f) => `\`${f}\``).join(', ')}` : ''}`);
+    L.push('');
   }
 
   if (isVideo) {
@@ -620,8 +743,8 @@ export function renderReport({ meta, compiled }) {
       L.push('');
     }
   } else if (pages.length) {
-    L.push('## Pages visited', '', '| # | At | Page | Time on page | Notes |', '|---|---|---|---|---|');
-    pages.forEach((p, i) => L.push(`| ${i + 1} | ${fmtClock(p.at)} | [${truncate(p.title || pathOf(p.url), 60).replace(/\|/g, '/')}](${p.url}) | ${fmtClock(p.ms)} | ${p.notes.join(', ') || '—'} |`));
+    L.push('## Pages visited', '', '| # | At | Page | Site | Time on page | Notes |', '|---|---|---|---|---|---|');
+    pages.forEach((p, i) => L.push(`| ${i + 1} | ${fmtClock(p.at)} | [${truncate(p.title || pathOf(p.url), 60).replace(/\|/g, '/')}](${p.url}) | ${p.reference ? 'reference' : 'yours'} | ${fmtClock(p.ms)} | ${p.notes.join(', ') || '—'} |`));
     L.push('');
   }
 

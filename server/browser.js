@@ -60,9 +60,9 @@ const readJson = (file) => {
   }
 };
 
-// Browser profiles that have the unpacked extension at `dir` loaded, e.g. ["Chrome (Work)"].
-// Reads the profiles' preference files only; nothing is changed.
-export function loadedExtensionProfiles(dir, roots = profileRoots()) {
+// Browser profiles that have the extension, e.g. ["Chrome (Work)"]: loaded unpacked from `dir`,
+// or added from the Chrome Web Store as `id`. Reads the profiles' preference files only.
+export function loadedExtensionProfiles({ dir, id = null }, roots = profileRoots()) {
   const want = path.resolve(dir).toLowerCase();
   const found = [];
   for (const [browser, root] of roots) {
@@ -76,6 +76,7 @@ export function loadedExtensionProfiles(dir, roots = profileRoots()) {
     for (const profile of profiles) {
       const hit = ['Secure Preferences', 'Preferences'].some((file) => {
         const settings = readJson(path.join(root, profile, file))?.extensions?.settings || {};
+        if (id && settings[id]) return true;
         return Object.values(settings).some((ext) => typeof ext?.path === 'string' && path.isAbsolute(ext.path) && path.resolve(ext.path).toLowerCase() === want);
       });
       if (hit) found.push(`${browser} (${names[profile]?.name || profile})`);

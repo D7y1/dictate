@@ -1,4 +1,4 @@
-// Draws the Dictate icon (a pin over a record tally) as PNGs with no dependencies.
+// Draws the Dictate icon (a cursor clicking a tally light) as PNGs and an SVG with no dependencies.
 import fs from 'node:fs';
 import path from 'node:path';
 import zlib from 'node:zlib';
@@ -36,30 +36,72 @@ function png(size, rgba) {
 }
 
 const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
-const PANEL = hex('#26231f');
-const AMBER = hex('#e9a43b');
-const RED = hex('#e0453a');
+const COLORS = { panel: '#131518', rec: '#e23b2e', fg: '#f2f2ee' };
 
-// Signed-distance shapes in a unit square, so every size is crisp.
+// One set of shapes in a unit square feeds both the PNGs and the SVG. The cursor's tip
+// presses the tally light's edge and the click rays fan out into the dark. At 16px the
+// cursor grows and the rays drop, so the toolbar icon still reads as a cursor on a light.
+const ARROW = [[0, 0], [0, 0.9], [0.235, 0.69], [0.385, 1.02], [0.525, 0.955], [0.375, 0.63], [0.66, 0.63]];
+function shapes(size) {
+  const small = size <= 16;
+  const tally = small ? { cx: 0.4, cy: 0.4, r: 0.27 } : { cx: 0.385, cy: 0.385, r: 0.25 };
+  const tip = small ? [0.5, 0.5] : [0.55, 0.55];
+  const scale = small ? 0.46 : 0.335;
+  return {
+    tally,
+    cursor: ARROW.map(([x, y]) => [tip[0] + x * scale, tip[1] + y * scale]),
+    halo: small ? 0.06 : 0.035, // panel-colored rim that lifts the cursor off the red
+    ticks: small ? [] : [[[0.64, 0.495], [0.675, 0.435]], [[0.65, 0.58], [0.72, 0.555]]],
+    tickR: 0.021,
+  };
+}
+
+// Signed-distance shapes, so every size is crisp.
 const roundedSquare = (x, y, r) => {
   const qx = Math.abs(x - 0.5) - (0.5 - r);
   const qy = Math.abs(y - 0.5) - (0.5 - r);
   return Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) + Math.min(Math.max(qx, qy), 0) - r;
 };
-const circle = (x, y, cx, cy, r) => Math.hypot(x - cx, y - cy) - r;
+const circle = (x, y, { cx, cy, r }) => Math.hypot(x - cx, y - cy) - r;
+const segment = (x, y, [ax, ay], [bx, by], r) => {
+  const ex = bx - ax, ey = by - ay;
+  const t = Math.max(0, Math.min(1, ((x - ax) * ex + (y - ay) * ey) / (ex * ex + ey * ey)));
+  return Math.hypot(x - ax - ex * t, y - ay - ey * t) - r;
+};
+function polygon(x, y, pts) {
+  let d = Infinity;
+  let sign = 1;
+  for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+    const [ax, ay] = pts[i];
+    const ex = pts[j][0] - ax, ey = pts[j][1] - ay;
+    const wx = x - ax, wy = y - ay;
+    const t = Math.max(0, Math.min(1, (wx * ex + wy * ey) / (ex * ex + ey * ey)));
+    d = Math.min(d, Math.hypot(wx - ex * t, wy - ey * t));
+    const a = y >= ay, b = y < pts[j][1], c = ex * wy > ey * wx;
+    if ((a && b && c) || (!a && !b && !c)) sign = -sign;
+  }
+  return sign * d;
+}
 
-function draw(size) {
+// pad: transparent margin as a fraction of the size (the store's 128px icon wants 96px of art).
+function draw(size, pad = 0) {
   const buf = Buffer.alloc(size * size * 4);
-  const aa = 1 / size;
+  const art = size * (1 - 2 * pad);
+  const aa = 1 / art;
   const cover = (d) => Math.min(1, Math.max(0, 0.5 - d / aa));
+  const [panel, rec, fg] = [COLORS.panel, COLORS.rec, COLORS.fg].map(hex);
+  const g = shapes(art);
   for (let py = 0; py < size; py++) {
     for (let px = 0; px < size; px++) {
-      const x = (px + 0.5) / size;
-      const y = (py + 0.5) / size;
+      const x = (px + 0.5 - size * pad) / art;
+      const y = (py + 0.5 - size * pad) / art;
+      const arrow = polygon(x, y, g.cursor);
       const layers = [
-        [PANEL, cover(roundedSquare(x, y, 0.2))],
-        [AMBER, cover(Math.abs(circle(x, y, 0.5, 0.5, 0.27)) - 0.065)],
-        [RED, cover(circle(x, y, 0.5, 0.5, 0.12))],
+        [panel, cover(roundedSquare(x, y, 0.2))],
+        [rec, cover(circle(x, y, g.tally))],
+        [panel, cover(arrow - g.halo)],
+        [fg, cover(arrow)],
+        ...g.ticks.map(([a, b]) => [fg, cover(segment(x, y, a, b, g.tickR))]),
       ];
       let rgb = [0, 0, 0];
       let alpha = 0;
@@ -78,6 +120,23 @@ function draw(size) {
   return png(size, buf);
 }
 
+function svg() {
+  const g = shapes(128);
+  const n = (v) => +(v * 128).toFixed(2);
+  const points = g.cursor.map(([x, y]) => `${n(x)},${n(y)}`).join(' ');
+  const ticks = g.ticks.map(([[ax, ay], [bx, by]]) => `<line x1="${n(ax)}" y1="${n(ay)}" x2="${n(bx)}" y2="${n(by)}"/>`).join('');
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<rect width="128" height="128" rx="${n(0.2)}" fill="${COLORS.panel}"/>
+<circle cx="${n(g.tally.cx)}" cy="${n(g.tally.cy)}" r="${n(g.tally.r)}" fill="${COLORS.rec}"/>
+<polygon points="${points}" fill="${COLORS.panel}" stroke="${COLORS.panel}" stroke-width="${n(g.halo * 2)}" stroke-linejoin="round"/>
+<polygon points="${points}" fill="${COLORS.fg}"/>
+<g stroke="${COLORS.fg}" stroke-width="${n(g.tickR * 2)}" stroke-linecap="round">${ticks}</g>
+</svg>
+`;
+}
+
 fs.mkdirSync(OUT, { recursive: true });
-for (const size of [16, 32, 48, 128]) fs.writeFileSync(path.join(OUT, `icon${size}.png`), draw(size));
+for (const size of [16, 32, 48]) fs.writeFileSync(path.join(OUT, `icon${size}.png`), draw(size));
+fs.writeFileSync(path.join(OUT, 'icon128.png'), draw(128, 16 / 128));
+fs.writeFileSync(path.join(OUT, 'icon.svg'), svg());
 console.log(`Icons written to ${OUT}`);

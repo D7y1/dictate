@@ -3,6 +3,15 @@ import { $, h, clock, pathOf, hostOf, dirOf, toast, prefs, savePref, revealInLis
 
 const PANEL_WIDTH = 460;
 
+// The extension names a site by its host without port or "www.".
+function siteOf(url) {
+  try {
+    return new URL(url).hostname.replace(/^www\./, '');
+  } catch {
+    return '';
+  }
+}
+
 export class WebReview {
   constructor({ root, recorder, ext, config }) {
     this.root = root;
@@ -14,7 +23,10 @@ export class WebReview {
     this.lastCapture = 0;
     this.stream = null;
     this.pages = new Set();
+    this.refs = new Set();
     this.markCount = 0;
+    this.homePath = null; // last page of your own site, which a reference applies to
+    this.startingUrl = null;
     this.urlInput.value = config.url || prefs('lastUrl', '');
     this.bind();
     this.renderExt();
@@ -43,7 +55,14 @@ export class WebReview {
 
   renderExt() {
     this.root.classList.toggle('ext-missing', !this.ext.connected);
+    for (const btn of this.root.querySelectorAll('[data-action="shot"]')) {
+      btn.disabled = !this.ext.connected;
+      btn.title = this.ext.connected ? 'Drag around the part you mean, on any site' : 'Screenshots need the Dictate extension';
+    }
     $('#ext-path', this.root).textContent = this.config.extensionDir;
+    const store = this.config.extensionStoreUrl;
+    for (const el of this.root.querySelectorAll('.ext-store')) el.hidden = !store;
+    if (store) $('#ext-store', this.root).href = store;
   }
 
   normalizedUrl() {
@@ -62,7 +81,9 @@ export class WebReview {
       return;
     }
     savePref('lastUrl', url);
+    this.startingUrl = url; // the site you open here is "your site"; any other is a reference
     if (!this.rec.active && this.onNeedSession) await this.onNeedSession();
+    this.startingUrl = null;
     this.dock();
     const s = window.screen;
     const bounds = { left: s.availLeft ?? 0, top: s.availTop ?? 0, width: Math.max(800, s.availWidth - PANEL_WIDTH), height: s.availHeight };
@@ -92,7 +113,9 @@ export class WebReview {
   async onRecordingStart(session) {
     this.log.replaceChildren();
     this.pages.clear();
+    this.refs.clear();
     this.markCount = 0;
+    this.homePath = null;
     this.renderLogEmpty();
     this.updateCounts();
     if (!this.ext.connected) {
@@ -100,7 +123,7 @@ export class WebReview {
       return;
     }
     try {
-      await this.ext.call('start', { sessionId: session.id, server: location.origin, startedAt: session.startedAt, bindings: this.extBindings });
+      await this.ext.call('start', { sessionId: session.id, server: location.origin, startedAt: session.startedAt, bindings: this.extBindings, startUrl: this.startingUrl || undefined });
     } catch (err) {
       toast(`The extension didn't start: ${err.message}`, 'error');
     }
@@ -132,6 +155,22 @@ export class WebReview {
     if (this.ext.connected) this.ext.call('note-close').catch(() => {});
   }
 
+  // The Screenshot button: the page you are reviewing comes forward, ready for you to drag
+  // around the part you mean.
+  async shoot() {
+    if (!this.ext.connected) {
+      toast('Screenshots need the Dictate extension. Add it once from this panel.', 'error');
+      return;
+    }
+    if (!this.rec.active && this.onNeedSession && !(await this.onNeedSession())) return;
+    try {
+      const res = await this.ext.call('shot');
+      if (res?.error) toast(/Unknown action/.test(res.error) ? 'Reload the Dictate extension (chrome://extensions, the reload arrow on its card) to get Screenshot.' : res.error, 'error');
+    } catch (err) {
+      toast(`Screenshot didn't start: ${err.message}`, 'error');
+    }
+  }
+
   logNote(noteId, anchor) {
     const el = anchor?.el;
     const where = el ? `${el.tag}${el.text ? ` “${el.text.slice(0, 40)}”` : ''}` : '';
@@ -152,6 +191,8 @@ export class WebReview {
       for (const e of msg.events) {
         if (e.type === 'page.visit') this.onVisit(e);
         else if (e.type === 'page.mark') this.onMark(e);
+        else if (e.type === 'page.shot') this.onShot(e);
+        else if (e.type === 'site.role') this.onRole(e);
         else if (e.type === 'page.hover' && e.el) this.setPointer(e.el);
       }
     } else if (msg.kind === 'frame') {
@@ -162,14 +203,62 @@ export class WebReview {
   }
 
   onVisit(e) {
-    this.pages.add(e.url);
+    const ref = !!e.reference;
+    (ref ? this.refs : this.pages).add(e.url);
+    if (!ref) this.homePath = pathOf(e.url);
+    this.current = { url: e.url, ref };
     $('#web-now-title', this.root).textContent = e.title || pathOf(e.url);
-    $('#web-now-url', this.root).textContent = `${hostOf(e.url)}${pathOf(e.url)}`;
+    this.renderNow();
     this.root.classList.add('has-page');
     const last = this.log.lastElementChild;
     if (last?.dataset.url === e.url && last.classList.contains('log-page')) return;
-    this.row({ kind: 'page', tag: 'PAGE', tagClass: 'tag-page', text: pathOf(e.url), url: e.url });
+    this.row({ kind: 'page', ...this.pageTag(ref), text: ref ? `${hostOf(e.url)}${pathOf(e.url)}` : pathOf(e.url), url: e.url });
     this.updateCounts();
+  }
+
+  pageTag(ref) {
+    return ref ? { tag: 'REF', tagClass: 'tag-ref' } : { tag: 'PAGE', tagClass: 'tag-page' };
+  }
+
+  // PAGE · host/path, or REF · host/path · for /your-page when it is a reference.
+  renderNow() {
+    const now = this.current;
+    if (!now) return;
+    const strip = $('.umd-page', this.root);
+    strip.classList.toggle('is-ref', now.ref);
+    $('#web-now-kind', this.root).textContent = now.ref ? 'REF' : 'PAGE';
+    $('#web-now-url', this.root).textContent = `${hostOf(now.url)}${pathOf(now.url)}`;
+    const forText = now.ref && this.homePath ? `for ${this.homePath}` : '';
+    $('#web-now-for', this.root).textContent = forText;
+    for (const el of strip.querySelectorAll('.now-for')) el.hidden = !forText;
+  }
+
+  onShot(e) {
+    this.markCount += 1;
+    const where = `${e.reference ? hostOf(e.url) : ''}${pathOf(e.url)}`;
+    const text = `${e.crop ? `Screenshot, ${e.w} × ${e.h}` : 'Screenshot, whole screen'} · ${where}`;
+    // A screenshot taken during a talk note belongs to it.
+    const noteRow = e.note && this.root.querySelector(`[data-id="${e.note}"] .log-text`);
+    if (noteRow) noteRow.dataset.where = `S${e.n} ${where}`;
+    else this.row({ kind: 'mark', tag: `S${e.n}`, tagClass: 'tag-mark', text });
+    this.updateCounts();
+  }
+
+  // The toolbar switch moved a whole site between "your site" and "reference".
+  onRole(e) {
+    for (const row of this.log.querySelectorAll('.log-page')) {
+      if (siteOf(row.dataset.url) !== e.host) continue;
+      const { tag, tagClass } = this.pageTag(e.reference);
+      const el = row.querySelector('.tag');
+      el.textContent = tag;
+      el.className = `tag ${tagClass}`;
+      (e.reference ? this.refs : this.pages).add(row.dataset.url);
+      (e.reference ? this.pages : this.refs).delete(row.dataset.url);
+    }
+    if (this.current && siteOf(this.current.url) === e.host) this.current.ref = e.reference;
+    this.renderNow();
+    this.updateCounts();
+    toast(e.reference ? `${e.host} is now a reference. Claude reads it as inspiration.` : `${e.host} is now your site.`);
   }
 
   onMark(e) {
@@ -203,6 +292,7 @@ export class WebReview {
     this.log.append(
       h('li', { class: 'log-empty' },
         h('p', {}, 'Pages you visit, things you pin and what you say land here, in order.'),
+        h('p', {}, 'Want to show a site you like? Open it in another tab. It is tagged ', h('span', { class: 'tag tag-ref' }, 'REF'), ' and Screenshot crops the part you mean.'),
         h('p', {}, h('kbd', { class: 'key' }, 'Esc'), ' discards an open note. ', h('kbd', { class: 'key' }, 'Alt'), h('kbd', { class: 'key' }, 'A'), ' pins or boxes without talking.'),
       ),
     );
@@ -225,6 +315,8 @@ export class WebReview {
 
   updateCounts() {
     $('#web-count-pages', this.root).textContent = this.pages.size;
+    $('#web-count-refs', this.root).textContent = this.refs.size;
+    $('#web-count-refs', this.root).parentElement.hidden = !this.refs.size;
     $('#web-count-marks', this.root).textContent = this.markCount;
   }
 }
