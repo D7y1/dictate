@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>الخصوصية · Dictate</title>
+<meta name="description" content="ما يسجّله Dictate وإضافته لـ Chrome، وإلى أين يذهب، وما لا يغادر جهازك أبدًا.">
+<meta name="theme-color" content="#0b0c0e">
+<link rel="canonical" href="https://d7y1.github.io/dictate/ar/privacy/">
+<link rel="alternate" hreflang="en" href="https://d7y1.github.io/dictate/privacy/">
+<link rel="alternate" hreflang="ar" href="https://d7y1.github.io/dictate/ar/privacy/">
+<link rel="icon" type="image/svg+xml" href="../../assets/icon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../../assets/icon-32.png">
+<link rel="apple-touch-icon" href="../../assets/icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@85..100,400..800&family=Noto+Kufi+Arabic:wght@500..800&family=Noto+Sans+Arabic:wght@400..600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cascadia+Mono:wght@400..700&amp;display=swap&amp;text=%20%21%22%23%24%25%26%27%28%29%2A%2B%2C-.%2F0123456789%3A%3B%3C%3D%3E%3F%40ABCDEFGHIJKLMNOPQRSTUVWXYZ%5B%5C%5D%5E_%60abcdefghijklmnopqrstuvwxyz%7B%7C%7D~%C2%AB%C2%BB%C2%B7%C3%97%E2%80%94%E2%80%93%E2%80%98%E2%80%99%E2%80%9C%E2%80%9D%E2%80%A6%E2%86%90%E2%86%92%E2%97%8F">
+<link rel="stylesheet" href="../../assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">انتقل إلى المحتوى</a>
+
+<header class="topbar">
+  <a class="wordmark" href="../" aria-label="Dictate، الصفحة الرئيسية">DICTATE</a>
+  <nav class="topnav" aria-label="الصفحات">
+    <a href="../">الرئيسية</a>
+    <a href="../#start">البدء</a>
+    <a class="lang" href="../../privacy/" lang="en" hreflang="en">English</a>
+  </nav>
+  <div class="topbar-right">
+    <a class="btn btn-primary" href="https://github.com/D7y1/dictate"><span><span class="long">افتحه على </span>GitHub</span></a>
+  </div>
+</header>
+
+<main id="main" class="legal">
+  <div class="page-strip" aria-hidden="true"><span class="umd-page">PAGE</span><span class="umd-sep">·</span><span>/privacy</span></div>
+
+  <h1>الخصوصية</h1>
+  <p class="updated">آخر تحديث: 21 أكتوبر 2026</p>
+
+  <div class="short">
+    <p>يعمل Dictate على جهازك. ترسل الإضافة والاستوديو ما يسجّلانه إلى خادم Dictate على جهازك فقط، وهو يحفظه في مجلد مشروعك. لا حساب في Dictate، ولا تحليلات، ولا خادم لنا يمكن أن تصل إليه بياناتك.</p>
+  </div>
+
+  <h2>ما تسجّله إضافة Chrome</h2>
+  <p>تسجّل فقط أثناء جلسة مراجعة بدأتها في Dictate Studio. لا تسجّل شيئًا قبل أن تبدأ، ولا أثناء الإيقاف المؤقت، ولا بعد أن تنتهي. وأثناء الجلسة تسجّل:</p>
+  <ul>
+    <li>رابط كل صفحة تزورها وعنوانها؛</li>
+    <li>موضع المؤشر، وما تنقر عليه، وتمرير الصفحة، والنص الذي تحدده؛</li>
+    <li>وصفًا لكل عنصر تشير إليه أو تثبّته: محدد CSS، ونصه الظاهر، وأصنافه (classes)، ومقتطفًا قصيرًا من HTML؛</li>
+    <li>لقطة للتبويب الظاهر حين تثبّت شيئًا أو تفتح ملاحظة أو تفتح صفحة.</li>
+  </ul>
+  <p><strong>لا تقرأ أبدًا ما تكتبه في الحقول</strong>، ومن ذلك كلمات المرور وقيم النماذج.</p>
+
+  <h2>إلى أين تذهب</h2>
+  <p>إلى خادم Dictate الذي يعمل على جهازك، على العنوان <code>localhost</code>. وترفض الإضافة الإرسال إلى أي عنوان آخر. يكتب الخادم الجلسة في مشروعك داخل <code>.dictate/sessions/</code>: الملفين <code>report.md</code> و<code>session.json</code>، واللقطات والإطارات، والتفريغ النصي، والأحداث الخام، وتسجيل صوتك. وتبقى الملفات هناك حتى تحذفها، ولا يرفعها Dictate إلى أي مكان.</p>
+
+  <h2>صوتك</h2>
+  <p>يسجّل الاستوديو صوتك من الميكروفون أثناء الجلسة ويحفظه في مجلدها. ويحوّله faster-whisper إلى نص على جهازك.</p>
+  <p>وحين تكون ملاحظة مفتوحة، يعرض الاستوديو أيضًا نصًا مباشرًا لكلامك باستخدام خاصية التعرّف على الكلام المدمجة في متصفحك. في Chrome وEdge قد ترسل هذه الخاصية الصوت إلى Google أو Microsoft لتحويله إلى نص، وفق سياسات الخصوصية لديهما. ولا يعتمد التفريغ النهائي عليها.</p>
+
+  <h2>Claude</h2>
+  <p>لا يرسل Dictate نفسه أي شيء إلى Anthropic. وحين تطلب من Claude Code العمل على جلسة، يقرأ التقرير والصور كأي ملف آخر في مشروعك، وفق اتفاقيتك مع Anthropic.</p>
+
+  <h2>ما يبقى في متصفحك</h2>
+  <p>تحفظ الإضافة حالة الجلسة الحالية (تشغيلها أو إيقافها، واختصارات المفاتيح، وعنوان الخادم المحلي) في تخزين الجلسة في Chrome، ويُمسح هذا التخزين حين تغلق Chrome. ويتذكر الاستوديو تفضيلاتك، مثل آخر عنوان راجعته والميكروفون وأزرار التحكم، في تخزين المتصفح الخاص به على جهازك.</p>
+
+  <h2>لماذا تطلب الإضافة هذه الأذونات</h2>
+  <ul>
+    <li><strong>قراءة البيانات وتغييرها في كل المواقع:</strong> لتتابعك من صفحة إلى أخرى أثناء المراجعة، وتصف العناصر التي تشير إليها، وتلتقط الصور. لا يسمح Chrome بالتقاط الصور إلا بهذا الإذن أو بنقرة على زر الإضافة في شريط الأدوات لكل تبويب. ولا تفعل الإضافة شيئًا في أي صفحة حتى تبدأ جلسة.</li>
+    <li><strong>التبويبات وحقن السكربتات (tabs وscripting):</strong> لتعرف التبويب الذي تراجعه، ولتبدأ التتبع في التبويبات التي كانت مفتوحة قبل أن تضيفها.</li>
+    <li><strong>التخزين:</strong> لتتذكر حالة الجلسة الموضحة أعلاه.</li>
+  </ul>
+
+  <h2>التنزيلات</h2>
+  <p>يثبّت الإعداد faster-whisper من PyPI وينزّل نموذج الكلام من Hugging Face، ويأتي Dictate نفسه من npm. ولا ترى هذه الخدمات إلا طلب تنزيل عاديًا، كأي حزمة أخرى.</p>
+
+  <h2>المشاركة والبيع</h2>
+  <p>لا يبيع Dictate بياناتك ولا يؤجرها ولا يشاركها، ولا يستخدمها إلا لجلسة المراجعة. ويلتزم في استخدامه للمعلومات الواردة من Chrome بسياسة بيانات المستخدم في Chrome Web Store، ومنها متطلبات الاستخدام المحدود (Limited Use).</p>
+
+  <h2>التغييرات والتواصل</h2>
+  <p>Dictate مفتوح المصدر، فكل تغيير فيه وفي هذه الصفحة منشور علنًا في <a href="https://github.com/D7y1/dictate">المستودع</a>. للأسئلة أو الملاحظات: <a href="https://github.com/D7y1/dictate/issues">افتح بلاغًا على GitHub</a>.</p>
+</main>
+
+<footer class="footer">
+  <span class="wordmark" aria-hidden="true">DICTATE</span>
+  <a href="https://github.com/D7y1/dictate">المصدر على GitHub</a>
+  <a href="https://github.com/D7y1/dictate/blob/main/LICENSE">رخصة MIT</a>
+  <a href="../../privacy/" lang="en" hreflang="en">English</a>
+  <span class="fine">مشروع مستقل مفتوح المصدر. Claude و Claude Code من صنع Anthropic.</span>
+</footer>
+</body>
+</html>
