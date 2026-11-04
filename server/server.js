@@ -7,6 +7,7 @@ import { SessionStore } from './store.js';
 import { Transcriber } from './transcriber.js';
 import { compileSession, applyEdits, renderReport } from './compile.js';
 import { ROOT, PACKAGE, STORE_URL, SETUP_COMMAND, prepareExtensionDir } from './install.js';
+import { readSpeechSetup, startSpeechSetup } from './speech-setup.js';
 
 const STUDIO_DIR = path.join(ROOT, 'studio');
 const VERSION = PACKAGE.version;
@@ -83,7 +84,9 @@ export async function startServer(opts) {
   const store = new SessionStore(outDir);
   const extensionDir = prepareExtensionDir();
   const transcriber = new Transcriber({ script: path.join(ROOT, 'server', 'whisper_worker.py'), log });
-  setImmediate(() => transcriber.probe());
+  setImmediate(() => {
+    if (!transcriber.probe()) startSpeechSetup({ log });
+  });
 
   const state = {
     video: opts.video ? { path: path.resolve(opts.video) } : null,
@@ -234,6 +237,8 @@ export async function startServer(opts) {
 
     // ---- api ----
     if (p === '/api/config' && req.method === 'GET') {
+      const speechSetup = readSpeechSetup();
+      if (speechSetup?.status === 'done' && transcriber.status === 'unavailable') transcriber.probe();
       return send(res, 200, {
         version: VERSION,
         once,
@@ -247,7 +252,7 @@ export async function startServer(opts) {
         lang: state.lang,
         title: state.title,
         video: state.video ? { name: path.basename(state.video.path), path: state.video.path, url: '/media/video', size: fs.statSync(state.video.path).size } : null,
-        whisper: transcriber.info(),
+        whisper: { ...transcriber.info(), setup: speechSetup },
       });
     }
 

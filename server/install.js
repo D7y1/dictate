@@ -20,6 +20,13 @@ export const SETUP_COMMAND = FROM_SOURCE ? 'npm run setup' : `npx ${PACKAGE.name
 export const STORE_ID = PACKAGE.dictate?.chromeWebStoreId || null;
 export const STORE_URL = STORE_ID ? `https://chromewebstore.google.com/detail/${STORE_ID}` : null;
 
+// Dictate's own Python environment for Whisper, so setup never touches the user's Python.
+export const SPEECH_ENV = path.join(DATA_DIR, 'python');
+export function speechEnvPython() {
+  const python = path.join(SPEECH_ENV, process.platform === 'win32' ? 'Scripts/python.exe' : 'bin/python');
+  return fs.existsSync(python) ? python : null;
+}
+
 const BUNDLED_EXTENSION = path.join(ROOT, 'extension');
 
 export function manifestVersion(dir) {

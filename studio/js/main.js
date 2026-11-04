@@ -345,8 +345,12 @@ async function fillMics() {
 
 function renderWhisper(w, setupCommand) {
   const el = $('#whisper-status');
-  if (w.status === 'unavailable') {
-    el.textContent = `Live captions only. For accurate transcripts, run ${setupCommand || 'Dictate setup'} in a terminal.`;
+  if (w.status === 'unavailable' && w.setup?.status === 'running') {
+    el.textContent = 'Setting up speech to text in the background (up to 3 GB, once). Live captions until it\'s ready.';
+    el.dataset.state = 'warn';
+    setTimeout(() => getJSON('/api/config').then((config) => renderWhisper(config.whisper, setupCommand)).catch(() => {}), 15000);
+  } else if (w.status === 'unavailable') {
+    el.textContent = w.setup?.detail ? `Live captions only. ${w.setup.detail} Then run ${setupCommand || 'Dictate setup'} in a terminal.` : `Live captions only. For accurate transcripts, run ${setupCommand || 'Dictate setup'} in a terminal.`;
     el.dataset.state = 'warn';
   } else {
     el.textContent = 'Whisper transcribes on this machine when you finish.';
