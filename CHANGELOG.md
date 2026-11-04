@@ -5,7 +5,7 @@ Notable changes to Dictate. The npm package (`@d7y/dictate`) and the Chrome exte
 ## 1.1.0
 
 - **One-line install:** `npx skills add D7y1/dictate` is now the whole install. The first review sets up speech to text by itself in the background, using its own Python environment, with live captions until it's ready. `npx @d7y/dictate setup` still does it all up front.
-- **New home:** the site moved to <https://skills.d7y.dev/dictate/>. Old links redirect.
+- **New home:** the site moved to <https://skills.d7y.dev/dictate/>. Old links redirect. You can press **T** on the home page itself to try pointing and see the report it builds.
 
 ## 1.0.0
 

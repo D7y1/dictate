@@ -34,6 +34,7 @@ STORY: The visitor watches a note land, points at the card themselves, sees what
 FIRST VIEWPORT: Left, a 76px headline, one sentence, the install bar, a quiet link. Right, a small shop page with a cursor, dashed amber box and P1, and the spoken sentence on its bottom edge. Sand under both.
 FORM: Quiet split, pinned by the owner's references (tasteskill.dev, impeccable.style) and approved comp .impeccable/mocks/decision/skill-clean-a.png, so no roll or seed key.
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
+DELIGHT: Whatever you point at, Dictate knows exactly what you mean. One dashed amber box carries it: the hero box walks off its card onto this page, T works on this page and builds a real report, the spoken word wires to its report line, the box walks the real studio with the steps, the transcript plays at its own timestamps.
 -->
 <a class="skip" href="#main">Skip to content</a>
 
@@ -54,11 +55,15 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
       <div class="pitch">
         <h1 id="hero-title">Stop describing it. <span>Show Claude.</span></h1>
         <p>Point at anything on your site or video and talk. Claude gets every sentence tied to the exact element or frame.</p>
-        <div class="install">
+        <div class="install" data-say="Run this in your terminal." data-cursor="0.74 0.74">
           <code><span class="prompt" aria-hidden="true">$</span>npx skills add D7y1/dictate</code>
           <button type="button" data-copy="npx skills add D7y1/dictate">Copy</button>
+          <span class="after-copy" role="status"></span>
         </div>
-        <a class="more" href="#how">See how it works</a>
+        <div class="more-row">
+          <button type="button" class="try" id="try" aria-pressed="false" data-say="Press T and try this yourself." data-cursor="0.8 0.76" data-tag="under" hidden>Try it on this page<kbd>T</kbd></button>
+          <a class="more" href="#how">See how it works</a>
+        </div>
       </div>
 
       <figure class="demo" id="demo" aria-label="Example: on a small shop page, the cursor rests on a button marked with a dashed box and the tag P1, while the spoken note reads: Make this button bigger.">
@@ -160,21 +165,24 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
     <div class="wrap">
       <h2 id="h-how">Point, press T, talk. <span>Then press Send.</span></h2>
       <ol class="steps">
-        <li>
-          <h3>Type <code>/dictate</code></h3>
+        <li data-spot="34.7 1.3 9.9 3.6" data-tag="/dictate" data-side="under">
+          <h3>Type <code class="chip">/dictate</code></h3>
           <p>In Claude Code, in any project. Say what you’re reviewing, or give it a video file. The studio opens beside your work.</p>
         </li>
-        <li>
-          <h3>Press <kbd>T</kbd> and talk</h3>
+        <li data-spot="32.5 66.2 7.4 11.6" data-tag="T">
+          <h3>Press <kbd class="chip">T</kbd> and talk</h3>
           <p>Hover anything, press T, say what you want, press T again. Your mouse’s back button does the same.</p>
         </li>
-        <li>
-          <h3>Send it</h3>
+        <li data-spot="89.7 0.6 9.6 5.1" data-tag="Then send" data-side="under-end">
+          <h3><span class="chip">Send</span> it</h3>
           <p>Fix any word it misheard, then send. Claude reads every note with its screenshot, replies with a numbered plan, and starts on the edits.</p>
         </li>
       </ol>
       <figure class="shot">
-        <img src="assets/studio.webp" srcset="assets/studio-800.webp 800w, assets/studio.webp 1440w" sizes="(max-width: 1296px) 86vw, 1184px" width="1440" height="900" loading="lazy" decoding="async" alt="Dictate Studio during a video review: a list of numbered notes on the left, the video with a pin on it on the right, and a timeline with a marked range below.">
+        <div class="shot-frame">
+          <img src="assets/studio.webp" srcset="assets/studio-800.webp 800w, assets/studio.webp 1440w" sizes="(max-width: 1296px) 86vw, 1184px" width="1440" height="900" loading="lazy" decoding="async" alt="Dictate Studio during a video review: a list of numbered notes on the left, the video with a pin on it on the right, and a timeline with a marked range below.">
+          <div class="pin step-pin" aria-hidden="true"><span class="pin-tag"></span></div>
+        </div>
         <figcaption>The studio during a video review. Example footage.</figcaption>
       </figure>
     </div>
@@ -184,10 +192,14 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
     <div class="wrap">
       <h2 id="h-talk">Talk the way you talk. <span>Even in two languages at once.</span></h2>
       <div class="timed" role="img" aria-label="A transcript that switches from Arabic to English in one sentence, with a time under every word: هذا الجزء طويل، cut it from here.">
-        <span class="timed-ar" dir="rtl" lang="ar"><span class="w"><b>هذا</b><i>130.05</i></span><span class="w"><b>الجزء</b><i>130.31</i></span><span class="w"><b>طويل،</b><i>130.62</i></span></span>
+        <span class="timed-ar" dir="rtl" lang="ar"><span class="w"><b><mark>هذا</mark></b><i>130.05</i></span><span class="w"><b>الجزء</b><i>130.31</i></span><span class="w"><b>طويل،</b><i>130.62</i></span></span>
         <span class="w"><b>cut</b><i>131.10</i></span><span class="w"><b>it</b><i>131.28</i></span><span class="w"><b>from</b><i>131.40</i></span><span class="w"><b><mark>here</mark></b><i>131.66</i></span>
       </div>
-      <p class="timed-note">An example transcript. Whisper runs on your own machine and times every word, in Arabic, English or both mixed.</p>
+      <ul class="report resolved">
+        <li><span class="hit"><b>Pointing</b> "<bdi lang="ar">هذا</bdi>" → x 0.31, y 0.42 · 00:02:10.05</span></li>
+        <li><span class="hit"><b>Pointing</b> "here" → x 0.49, y 0.68 · 00:02:11.66</span></li>
+      </ul>
+      <p class="timed-note">An example transcript. Whisper runs on your own machine and times every word, in Arabic, English or both mixed. <button type="button" class="replay" hidden>Play it again</button></p>
 
       <ul class="facts">
         <li>
@@ -213,6 +225,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
       <div class="install">
         <code><span class="prompt" aria-hidden="true">$</span>npx skills add D7y1/dictate</code>
         <button type="button" data-copy="npx skills add D7y1/dictate">Copy</button>
+        <span class="after-copy" role="status"></span>
       </div>
       <div class="install-notes">
         <p>You need Node 20 or newer and Chrome or Edge. Your first review sets up speech to text in the background, up to 3 GB once. That needs Python 3.9 or newer, and live captions cover until it’s ready.</p>
@@ -233,5 +246,30 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
     <p>An independent open-source project. Claude and Claude Code are made by Anthropic.</p>
   </div>
 </footer>
+
+<!-- Try it: this page answers to T the way a reviewed site does, and builds a real report. -->
+<div class="pin tp-box" id="tp-box" aria-hidden="true"><span class="pin-tag">Press T</span></div>
+<section class="tp" id="tp" tabindex="-1" aria-label="Try Dictate on this page" hidden>
+  <div class="tp-head">
+    <span class="rec"></span>
+    <p class="tp-hint" id="tp-hint" role="status"></p>
+    <button type="button" class="tp-close" id="tp-close" aria-label="Stop trying it"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg></button>
+  </div>
+  <div class="report tp-report" id="tp-report" role="group" tabindex="0" aria-label="What Claude would get" hidden></div>
+  <form class="tp-say" id="tp-say" hidden>
+    <label class="tp-label" for="tp-input">What you want changed</label>
+    <div class="tp-field">
+      <input id="tp-input" type="text" dir="auto" autocomplete="off" spellcheck="false" enterkeyhint="done" placeholder="Make this bigger">
+      <button type="button" class="tp-mic" id="tp-mic" aria-pressed="false" aria-label="Talk instead of typing" hidden><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.75" y="1.75" width="4.5" height="8" rx="2.25"/><path d="M3 7.75a5 5 0 0 0 10 0M8 12.75v1.75"/></svg></button>
+      <button type="submit" class="tp-add">Add</button>
+    </div>
+    <p class="tp-small" id="tp-mic-note" hidden>The mic uses your browser’s speech recognition, which may send audio to Google or Microsoft.</p>
+  </form>
+  <div class="tp-foot" id="tp-foot" hidden>
+    <button type="button" class="tp-copy" id="tp-copy">Copy report</button>
+    <a class="tp-install" href="#install" id="tp-install">Install it</a>
+    <p class="tp-small">Made in your browser, and it goes nowhere. A real report also has a screenshot of each pin.</p>
+  </div>
+</section>
 </body>
 </html>
