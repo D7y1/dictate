@@ -2,33 +2,37 @@
 version: 1
 slug: "docs-index-html"
 primary_target: "docs/index.html"
-related_targets: ["docs/ar/index.html"]
+related_targets: []
 ---
 
-# Landing page (docs/, GitHub Pages)
+# Skill landing page (docs/, https://skills.d7y.dev/dictate/)
 
-Mode: Persuade. Two pages share one stylesheet and one demo script: `docs/index.html` (English) and `docs/ar/index.html` (Arabic, RTL).
+Mode: Persuade. One page, `docs/index.html`, and a plain reading page, `docs/privacy/index.html`, share `docs/assets/site.css` and `docs/assets/site.js`. English only. The Arabic pages were removed with the old site at the owner's call ("nothing" of the old page needed to survive).
 
 ## Audience, job, action
-- Audience: web builders and video creators, weighted equally. Many write Arabic and English in the same sentence.
-- Job: show that a spoken note lands on the exact element or frame, then get the visitor to install it.
-- Primary action: Get it on GitHub (https://github.com/D7y1/dictate). Secondary: How to start, which goes to the four install steps and `/dictate`.
-- Proof: the page itself is the site under review. Two example notes are pinned to the headline and the GitHub button. Pressing T (or the mouse back button once a session runs) adds a note. "Finish & send" writes a real-format report.md and Claude's numbered plan into the terminal.
+- Audience: web builders and video creators using Claude Code. Many mix Arabic and English in one sentence.
+- Job: show that a spoken sentence lands on the exact element or frame, then get the visitor to install.
+- Primary action: copy `npx skills add D7y1/dictate`. Secondary: See how it works, GitHub.
+- Proof: the hero card is pointable, the report in "What you say / What Claude gets" follows the real format from `server/compile.js` (bold markers and backticks dropped, link titles flattened), and the studio shot is a real capture.
 
 ## Direction
-- Form: Terminal handoff (#5 of 7, seed 80a7c99a). Approved comp: `.impeccable/mocks/decision/landing-terminal.png`. The user added the mouse back-button tile next to T.
-- Memorable moment: `/dictate` types itself, then the P1/P2 marks draw onto the headline and the button.
-- Deliberate deviations from the comp: the idle TALK key is dark (Tally Rule: red only while live); note text uses the UI face (Reader Rule); the PAGE strip stays in the left column because the dock is sticky; the comp's dock minimize glyph is omitted on desktop because nothing there would collapse.
+- The bar: https://www.tasteskill.dev/ and https://impeccable.style/, pinned by the owner. Their feedback on the first comp round was "premium and clean, this looks so crowded": at least half the first viewport stays empty, medium-to-regular weights, one dark element.
+- Form: Quiet split, chosen on the decision page. Approved comp: `.impeccable/mocks/decision/skill-clean-a.png`. User-pinned references replace the concept roll, so there is no seed key.
+- Memorable moment: the dashed amber box and cursor move around a small shop page while the spoken sentence changes on the card's edge. Point at the card and it follows you.
+- Deliberate deviations from the comp: the logo is the real Dictate icon, not the comp's plain square; headline tracking is -0.025em, a little tighter than the comp, so the first line always fits its column; the mug is regenerated from the comp's mug, so its details differ.
+
+## The site's own system
+DESIGN.md describes the studio, a dark tool. It does not bind this surface, and detector findings measured against it here are expected.
+- Color: ground #f4f4f3, surface #fff, ink #141416, body gray #646569, second headline line #7c7d81 (large text only), hairline rgb(20 20 22 / .09), amber #ffb31a and soft amber #ffe2a3 (only on pins, the pointed-at word and the report's matching line), record red #e5432f. Halden's blue #2563eb belongs to the example site, not to Dictate.
+- Type: Geist (self-hosted variable) at 400 for headlines and 500 for labels, never heavier. Two-tone headlines: ink line, gray line. Geist Mono only for commands, keys, timecodes and the report. Noto Sans Arabic 500 for the Arabic run. Geist was kept against the overused-font warning because the approved comp and both references are this kind of neutral grotesk.
+- Materials: `sand.webp` (generated raked sand, runs under the nav and fades out; keep the encode high enough to hold its grain), `mug.webp` (generated on pure white, multiplied onto the card, with a long shadow that fades before the image edge), white cards with wide soft shadows, the near-black install bar, and a light sand mat that holds the dark studio shot. No gradients on text, no glass, no icon cards, no kickers.
+- Motion: only the hero demo, the tab crossfade, and the nav settling up 18px once scrolled (a transform, so nothing else moves). The page starts on the button with the sentence showing; the box glides only after first placement. It pauses out of view and reduced motion gets a static state. Animating the box's width and height is intentional: it's a single absolutely positioned element and a dashed border can't be scaled.
 
 ## Constraints specific to this surface
-- Public web page, so DESIGN.md's system faces are swapped for web fonts with the same jobs: Archivo stands in for Segoe UI Variable (display and UI), Cascadia Mono is loaded Latin-only (via `text=`) so Arabic in code and the terminal falls through to Noto Sans Arabic, and Noto Kufi Arabic is the Arabic display face.
-- Display sizes (the 52 to 112px headline, 19 to 31px tagline) sit above the studio's app ramp on purpose; this is a marketing surface.
-- The web illustration's paper colors (#dfe2e7, #d9dde3, #2d6cdf) depict someone else's site, not the Dictate world.
-- Arabic copy is فصحى مبسطة with masculine imperatives. Code, paths, the terminal and the monitors stay LTR.
-
-## Related pages
-- `docs/privacy/` and `docs/ar/privacy/`: plain reading pages in the same world (`.legal` in site.css, one centered column, the PAGE strip, the shared top bar and footer). Linked from both footers; the Chrome Web Store listing links to the English one, so keep it accurate to what the extension and studio actually do.
-- Install steps follow the npm flow (`npx skills add D7y1/dictate -g`, then `npx @d7y/dictate setup`), not a git clone.
+- No third-party requests: fonts and images are self-hosted, and the privacy page says so.
+- The privacy page is linked from the Chrome Web Store listing, so keep it accurate to what the extension, studio and first-run setup do.
+- No invented claims: no stars, testimonials, logos or numbers. Halden, the Dashboard concept reference and the transcript timings are labeled-by-context examples.
+- Domain: `D7y1/D7y1.github.io` owns `skills.d7y.dev`, so this repo's Pages site is served at `/dictate`. Later skills live at `/their-name`.
 
 ## Open
-- Publishing: GitHub Pages from `/docs` on main.
+- `docs/assets/og.png` is captured from the built hero; recapture it if the hero changes.
