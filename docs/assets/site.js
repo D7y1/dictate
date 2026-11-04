@@ -5,6 +5,9 @@ const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const calm = matchMedia('(prefers-reduced-motion: reduce)');
 const wide = matchMedia('(min-width: 981px)');
 const touch = matchMedia('(hover: none)');
+const copyHint = touch.matches
+  ? 'It’s selected. Copy it from the menu.'
+  : `Press ${/Mac|iP/.test(navigator.platform) ? 'Cmd' : 'Ctrl'}+C to copy it.`;
 
 // While you're trying it on this page, everything else on the page holds still.
 let trying = false;
@@ -38,20 +41,21 @@ for (const button of $$('[data-copy]')) {
       button.classList.add('copied');
       // The next step, where you're already looking.
       after.innerHTML = 'Now run it, then type <code>/dictate</code> in Claude Code.';
-      after.classList.add('on');
-      if (pitch) {
-        pitch.classList.add('just-copied');
-        heroLeaveTry();
-      }
-      noteTimer = setTimeout(() => {
-        after.classList.remove('on');
-        pitch?.classList.remove('just-copied');
-      }, 7000);
     } catch {
-      // No clipboard access: select the command so Ctrl+C works.
+      // No clipboard access: select the command and say how to copy it. The button keeps its
+      // label, because a longer one doesn't fit the bar on a phone.
       getSelection().selectAllChildren($('code', button.parentElement));
-      button.textContent = 'Press Ctrl+C';
+      after.textContent = copyHint;
     }
+    after.classList.add('on');
+    if (pitch) {
+      pitch.classList.add('just-copied');
+      heroLeaveTry();
+    }
+    noteTimer = setTimeout(() => {
+      after.classList.remove('on');
+      pitch?.classList.remove('just-copied');
+    }, 7000);
     timer = setTimeout(() => {
       button.textContent = 'Copy';
       button.classList.remove('copied');
@@ -258,15 +262,19 @@ if (tabs.length) {
       other.tabIndex = on ? 0 : -1;
       const panel = panelOf(other);
       panel.hidden = !on;
-      panel.classList.toggle('enter', on);
+      panel.classList.remove('enter');
     }
     moveThumb();
+    // Measure before the lines start moving, or the wire lands where they were mid-entrance.
     draw(panelOf(tab));
+    panelOf(tab).classList.add('enter');
     if (focus) tab.focus();
   }
 
   tablist.hidden = false;
   for (const tab of tabs) panelOf(tab).hidden = tab !== tabs[0];
+  document.documentElement.classList.add('ready');
+  moveThumb();
 
   tabs.forEach((tab, i) => {
     tab.addEventListener('click', () => select(tab));
@@ -421,6 +429,7 @@ if (panel) {
   const copyButton = $('#tp-copy');
   const closeButton = $('#tp-close');
   const installLink = $('#tp-install');
+  const hoverTag = $('.pin-tag', hoverBox);
 
   const MEANINGFUL = 'a,button,input,select,textarea,label,img,video,picture,h1,h2,h3,h4,h5,h6,p,li,td,th,summary,figure,nav,header,footer,[role],[data-testid],[aria-label]';
   const HASHY = /^(css|sc|jsx|emotion|svelte|tw)-[a-z0-9]{4,}$|^[a-z]{1,3}[A-Za-z0-9_-]{5,}$/;
@@ -709,6 +718,9 @@ if (panel) {
       hoverBox.classList.remove('on');
       return;
     }
+    // While a note is open, the box shows where "this" would land. T is for typing then.
+    hoverTag.textContent = state === 'noting' ? 'this' : 'Press T';
+    hoverTag.hidden = state !== 'noting' && pinned.some((p) => p.el === el);
     place(hoverBox, el);
     if (!hoverBox.classList.contains('on')) {
       // First appearance lands in place rather than flying in from the last one.
@@ -742,6 +754,8 @@ if (panel) {
     form.hidden = true;
     say(armedHint());
     render();
+    // The page may have changed while this was closed.
+    requestSync();
   }
 
   function exit() {
@@ -812,7 +826,7 @@ if (panel) {
     changed();
     if (!draft.text) {
       say('Type what you want first, or press Esc.');
-      input.focus();
+      input.focus({ preventScroll: true });
       return;
     }
     notes.push(draft);
@@ -863,15 +877,15 @@ if (panel) {
     if (navigator.language) rec.lang = navigator.language;
     const before = input.value.trim();
     rec.onresult = (e) => {
-      const heard = [...e.results].map((r) => r[0].transcript).join(' ').replace(/\s+/g, ' ').trim();
+      const heard = Array.from(e.results, (r) => r[0].transcript).join(' ').replace(/\s+/g, ' ').trim();
       input.value = before ? `${before} ${heard}` : heard;
       draft.spoken = true;
       changed();
     };
-    rec.onerror = () => {
+    rec.onerror = (e) => {
       stopMic();
-      say('The mic isn’t available here. Type it instead.');
-      input.focus();
+      say(e.error === 'no-speech' ? 'Nothing heard. Press the mic again, or type it.' : 'The mic isn’t available here. Type it instead.');
+      input.focus({ preventScroll: true });
     };
     rec.onend = () => {
       if (listening !== rec) return;
@@ -891,7 +905,6 @@ if (panel) {
 
   // ---------- input ----------
 
-  tryButton.hidden = false;
   tryButton.addEventListener('click', () => {
     if (state === 'off') arm();
     else exit();
@@ -917,7 +930,8 @@ if (panel) {
       copyButton.textContent = 'Copied';
     } catch {
       getSelection().selectAllChildren(reportEl);
-      copyButton.textContent = 'Press Ctrl+C';
+      copyButton.textContent = 'Selected';
+      say(copyHint);
     }
     setTimeout(() => { copyButton.textContent = 'Copy report'; }, 1800);
   });
@@ -998,9 +1012,16 @@ if (panel) {
     else input.focus({ preventScroll: true });
   });
 
-  // On a phone, ride above the keyboard.
-  visualViewport?.addEventListener('resize', () => {
-    const lift = Math.max(0, innerHeight - visualViewport.height - visualViewport.offsetTop);
+  // On a phone, ride above the keyboard, leave room for the page, and keep the pin in sight.
+  const vv = window.visualViewport;
+  const ride = () => {
+    const lift = Math.max(0, innerHeight - vv.height - vv.offsetTop);
     panel.style.setProperty('--tp-lift', `${lift}px`);
+    panel.style.setProperty('--tp-room', lift ? `${Math.round(vv.height * 0.72)}px` : '');
+    return lift;
+  };
+  vv?.addEventListener('scroll', ride);
+  vv?.addEventListener('resize', () => {
+    if (ride() && draft) keepInSight(draft.pins.at(-1).el);
   });
 }

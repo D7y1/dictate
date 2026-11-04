@@ -68,7 +68,6 @@ h1 span, h2 span { display: block; color: var(--ink-3); }
 h1 { font-size: clamp(2.5rem, 5.1vw, 4.75rem); line-height: 1.06; letter-spacing: -0.025em; }
 h2 { font-size: clamp(2.125rem, 1.35rem + 2.8vw, 3.5rem); line-height: 1.08; letter-spacing: -0.032em; }
 h3 { font-size: 18px; font-weight: 500; line-height: 1.3; letter-spacing: -0.012em; }
-h3 code, h3 kbd { padding: 0.1em 0.36em; background: rgb(20 20 22 / 0.06); font-size: 0.9em; font-weight: 500; letter-spacing: 0; border-radius: 6px; }
 
 /* --- Navigation --- */
 
@@ -82,7 +81,7 @@ h3 code, h3 kbd { padding: 0.1em 0.36em; background: rgb(20 20 22 / 0.06); font-
 }
 .nav.scrolled { background: rgb(244 244 243 / 0.82); -webkit-backdrop-filter: saturate(1.4) blur(14px); backdrop-filter: saturate(1.4) blur(14px); border-bottom-color: var(--line); }
 .nav nav { display: flex; align-items: center; gap: clamp(16px, 3vw, 44px); }
-.nav nav a { color: var(--ink-2); text-decoration: none; transition: color 0.2s; }
+.nav nav a { padding-block: 10px; color: var(--ink-2); text-decoration: none; transition: color 0.2s; }
 .nav nav a:hover { color: var(--ink); }
 .nav nav a.pill { padding: 8px 16px; background: var(--ink); color: var(--ground); border-radius: 999px; font-weight: 500; transition: background-color 0.2s; }
 .nav nav a.pill:hover { background: #2c2c30; color: var(--ground); }
@@ -101,18 +100,20 @@ h3 code, h3 kbd { padding: 0.1em 0.36em; background: rgb(20 20 22 / 0.06); font-
 
 .pitch > p { max-width: 27em; margin-top: 28px; color: var(--ink-2); font-size: clamp(17px, 1.46vw, 21px); line-height: 1.5; text-wrap: pretty; }
 .pitch .install { margin-top: 40px; }
-.more-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px clamp(18px, 2vw, 28px); margin-top: 24px; transition: opacity 0.2s; }
+.more-row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px clamp(18px, 2vw, 28px); margin-top: 24px; font-size: clamp(16px, 1.24vw, 18px); transition: opacity 0.2s; }
 .just-copied .more-row { opacity: 0; pointer-events: none; }
-.try { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 6px 8px 6px 14px; border: 1.5px dashed var(--amber); border-radius: 11px; font-size: clamp(15px, 1.2vw, 18px); transition: background-color 0.2s; }
-.try[hidden] { display: none; }
+/* It only works with the script, and the page says so before first paint. */
+.try { display: none; align-items: center; gap: 10px; min-height: 44px; padding: 6px 8px 6px 14px; border: 1.5px dashed var(--amber); border-radius: 11px; transition: background-color 0.2s; }
+.js .try { display: inline-flex; }
 .try:hover { background: rgb(255 255 255 / 0.6); }
 .try[aria-pressed="true"] { background: var(--amber-soft); }
 .try kbd { min-width: 26px; padding: 2px 7px; background: rgb(20 20 22 / 0.07); font-size: 0.82em; text-align: center; border-radius: 6px; }
-.more { display: inline-block; color: var(--ink-2); font-size: clamp(16px, 1.36vw, 20px); text-decoration: underline; text-decoration-color: rgb(20 20 22 / 0.28); transition: color 0.2s, text-decoration-color 0.2s; }
+.more { display: inline-block; padding-block: 10px; color: var(--ink-2); text-decoration: underline; text-decoration-color: rgb(20 20 22 / 0.28); transition: color 0.2s, text-decoration-color 0.2s; }
 .more:hover { color: var(--ink); text-decoration-color: currentColor; }
 
 /* The install bar */
 .install {
+  position: relative;
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
   width: 100%; max-width: 568px; height: clamp(56px, 4.5vw, 67px); padding: 0 10px 0 22px;
   background: var(--ink); color: var(--ground); border-radius: 13px;
@@ -127,7 +128,6 @@ h3 code, h3 kbd { padding: 0.1em 0.36em; background: rgb(20 20 22 / 0.06); font-
 .install button.copied { color: #fff; }
 
 /* What to do after Copy, in the space under the bar. */
-.install { position: relative; }
 .after-copy { position: absolute; left: 2px; top: calc(100% + 14px); color: var(--ink); font-size: 15px; line-height: 1.35; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
 .after-copy.on { opacity: 1; transition-duration: 0.3s; }
 .after-copy code { padding: 0.08em 0.34em; background: rgb(20 20 22 / 0.07); font-size: 0.92em; border-radius: 5px; white-space: nowrap; }
@@ -234,6 +234,8 @@ h3 code, h3 kbd { padding: 0.1em 0.36em; background: rgb(20 20 22 / 0.06); font-
 
 .tabs { position: relative; display: flex; width: fit-content; margin-top: clamp(32px, 3.6vw, 48px); padding: 4px; background: rgb(20 20 22 / 0.055); border-radius: 999px; }
 .tabs[hidden] { display: none; }
+.js .tabs[hidden] { display: flex; }
+.js:not(.ready) .split:not(#panel-web) { display: none; }
 .tabs button { position: relative; padding: 9px 20px; color: var(--ink-2); font-size: 14.5px; border-radius: 999px; transition: color 0.2s; }
 .tabs button:hover, .tabs button[aria-selected="true"] { color: var(--ink); }
 .tab-thumb { position: absolute; left: 0; top: 4px; bottom: 4px; background: var(--surface); border-radius: 999px; box-shadow: 0 1px 2px rgb(20 20 22 / 0.08), 0 4px 10px -4px rgb(20 20 22 / 0.14); }
@@ -266,10 +268,9 @@ h3 code, h3 kbd { padding: 0.1em 0.36em; background: rgb(20 20 22 / 0.06); font-
 .timed.playing .w.said { opacity: 1; }
 .resolved { margin-top: clamp(24px, 3vw, 36px); }
 .resolved li + li { margin-top: 10px; }
-.resolved li { padding-left: 0; text-indent: 0; }
+.resolved li { padding-left: 0; text-indent: 0; transition: opacity 0.35s var(--ease), transform 0.35s var(--ease); }
 .resolved li::before { content: none; }
 .resolved.playing li { opacity: 0; transform: translateY(4px); }
-.resolved li { transition: opacity 0.35s var(--ease), transform 0.35s var(--ease); }
 .resolved.playing li.said { opacity: 1; transform: none; }
 .replay { padding: 0; color: var(--ink); text-decoration: underline; text-decoration-color: rgb(20 20 22 / 0.28); text-decoration-thickness: 1px; text-underline-offset: 4px; transition: text-decoration-color 0.2s; }
 .replay:hover { text-decoration-color: currentColor; }
@@ -310,7 +311,7 @@ html:not(.trying) .tp-box, html:not(.trying) .tp-pin { display: none; }
 .tp {
   position: fixed; right: clamp(12px, 2vw, 28px); bottom: calc(clamp(12px, 2vw, 28px) + var(--tp-lift, 0px)); z-index: 40;
   display: flex; flex-direction: column;
-  width: min(460px, 100vw - 24px); max-height: min(72svh, 620px);
+  width: min(460px, 100vw - 24px); max-height: var(--tp-room, min(72svh, 620px));
   background: var(--surface); border-radius: 18px;
   box-shadow: 0 0 0 1px rgb(20 20 22 / 0.05), 0 1px 2px rgb(20 20 22 / 0.05), 0 30px 60px -18px rgb(20 20 22 / 0.3);
   transition: opacity 0.16s, transform 0.16s;
@@ -324,9 +325,8 @@ html:not(.trying) .tp-box, html:not(.trying) .tp-pin { display: none; }
 .tp-hint { flex: 1; min-width: 0; font-size: 15px; line-height: 1.35; }
 .tp-close { display: grid; place-items: center; flex: none; width: 40px; height: 40px; color: var(--ink-2); border-radius: 10px; transition: color 0.2s, background-color 0.2s; }
 .tp-close:hover { color: var(--ink); background: rgb(20 20 22 / 0.05); }
-.tp-report { flex: 1 1 auto; min-height: 0; padding: 14px 20px 16px; border-top: 1px solid var(--line); font-size: 12.5px; line-height: 1.65; overflow-y: auto; overscroll-behavior: contain; }
+.tp-report { flex: 1 1 auto; min-height: 0; padding: 14px 20px 16px; border-top: 1px solid var(--line); font-size: 12.5px; line-height: 1.65; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
 .tp-report[hidden] { display: none; }
-.tp-report .draft { margin-top: 0; }
 .tp-report .tp-note + .tp-note { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); }
 .tp-report .tp-note > * + * { margin-top: 0.9em; }
 .tp-report .q:empty::after { content: "> …"; color: var(--ink-2); }
@@ -350,15 +350,19 @@ html:not(.trying) .tp-box, html:not(.trying) .tp-pin { display: none; }
 .tp-foot { flex: none; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 12px 20px 16px; border-top: 1px solid var(--line); }
 .tp-foot[hidden] { display: none; }
 .tp-foot .tp-small { width: 100%; }
-.tp-copy { height: 38px; padding: 0 14px; background: var(--ink); color: var(--ground); font-size: 14px; font-weight: 500; border-radius: 9px; transition: background-color 0.2s; }
+.tp-copy { height: 40px; padding: 0 14px; background: var(--ink); color: var(--ground); font-size: 14px; font-weight: 500; border-radius: 9px; transition: background-color 0.2s; }
 .tp-copy:hover { background: #2c2c30; }
-.tp-install { font-size: 14px; }
+.tp-install { font-size: 14px; text-decoration-color: rgb(20 20 22 / 0.28); transition: text-decoration-color 0.2s; }
+.tp-install:hover { text-decoration-color: currentColor; }
+
+/* Everything you press gives a little. */
+.install button:active, .try:active, .tabs button:active, .tp-close:active, .tp-mic:active, .tp-add:active, .tp-copy:active, .nav nav a.pill:active, .replay:active { transform: scale(0.97); }
 
 /* --- The missing page --- */
 
 .lost { text-align: center; }
 .lost h1 { white-space: normal; font-size: clamp(2.25rem, 5.1vw, 4.75rem); }
-.lost .more { margin-top: 28px; }
+.lost .more { margin-top: 18px; font-size: 17px; }
 .lost-box { position: relative; width: min(420px, 100%); height: clamp(170px, 24vh, 240px); margin: 0 auto clamp(72px, 9vh, 96px); }
 .lost-box .pin { inset: 0; width: auto; height: auto; }
 .lost-box .pin-tag { left: auto; right: 8px; bottom: calc(100% + 8px); }
@@ -394,7 +398,6 @@ html:not(.trying) .tp-box, html:not(.trying) .tp-pin { display: none; }
   .install { height: 62px; }
   .install code { font-size: clamp(12px, 3.6vw, 18px); }
   .install button { font-size: 16px; }
-  .more { font-size: 17px; }
   .hero { min-height: 0; padding-block: calc(var(--nav-h) + 40px) 96px; }
   .hero-grid { grid-template-columns: minmax(0, 1fr); gap: 64px; }
   .demo { justify-self: center; }
@@ -426,14 +429,16 @@ html:not(.trying) .tp-box, html:not(.trying) .tp-pin { display: none; }
   .tabs { width: 100%; }
   .tabs button { flex: 1; padding-inline: 8px; }
   .shot .pin-tag { font-size: 11.5px; padding: 2px 6px; }
-  .tp { right: 8px; bottom: calc(8px + var(--tp-lift, 0px)); width: calc(100vw - 16px); max-height: 62svh; }
+  .tp { right: 8px; bottom: calc(8px + var(--tp-lift, 0px)); width: calc(100vw - 16px); max-height: var(--tp-room, 62svh); }
   .after-copy { font-size: 14px; }
-  .try { font-size: 15px; }
-  .more { font-size: 15px; }
 }
 
 @media (max-width: 350px) {
   .install .prompt { display: none; }
+}
+
+@media (max-height: 520px) {
+  .tp-foot .tp-small { display: none; }
 }
 
 /* No T key on a touch screen. */

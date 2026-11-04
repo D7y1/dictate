@@ -24,6 +24,8 @@
 <meta name="twitter:image" content="https://skills.d7y.dev/dictate/assets/og.png">
 <link rel="preload" href="assets/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/site.css">
+<!-- Before first paint, so what the script adds has its space from the start. -->
+<script>document.documentElement.classList.add('js')</script>
 <script type="module" src="assets/site.js"></script>
 </head>
 <body>
@@ -61,7 +63,7 @@ DELIGHT: Whatever you point at, Dictate knows exactly what you mean. One dashed 
           <span class="after-copy" role="status"></span>
         </div>
         <div class="more-row">
-          <button type="button" class="try" id="try" aria-pressed="false" data-say="Press T and try this yourself." data-cursor="0.8 0.76" data-tag="under" hidden>Try it on this page<kbd>T</kbd></button>
+          <button type="button" class="try" id="try" aria-pressed="false" aria-keyshortcuts="T" data-say="Press T and try this yourself." data-cursor="0.8 0.76" data-tag="under">Try it on this page<kbd aria-hidden="true">T</kbd></button>
           <a class="more" href="#how">See how it works</a>
         </div>
       </div>

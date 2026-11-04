@@ -42,7 +42,8 @@ DESIGN.md describes the studio, a dark tool. It does not bind this surface, and 
 - No third-party requests from the page: fonts and images are self-hosted, and the privacy page says so. The Try panel's mic is off until pressed, then the browser's own speech service hears it. The panel discloses that before you press it, and the privacy page covers it.
 - The privacy page is linked from the Chrome Web Store listing, so keep it accurate to what the extension, studio, first-run setup and Try panel do.
 - No invented claims: no stars, testimonials, logos or numbers. Halden, the Dashboard concept reference and the transcript timings are labeled-by-context examples. The Try panel says a real report also has a screenshot of each pin.
-- Domain: `D7y1/D7y1.github.io` owns `skills.d7y.dev`, so this repo's Pages site is served at `/dictate`, and `404.html` uses `<base href="/dictate/">`. Later skills live at `/their-name`.
+- Domain: `D7y1/D7y1.github.io` owns `skills.d7y.dev`, so this repo's Pages site is served at `/dictate`, and every link in `404.html` starts from `/dictate/`. Later skills live at `/their-name`.
+- T is a page-wide single-key shortcut, a narrow intentional exception: it's the product's own gesture, nothing it does is destructive, and Esc leaves.
 
 ## Open
 - `docs/assets/og.png` is captured from the built hero; recapture it if the hero changes.
