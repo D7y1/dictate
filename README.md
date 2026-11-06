@@ -15,39 +15,18 @@ Point, talk, submit. Dictate records you giving notes on a video or a website (y
 
 ## Install
 
-You need **Node 20+** and **Chrome** (or Edge). Python 3.9+ is optional but recommended: it runs Whisper, which transcribes far better than the browser's live captions. There's nothing to clone.
-
-**1. Add the skill** from [skills.sh](https://skills.sh):
-
 ```
-npx skills add D7y1/dictate -g
+npx skills add D7y1/dictate
 ```
 
-**2. Set up speech to text:**
+That's the install. Type `/dictate` in Claude Code and start talking. The installer asks whether to add it to this project or all of them; `-g` picks all of them. You need **Node 20+** and **Chrome** (or Edge).
 
-```
-npx @d7y/dictate setup
-```
+**What happens on your first review**
 
-It takes a few minutes the first time because it downloads the speech model:
+- **Speech to text sets itself up in the background.** Dictate puts faster-whisper in its own Python environment (`~/.dictate/python`, so your Python isn't touched), adds the CUDA libraries on an NVIDIA card, and downloads the speech model. That's up to 3 GB, once. Live captions cover until it's ready. It needs Python 3.9+; without it Dictate stays on live captions and the studio tells you. Set `DICTATE_NO_WHISPER=1` to turn this off.
+- **The extension, if you review a website.** Chrome only lets a person add one, so the studio walks you through it, once. Video review doesn't need it.
 
-1. Checks Node and finds Chrome or Edge.
-2. Installs faster-whisper with your Python. With an NVIDIA card it also adds the CUDA libraries Whisper needs to use the GPU.
-3. Downloads and loads the speech model (about 1.6 GB, or 0.5 GB on CPU), so your first review doesn't wait for it.
-4. Installs the `/dictate` skill, in case you skipped step 1.
-5. Checks whether the browser extension is in, and opens the page to add it if not.
-
-Setup is safe to re-run; it skips anything already done and tells you what's left. Flags: `--no-whisper`, `--no-model`, `--no-open`. Skip this step entirely and Dictate falls back to the browser's live captions.
-
-**3. Add the extension** (web review only, once). Chrome only lets a person do this step:
-
-1. On `chrome://extensions`, turn on **Developer mode** (top right).
-2. Click **Load unpacked** and choose `~/.dictate/extension` (setup prints the full path and copies it to your clipboard).
-3. Run setup again; it should say *Loaded in Chrome*.
-
-Once the Chrome Web Store listing is live, setup and the studio open it instead: one click, and Chrome keeps it updated.
-
-Then you're done: type `/dictate` in Claude Code, in any project.
+Prefer to do it all up front, or want to retry something? `npx @d7y/dictate setup` runs the same steps in your terminal. It's safe to re-run; it skips anything already done and tells you what's left. Flags: `--no-whisper`, `--no-model`, `--no-open`.
 
 ### Updates
 
@@ -58,7 +37,7 @@ Nothing to do. `/dictate` starts Dictate with `npx @d7y/dictate@latest`, so ever
 
 ### Remove
 
-`npx skills remove dictate -g`, remove the extension in `chrome://extensions`, and delete `~/.dictate`. To drop Whisper as well: `pip uninstall faster-whisper`.
+`npx skills remove dictate`, remove the extension in `chrome://extensions`, and delete `~/.dictate` (that includes Whisper and its Python environment). The speech model stays in `~/.cache/huggingface` until you delete it.
 
 ### Develop from source
 
@@ -145,6 +124,7 @@ bin/dictate.js        CLI: starts the server, opens the studio, exits on submit 
 scripts/setup.js      one-command setup (npx @d7y/dictate setup; from a clone, npm run setup or setup.cmd)
 server/server.js      local HTTP server on 127.0.0.1 (studio + extension only)
 server/install.js     where this copy runs from (npm or a clone) and where Chrome loads the extension from
+server/speech-setup.js  sets up speech to text in the background on the first review
 server/compile.js     lines speech up with marks, cursor, elements and frames; writes report.md
 server/whisper_worker.py  faster-whisper worker, warmed while you record
 studio/               the Studio UI (plain ES modules, no build step)

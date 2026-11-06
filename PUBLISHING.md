@@ -68,7 +68,7 @@ Until all of this is in place, the Release workflow skips the Chrome Web Store s
 
 ### 4. The landing page
 
-GitHub Pages serves `docs/` from `main` at <https://d7y1.github.io/dictate/> (**Settings → Pages → Deploy from a branch → main, /docs**). The store's privacy policy link is <https://d7y1.github.io/dictate/privacy/>.
+GitHub Pages serves `docs/` from `main` at <https://skills.d7y.dev/dictate/> (**Settings → Pages → Deploy from a branch → main, /docs**). The domain belongs to the [D7y1/D7y1.github.io](https://github.com/D7y1/D7y1.github.io) repo, which puts every Pages site in this account at `skills.d7y.dev/<repo>`, and old `d7y1.github.io` links redirect. The store's privacy policy link is <https://skills.d7y.dev/dictate/privacy/>.
 
 ### Later: Microsoft Edge Add-ons
 

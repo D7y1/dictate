@@ -1,6 +1,6 @@
 import { spawn, spawnSync } from 'node:child_process';
 import readline from 'node:readline';
-import { SETUP_COMMAND } from './install.js';
+import { SETUP_COMMAND, speechEnvPython } from './install.js';
 
 const IDLE_SHUTDOWN_MS = 10 * 60 * 1000; // release GPU memory when nobody is recording
 
@@ -26,7 +26,8 @@ export class Transcriber {
       this.detail = 'Disabled with DICTATE_NO_WHISPER';
       return false;
     }
-    const candidates = process.platform === 'win32' ? [['python'], ['py', '-3'], ['python3']] : [['python3'], ['python']];
+    const own = speechEnvPython();
+    const candidates = [...(own ? [[own]] : []), ...(process.platform === 'win32' ? [['python'], ['py', '-3'], ['python3']] : [['python3'], ['python']])];
     for (const [cmd, ...pre] of candidates) {
       const r = spawnSync(cmd, [...pre, '-c', 'import faster_whisper'], { timeout: 20000, windowsHide: true });
       if (r.status === 0) {

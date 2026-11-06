@@ -30,8 +30,7 @@ Private by design
 The extension records only while a review session you started is running. It sends everything only to the Dictate app running on your own computer, which saves the session in your project folder. There is no account, no analytics, and no server in between.
 
 Works with Dictate Studio, which is free and open source. In a terminal:
-  npx skills add D7y1/dictate -g
-  npx @d7y/dictate setup
+  npx skills add D7y1/dictate
 Then type /dictate in Claude Code.
 
 Source code: https://github.com/D7y1/dictate
@@ -47,7 +46,7 @@ Dictate is an independent open-source project. Claude and Claude Code are made b
 | Screenshots (1280×800) | `screenshot-1.png`, `screenshot-2.png`, `screenshot-3.png` |
 | Small promo tile (440×280) | `promo-small.png` |
 | Official URL | none (needs a verified domain; leave empty) |
-| Homepage URL | https://d7y1.github.io/dictate/ |
+| Homepage URL | https://skills.d7y.dev/dictate/ |
 | Support URL | https://github.com/D7y1/dictate/issues |
 
 ## Privacy
@@ -77,7 +76,7 @@ Dictate records what you point at, click and see on web pages while you talk thr
 
 Tick all three certifications: not sold to third parties, not used for purposes unrelated to the single purpose, not used for creditworthiness or lending.
 
-**Privacy policy URL:** https://d7y1.github.io/dictate/privacy/
+**Privacy policy URL:** https://skills.d7y.dev/dictate/privacy/
 
 ## Test instructions (for the reviewer)
 

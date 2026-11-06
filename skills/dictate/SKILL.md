@@ -55,4 +55,5 @@ Turning notes into work:
 
 - Latest submitted session for this project: `npx -y @d7y/dictate@latest --latest --out "<project root>/.dictate/sessions"`
 - The user may run the studio on their own and later say "read my latest dictate session". Use `--latest` to find it.
-- First time, or the studio says "Live captions only": ask the user to run `npx -y @d7y/dictate@latest setup` in a terminal. It installs local speech to text (faster-whisper), downloads the model, and checks the extension. It takes a few minutes the first time and is safe to run again.
+- First review: Dictate sets up local speech to text by itself in the background (faster-whisper in its own Python environment, plus the model), and uses live captions until it's ready. There's nothing for the user to run.
+- If the studio says "Live captions only" and names a problem, tell the user how to fix it, then ask them to run `npx -y @d7y/dictate@latest setup` in a terminal. It's safe to run again.

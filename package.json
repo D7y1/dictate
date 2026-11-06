@@ -1,6 +1,6 @@
 {
   "name": "@d7y/dictate",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Point, talk, submit. Voice + cursor review sessions for videos and web platforms, packaged for Claude.",
   "type": "module",
   "bin": {
@@ -39,7 +39,7 @@
     "chrome-extension",
     "video-review"
   ],
-  "homepage": "https://d7y1.github.io/dictate/",
+  "homepage": "https://skills.d7y.dev/dictate/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/D7y1/dictate.git"

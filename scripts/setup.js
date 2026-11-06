@@ -6,12 +6,14 @@
 //   npx @d7y/dictate setup              everything (from a clone: npm run setup)
 //   npx @d7y/dictate setup --no-model   skip the speech model download
 //   flags: --no-whisper --no-model --no-link --no-open
+//   --speech-only is what the first review runs in the background (server/speech-setup.js)
 import path from 'node:path';
 import readline from 'node:readline';
 import { spawn, spawnSync } from 'node:child_process';
 import { Transcriber } from '../server/transcriber.js';
 import { BROWSERS, browserName, findBrowser, loadedExtensionProfiles } from '../server/browser.js';
-import { ROOT as home, FROM_SOURCE, PACKAGE, SETUP_COMMAND, STORE_ID, STORE_URL, prepareExtensionDir } from '../server/install.js';
+import { ROOT as home, FROM_SOURCE, PACKAGE, SETUP_COMMAND, SPEECH_ENV, STORE_ID, STORE_URL, prepareExtensionDir, speechEnvPython } from '../server/install.js';
+import { writeSpeechSetup } from '../server/speech-setup.js';
 import { installSkill } from './install-skill.js';
 
 const workerScript = path.join(home, 'server', 'whisper_worker.py');
@@ -61,6 +63,13 @@ function pipInstall(python, packages) {
   return r.status === 0;
 }
 
+// Whisper gets its own environment, so pip never touches the user's Python.
+function speechEnv(python) {
+  if (speechEnvPython()) return [speechEnvPython()];
+  const r = spawnSync(python[0], [...python.slice(1), '-m', 'venv', SPEECH_ENV], { stdio: 'inherit', windowsHide: true });
+  return r.status === 0 && speechEnvPython() ? [speechEnvPython()] : null;
+}
+
 function nvidiaGpu() {
   const r = spawnSync('nvidia-smi', ['--query-gpu=name', '--format=csv,noheader'], { encoding: 'utf8', timeout: 10000, windowsHide: true });
   return r.status === 0 ? r.stdout.trim().split(/\r?\n/)[0] : null;
@@ -92,21 +101,9 @@ function loadModel(python) {
 
 // --- Steps ------------------------------------------------------------------
 
-async function main() {
-  console.log(`Setting up Dictate ${PACKAGE.version}${FROM_SOURCE ? ` from ${home}` : ''}`);
-
-  step(1, 'Node.js and a browser');
-  const major = Number(process.versions.node.split('.')[0]);
-  if (major < 20) {
-    warn(`Node ${process.versions.node} is too old; Dictate needs 20 or newer.`);
-    say(win ? 'Update it with:  winget install OpenJS.NodeJS.LTS   (or from https://nodejs.org)' : 'Update it from https://nodejs.org');
-    process.exit(1);
-  }
-  ok(`Node ${process.versions.node}`);
-  const browser = findBrowser();
-  if (browser) ok(`${BROWSERS[browserName(browser)].label} found`);
-  else warn('Neither Chrome nor Edge was found. Install Chrome; web review needs it for the extension.', 'Install Google Chrome, then run setup again.');
-
+// Steps 2 and 3. Records the outcome, so the studio can say how it went.
+async function setUpSpeech() {
+  let problem = null;
   step(2, 'Speech to text (faster-whisper)');
   let python = null;
   if (!want('whisper')) say('Skipped (--no-whisper). Dictate will use the browser\'s live captions.');
@@ -123,12 +120,17 @@ async function main() {
           win ? 'Install Python (winget install Python.Python.3.12), open a new terminal, and run setup again.' : 'Install Python 3.9+ and run setup again.',
         );
         say('Until then Dictate falls back to the browser\'s live captions.');
+        problem = 'Install Python 3.9 or newer.';
       } else {
-        say(`Installing faster-whisper with Python ${found.version}...`);
-        if (pipInstall(found.cmd, ['faster-whisper'])) {
-          python = found.cmd;
+        say(`Installing faster-whisper in ${SPEECH_ENV} with Python ${found.version}...`);
+        const env = speechEnv(found.cmd);
+        if (env && pipInstall(env, ['faster-whisper'])) {
+          python = env;
           ok('faster-whisper installed');
-        } else warn('pip could not install faster-whisper (see the output above).', 'Fix the pip error above, then run setup again.');
+        } else {
+          warn('Python could not install faster-whisper (see the output above).', 'Fix the error above, then run setup again.');
+          problem = 'Installing faster-whisper failed; see ~/.dictate/speech-setup.log.';
+        }
       }
     }
 
@@ -160,6 +162,25 @@ async function main() {
       say('Dictate falls back to the browser\'s live captions until it does.');
     }
   }
+  if (want('whisper')) writeSpeechSetup(problem ? { status: 'failed', detail: problem, at: Date.now() } : { status: 'done', at: Date.now() });
+}
+
+async function main() {
+  console.log(`Setting up Dictate ${PACKAGE.version}${FROM_SOURCE ? ` from ${home}` : ''}`);
+
+  step(1, 'Node.js and a browser');
+  const major = Number(process.versions.node.split('.')[0]);
+  if (major < 20) {
+    warn(`Node ${process.versions.node} is too old; Dictate needs 20 or newer.`);
+    say(win ? 'Update it with:  winget install OpenJS.NodeJS.LTS   (or from https://nodejs.org)' : 'Update it from https://nodejs.org');
+    process.exit(1);
+  }
+  ok(`Node ${process.versions.node}`);
+  const browser = findBrowser();
+  if (browser) ok(`${BROWSERS[browserName(browser)].label} found`);
+  else warn('Neither Chrome nor Edge was found. Install Chrome; web review needs it for the extension.', 'Install Google Chrome, then run setup again.');
+
+  await setUpSpeech();
 
   step(4, 'Claude skill (/dictate)');
   try {
@@ -219,7 +240,8 @@ function copyToClipboard(text) {
   return r.status === 0;
 }
 
-main().catch((err) => {
+(args.has('--speech-only') ? setUpSpeech() : main()).catch((err) => {
   console.error(`\nSetup stopped: ${err.stack || err.message}`);
+  if (args.has('--speech-only')) writeSpeechSetup({ status: 'failed', detail: 'Setup stopped with an error; see ~/.dictate/speech-setup.log.', at: Date.now() });
   process.exit(1);
 });
